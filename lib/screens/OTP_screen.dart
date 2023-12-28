@@ -30,7 +30,6 @@ import 'package:social_media_services/utils/pinTheme.dart';
 import 'package:social_media_services/screens/edit_profile_screen.dart';
 import 'package:social_media_services/utils/snack_bar.dart';
 import 'package:social_media_services/API/viewProfile.dart';
-import 'package:social_media_services/widgets/terms_and_condition.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
 
@@ -200,7 +199,7 @@ class _OTPscreenState extends State<OTPscreen> {
             SizedBox(
               height: Responsive.isMobile(context) ? h * .24 : h * .04,
             ),
-            const TermsAndCondition()
+            // const TermsAndCondition()
           ],
         ),
       )),

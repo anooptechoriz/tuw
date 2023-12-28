@@ -16,6 +16,8 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox("LocalLan");
   await Hive.openBox("token");
+  await Hive.openBox("service");
+  await Hive.openBox("regionid");
   final GoogleMapsFlutterPlatform mapsImplementation =
       GoogleMapsFlutterPlatform.instance;
   if (mapsImplementation is GoogleMapsFlutterAndroid) {

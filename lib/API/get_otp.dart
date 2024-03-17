@@ -24,7 +24,7 @@ getOtp(BuildContext context, countryCode, phoneNo, resend) async {
     print(url);
     var response =
         await http.post(url, headers: {"device-id": provider.deviceId ?? ''});
-
+   
     if (response.statusCode != 200) {
       log("Something Went Wrong9");
 
@@ -32,6 +32,7 @@ getOtp(BuildContext context, countryCode, phoneNo, resend) async {
     }
 
     var jsonResponse = jsonDecode(response.body);
+    //  print('otpmes:${jsonResponse['result']['OTP']}');
     final result = jsonResponse["result"];
     final action = jsonResponse["action"];
     print(action);

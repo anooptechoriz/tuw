@@ -45,6 +45,7 @@ getPayFortPaymentSuccess(BuildContext context, id, status) async {
 
 getThawaniPaymentSuccess(
     BuildContext context, id, status, StatusClass v) async {
+     final String lanId = Hive.box("LocalLan").get('lang_id');
   final provider = Provider.of<DataProvider>(context, listen: false);
   final apiToken = Hive.box("token").get('api_token');
   String? clientId;
@@ -63,7 +64,7 @@ getThawaniPaymentSuccess(
     try {
       var response = await http.post(
           Uri.parse(
-              '$thawaniPaymentSuccess?order_id=$clientId&language_id=3&client_reference_id=$clientId&invoice_id=$invoiceId&payment_gateway=thawani'),
+              '$thawaniPaymentSuccess?order_id=$clientId&language_id=$lanId&client_reference_id=$clientId&invoice_id=$invoiceId&payment_gateway=thawani'),
           //   Uri.parse(
           // '$paymentSuccess?status=$status&order_id=$id&response_code=$resCode&response_message=$resMessage&authorization_code=$authCode&fort_id=$fortId'),
           headers: {
@@ -89,7 +90,7 @@ getThawaniPaymentSuccess(
     }
   } else {
     var uri = Uri.parse(
-        '$thawaniPaymentSuccess?order_id=$clientId&language_id=3&client_reference_id=$clientId&invoice_id=$invoiceId&payment_gateway=thawani');
+        '$thawaniPaymentSuccess?order_id=$clientId&language_id=$lanId&client_reference_id=$clientId&invoice_id=$invoiceId&payment_gateway=thawani');
     try {
       var request = http.MultipartRequest(
         "POST",

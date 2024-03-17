@@ -45,7 +45,7 @@ class PaymentServicePage extends StatefulWidget {
 
 class _PaymentServicePageState extends State<PaymentServicePage> {
   String? selectedValue;
-
+  bool invalidCoupen = false;
   bool isTickSelected = false;
   IsCodeAvailable status = IsCodeAvailable.none;
   Packages? packages;
@@ -59,7 +59,7 @@ class _PaymentServicePageState extends State<PaymentServicePage> {
   bool isVisible = false;
   bool getCodeLoading = false;
   bool isredeem = false;
-
+  double discount = 0.0;
   DateTime selectedDate = DateTime.now();
   double discountamt = 0;
 
@@ -72,21 +72,30 @@ class _PaymentServicePageState extends State<PaymentServicePage> {
   var grandTotal;
   double dgrandtotal = 0;
   double taxTotalAmount = 0;
-
+  // double grandTotal = 0.0;
   String lang = '';
   String? formattedGrandTotal;
   String? formattedTaxTotal;
-
+  List<Coupons> list = [];
   @override
   void initState() {
+    final coupenprovider =
+        Provider.of<DataProvider>(context, listen: false).coupenCodeModel;
     super.initState();
     lang = Hive.box('LocalLan').get(
       'lang',
     );
     PaymentServiceControllers.couponController.clear();
-    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-    //   getCoupenCodeList(context);
-    // });
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      final data = await getCoupenCodeList(context);
+      if (data) {
+        list = Provider.of<DataProvider>(context, listen: false)
+                .coupenCodeModel!
+                .coupons ??
+            [];
+        print('coup:::${list}');
+      }
+    });
   }
 
   @override
@@ -329,11 +338,23 @@ class _PaymentServicePageState extends State<PaymentServicePage> {
                                       // focusNode: nfocus,
                                       style: const TextStyle(),
                                       onChanged: (value) {
+                                        
+                                        if (value.isEmpty ||
+                                            value == null ||
+                                          value!=  coupencode ) {
+                                          // FocusManager.instance.primaryFocus?.unfocus();
+                                          setState(() {
+                                            discount = 0.0;
+                                    
+                                          });
+                                        } else {
+                                          setState(() {});
+                                        }
                                         // searchCoupenCode(value);
                                       },
                                       controller: PaymentServiceControllers
                                           .couponController,
-                                      // keyboardType: type,
+                                  
                                       decoration: InputDecoration(
                                           suffixIcon: SizedBox(
                                             width: size.width * .5,
@@ -356,10 +377,12 @@ class _PaymentServicePageState extends State<PaymentServicePage> {
                                                                 horizontal: 20,
                                                                 vertical: 0),
                                                       ),
-                                                      onPressed: () {
-                                                        redeem();
+                                                      onPressed: () async {
+                                                        await redeem();
+
                                                         setState(() {
                                                           isredeem = true;
+                                                          isVisible = false;
                                                         });
                                                       },
                                                       child: coupenLoading
@@ -454,7 +477,7 @@ Row(
                                                         .coupenCodeModel
                                                         ?.coupons?[index]
                                                         .code ??
-                                                    ''),
+                                                    ''),    
                                               ),
                                             ),
                                           );
@@ -581,7 +604,7 @@ Row(
                                 //           child: Container(
                                 //             width: 50,
                                 //             height: 50,
-                                //             color: ColorManager.errorRed,
+                                //             color: ColorManager.errorRed,mk
                                 //           ));
                                 //     },
                                 //     itemCount: 15,
@@ -652,13 +675,8 @@ Row(
                                                               fontSize: 16)),
                                                     ],
                                                   ),
-                                                  coupen?.discount != null &&
-                                                          isredeem == true &&
-                                                          PaymentServiceControllers
-                                                                  .couponController
-                                                                  .text ==
-                                                              coupen?.code
-                                                                  .toString()
+
+                                                  discount != 0.0
                                                       ? Padding(
                                                           padding:
                                                               const EdgeInsets
@@ -677,7 +695,7 @@ Row(
                                                                 width: 39,
                                                               ),
                                                               Text(
-                                                                  " ${(packages?.amount) * 0.99}",
+                                                                  " ${((packages?.amount) * discount) / 100}",
                                                                   style: getRegularStyle(
                                                                       color: ColorManager
                                                                           .grayDark,
@@ -769,6 +787,15 @@ Row(
                                                             .taxDetails!.length,
 
                                                     itemBuilder: (ctx, index) {
+                                                      var coupendiscount =
+                                                          ((packages?.amount) *
+                                                                  discount) /
+                                                              100;
+                                                      var discountedAmount =
+                                                          ((packages?.offerPrice ??
+                                                                  packages
+                                                                      ?.amount)) -
+                                                              coupendiscount;
                                                       print(
                                                           "TAXPU : ${_selectedPackage!.taxDetails!.length}");
                                                       print(
@@ -778,6 +805,8 @@ Row(
                                                               .isEmpty ==
                                                           true) {
                                                         taxTotal = 0;
+                                                        print(
+                                                            'tax details empty');
                                                       } else {
                                                         taxTotal = taxTotal +
                                                             (packages
@@ -786,11 +815,18 @@ Row(
                                                                     .percentage ??
                                                                 0);
 
-                                                        taxTotalAmount = (packages
-                                                                    ?.offerPrice ??
-                                                                packages
-                                                                    ?.amount) *
-                                                            (taxTotal / 100);
+                                                        print(
+                                                            'packages?.offerPrice ${discount}');
+                                                        print(
+                                                            'discountedAmount${discountedAmount}');
+
+                                                        taxTotalAmount =
+                                                            (discountedAmount *
+                                                                    packages
+                                                                        ?.taxDetails![
+                                                                            index]
+                                                                        .percentage) /
+                                                                100;
                                                       }
                                                       formattedTaxTotal =
                                                           taxTotalAmount
@@ -803,44 +839,27 @@ Row(
                                                                   ?.amount) +
                                                           taxTotalAmount;
 
-                                                      // grandTotal = (packages
-                                                      //             ?.offerPrice ??
-                                                      //         packages?.amount) +
-                                                      //     taxTotalAmount;
+                                                     
 
-                                                      if (isredeem == true &&
-                                                          PaymentServiceControllers
-                                                                  .couponController
-                                                                  .text ==
-                                                              coupen?.code
-                                                                  .toString() &&
-                                                          coupen?.id != null) {
-                                                        // dgrandtotal = double.parse(
-                                                        //     coupen?.discount.toString() ?? 0);
-                                                        discountamt =
-                                                            (packages?.amount) *
-                                                                0.99;
-
-                                                        grandTotal = ((packages?.offerPrice ??
-                                                                            packages
-                                                                                ?.amount) +
-                                                                        taxTotalAmount) -
-                                                                    discountamt <
-                                                                0
-                                                            ? 0
-                                                            : ((packages?.offerPrice ??
-                                                                        packages
-                                                                            ?.amount) +
-                                                                    taxTotalAmount) -
-                                                                discountamt;
-                                                      }
-                                                      formattedGrandTotal =
+                                                      // if (isredeem == true &&
+                                                      //     PaymentServiceControllers
+                                                      //             .couponController
+                                                      //             .text ==
+                                                      //         coupencode
+                                                      //             .toString() 
+                                                      //     ) {
+                                                      
+                                                        grandTotal =
+                                                            discountedAmount +
+                                                                double.parse(
+                                                                    formattedTaxTotal ??
+                                                                        "0.00");
+                                                                        formattedGrandTotal =
                                                           grandTotal
                                                               .toStringAsFixed(
                                                                   2);
-                                                      // if (packages?.offerPrice != null) {
-
                                                       // }
+                                                      
 
                                                       return Padding(
                                                         padding:
@@ -1019,8 +1038,8 @@ Row(
                               top: 130,
                               right: 10,
                               child: Visibility(
-                                  visible: isVisible,
-                                  //  provider.coupenCodeModel?.coupons
+                                  visible:
+                                      isVisible, //  provider.coupenCodeModel?.coupons
                                   //         ?.isNotEmpty ??
                                   //     false,
                                   child: Container(
@@ -1044,11 +1063,33 @@ Row(
                                             child: Container(
                                               // color: ColorManager.primary2,
                                               // height: 30,
-                                              child: Text(provider
-                                                      .coupenCodeModel
-                                                      ?.coupons?[index]
-                                                      .code ??
-                                                  ''),
+                                              child: InkWell(
+                                                onTap: () {
+                                                  setState(() {
+                                                    if (provider
+                                                            .coupenCodeModel
+                                                            ?.coupons?[index]
+                                                            .code !=
+                                                        null) {
+                                                      PaymentServiceControllers
+                                                          .couponController
+                                                          .text = provider
+                                                              .coupenCodeModel
+                                                              ?.coupons?[index]
+                                                              .code ??
+                                                          "";
+                                                    }
+                                                    setState(() {
+                                                      isVisible = false;
+                                                    });
+                                                  });
+                                                },
+                                                child: Text(provider
+                                                        .coupenCodeModel
+                                                        ?.coupons?[index]
+                                                        .code ??
+                                                    ''),
+                                              ),
                                             ),
                                           ),
                                         );
@@ -1092,35 +1133,35 @@ Row(
 
 // * Search Coupon Function
 
-  searchCoupenCode(value) {
-    if (value.length > 0) {
-      setState(() {
-        status = IsCodeAvailable.searching;
-      });
-    } else {
-      setState(() {
-        status = IsCodeAvailable.none;
-      });
-      return;
-    }
+  // searchCoupenCode(value) {
+  //   if (value.length > 0) {
+  //     setState(() {
+  //       status = IsCodeAvailable.searching;
+  //     });
+  //   } else {
+  //     setState(() {
+  //       status = IsCodeAvailable.none;
+  //     });
+  //     return;
+  //   }
 
-    if (value.length >= 6) {
-      final provider = Provider.of<DataProvider>(context, listen: false);
-      // print(value);
-      provider.coupenCodeModel?.coupons?.forEach((element) {
-        final isIncluded = element.code?.contains(value);
-        if (isIncluded == true) {
-          setState(() {
-            status = IsCodeAvailable.available;
-          });
-        } else {
-          setState(() {
-            status = IsCodeAvailable.notAvailable;
-          });
-        }
-      });
-    }
-  }
+  //   if (value.length >= 6) {
+  //     final provider = Provider.of<DataProvider>(context, listen: false);
+  //     // print(value);
+  //     provider.coupenCodeModel?.coupons?.forEach((element) {
+  //       final isIncluded = element.code?.contains(value);
+  //       if (isIncluded == true) {
+  //         setState(() {
+  //           status = IsCodeAvailable.available;
+  //         });
+  //       } else {
+  //         setState(() {
+  //           status = IsCodeAvailable.notAvailable;
+  //         });
+  //       }
+  //     });
+  //   }
+  // }
 
   onContinue() {
     final str = AppLocalizations.of(context)!;
@@ -1228,7 +1269,7 @@ Row(
                     orderId: orderId,
                     serviceFee: (packages?.amount.toString() ?? ''),
                     taxTotal: formattedTaxTotal ?? 0,
-                    discount: discountamt,
+                    discount: ((packages?.amount) * discount) / 100,
                     // validity: packages?.validity ?? '',
                     vat: 4,
                   )));
@@ -1258,11 +1299,10 @@ Row(
   }
 
   redeem() async {
+    var code = PaymentServiceControllers.couponController.text;
+    print('codetext${code}');
     final str = AppLocalizations.of(context)!;
-    setState(() {
-      coupenLoading = true;
-    });
-    final code = PaymentServiceControllers.couponController.text;
+
     if (code.isEmpty) {
       showAnimatedSnackBar(context, str.ps_snack_coupen);
       setState(() {
@@ -1271,7 +1311,9 @@ Row(
       return;
     }
     await checkCoupenCode(context, code);
+
     setState(() {
+      isVisible = false;
       coupenLoading = false;
     });
   }
@@ -1297,6 +1339,52 @@ Row(
         isVisible = false;
       });
     }
+  }
+
+  var coupencode = "";
+  checkCoupenCode(BuildContext context, code) async {
+    print('codesss:${list}');
+    if (list.isNotEmpty && code != null && code.isNotEmpty) {
+      for (var i in list) {
+        print('codesss:${code}');
+        if (i.code == code) {
+          print('lll${code}');
+          setState(() {
+            isVisible = false;
+            discount = double.parse(i.discount ?? "");
+            coupencode = i.code ?? "";
+            print('discountcou${discount}');
+          });
+          break; // Exit loop once a matching coupon is found
+        }
+      }
+    } else {
+      print('List is empty or code is null or empty');
+    }
+    // coupenLoading = false;
+    final provider = Provider.of<DataProvider>(context, listen: false);
+    final apiToken = Hive.box("token").get('api_token');
+    if (apiToken == null) return;
+    try {
+      var response = await http.post(Uri.parse('$checkCoupen$code'), headers: {
+        "device-id": provider.deviceId ?? '',
+        "api-token": apiToken
+      });
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
+        log(response.body);
+        if (jsonResponse['result'] == false) {
+          showAnimatedSnackBar(context, jsonResponse['toast']);
+          print('toast${jsonResponse['toast']}');
+          setState(() {
+            discount = 0;
+          });
+        }
+        print('res:${jsonResponse}');
+        final coupenCodeData = GetCoupenModel.fromJson(jsonResponse);
+        provider.coupenCodeData(coupenCodeData);
+      } else {}
+    } on Exception catch (_) {}
   }
 }
 

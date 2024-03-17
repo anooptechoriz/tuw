@@ -21,7 +21,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:social_media_services/widgets/payment_custom_listTile.dart';
 
 class PaymentSuccessPage extends StatefulWidget {
-  const PaymentSuccessPage({Key? key}) : super(key: key);
+  var discount;
+ PaymentSuccessPage({Key? key,required this.discount}) : super(key: key);
 
   @override
   State<PaymentSuccessPage> createState() => _PaymentSuccessPageState();
@@ -277,9 +278,8 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
                                     ''),
                             PaymentListTile(
                               text1: str.su_coupon_discount,
-                              text2: provider.paymentSuccess?.orderDetails
-                                      ?.couponDiscount ??
-                                  '',
+                              text2: widget.discount.toString()
+                                  ,
                             ),
                             PaymentListTile(
                               text1: str.su_grand_total,

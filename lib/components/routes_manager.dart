@@ -77,8 +77,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const WishList());
       case Routes.addressPage:
         return MaterialPageRoute(builder: (_) => const AddressPage());
-      case Routes.paymentSuccessfull:
-        return MaterialPageRoute(builder: (_) => const PaymentSuccessPage());
+      // case Routes.paymentSuccessfull:
+      //   return MaterialPageRoute(builder: (_) => const PaymentSuccessPage());
       // case Routes.noConnectionPage:
       //   return MaterialPageRoute(builder: (_) => NoConnectionScreen());
       case Routes.payFailPage:

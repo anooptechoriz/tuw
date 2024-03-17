@@ -25,7 +25,7 @@ Future<bool> getCoupenCodeList(BuildContext context) async {
         headers: {"device-id": provider.deviceId ?? '', "api-token": apiToken});
     if (response.statusCode == 200) {
       var jsonResponse = jsonDecode(response.body);
-      log(response.body);
+      log('coupenresponse:${response.body}');
 
       final coupenCodeData = GetCoupenModel.fromJson(jsonResponse);
       provider.coupenCodeData(coupenCodeData);
@@ -40,22 +40,3 @@ Future<bool> getCoupenCodeList(BuildContext context) async {
   return true;
 }
 
-checkCoupenCode(BuildContext context, code) async {
-  final provider = Provider.of<DataProvider>(context, listen: false);
-  final apiToken = Hive.box("token").get('api_token');
-  if (apiToken == null) return;
-  try {
-    var response = await http.post(Uri.parse('$checkCoupen$code'),
-        headers: {"device-id": provider.deviceId ?? '', "api-token": apiToken});
-    if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
-      log(response.body);
-      if (jsonResponse['result'] == false) {
-        showAnimatedSnackBar(context, jsonResponse['toast']);
-      }
-
-      final coupenCodeData = GetCoupenModel.fromJson(jsonResponse);
-      provider.coupenCodeData(coupenCodeData);
-    } else {}
-  } on Exception catch (_) {}
-}

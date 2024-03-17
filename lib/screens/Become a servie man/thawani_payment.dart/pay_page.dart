@@ -13,6 +13,7 @@ import 'package:social_media_services/components/routes_manager.dart';
 import 'package:social_media_services/components/styles_manager.dart';
 import 'package:social_media_services/providers/data_provider.dart';
 import 'package:social_media_services/responsive/responsive_width.dart';
+import 'package:social_media_services/screens/Become%20a%20servie%20man/payment_successfull_page.dart';
 import 'package:social_media_services/widgets/backbutton.dart';
 import 'package:thawani_payment/class/status.dart';
 import 'package:thawani_payment/thawani_payment.dart';
@@ -55,6 +56,7 @@ class _PayPageState extends State<PayPage> {
   int _selectedIndex = 2;
   @override
   void initState() {
+    print('discountw:${widget.discount}');
     super.initState();
     lang = Hive.box('LocalLan').get(
       'lang',
@@ -375,8 +377,9 @@ class _PayPageState extends State<PayPage> {
                               print(v);
                             },
                             onCancelled: (v) {
+                              // getOrderSuccessData(context, v);
                               print(v.data);
-                              getFail(context, v);
+                               getFail(context, v);
                             },
                             onPaid: (v) {
                               print(v.data);
@@ -403,10 +406,10 @@ class _PayPageState extends State<PayPage> {
         context, provider.placeOrder?.orderId.toString(), 'success', v);
     await viewProfile(context);
 
-    // setState(() {
+    // setState(() {x
     //   isLoading = false;
     // });
-    Navigator.pushNamed(context, Routes.paymentSuccessfull);
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>PaymentSuccessPage(discount:widget.discount.toString())));
   }
 
   getFail(BuildContext context, StatusClass v) async {

@@ -3,12 +3,13 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-
+import 'package:alt_sms_autofill/alt_sms_autofill.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive/hive.dart';
-import 'package:pinput/pinput.dart';
+// import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 import 'package:social_media_services/API/address/getUserAddress.dart';
 import 'package:social_media_services/API/endpoint.dart';
@@ -49,10 +50,14 @@ class _OTPscreenState extends State<OTPscreen> {
   @override
   void initState() {
     super.initState();
-    PhoneNumberControllers.otpCon.text = '';
+    PhoneNumberControllers.otpCon;
     lang = Hive.box('LocalLan').get(
       'lang',
     );
+    //  WidgetsBinding.instance.addPostFrameCallback((timeStamp)async {
+    initSmsListener();
+    // });
+
     print("FCMT : $fcmToken");
   }
 
@@ -107,23 +112,61 @@ class _OTPscreenState extends State<OTPscreen> {
               isRight: lang == 'ar' ? true : false,
               child: Padding(
                 padding: EdgeInsets.fromLTRB(10, h * .03, 10, 0),
-                child: Pinput(
-                  defaultPinTheme: defaultPinTheme,
-                  separator: const SizedBox(
-                    width: 5,
+                child: PinCodeTextField(
+                  backgroundColor: Colors.transparent,
+                  appContext: context,
+                  pastedTextStyle: TextStyle(
+                    color: Colors.green.shade600,
+                    fontWeight: FontWeight.bold,
                   ),
                   length: 6,
+                  obscureText: false,
+                  animationType: AnimationType.fade,
+                  pinTheme: PinTheme.defaults(
+                      borderWidth: 0,
+                      shape: PinCodeFieldShape.box,
+                      borderRadius: BorderRadius.circular(10),
+                      fieldHeight: 50,
+                      fieldWidth: 50,
+                      inactiveFillColor: Colors.white,
+                      inactiveColor: Colors.grey,
+                      selectedColor: Colors.grey,
+                      selectedFillColor: Colors.white,
+                      activeFillColor: Colors.white,
+                      activeColor: Colors.grey),
+                  cursorColor: Colors.black,
+                  animationDuration: Duration(milliseconds: 300),
+                  enableActiveFill: true,
                   controller: PhoneNumberControllers.otpCon,
-                  focusedPinTheme: focusedPinTheme,
-                  // validator: (s) {
-                  //   return s == '2222' ? null : 'Pin is incorrect';
-                  // },
-                  pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
-                  showCursor: true,
-                  onCompleted: (pin) {
+                  keyboardType: TextInputType.number,
+                  onCompleted: (v) {
                     verifyNow();
+                    //do something or move to next screen when code complete
+                  },
+                  onChanged: (value) {
+                    print(value);
+                    setState(() {
+                      print('$value');
+                    });
                   },
                 ),
+                //  Pinput(
+                //   defaultPinTheme: defaultPinTheme,
+                //   separator: const SizedBox(
+                //     width: 5,
+                //   ),
+                //   length: 6,
+                //   controller: PhoneNumberControllers.otpCon,
+                //   focusedPinTheme: focusedPinTheme,
+                //   // validator: (s) {
+                //   //   return s == '2222' ? null : 'Pin is incorrect';
+                //   // },
+                //   pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
+                //   showCursor: true,
+                //   onCompleted: (pin) {
+                //     verifyNow();
+                //   },
+                // ),
               ),
             ),
             FadeSlideCustomAnimation(
@@ -139,15 +182,22 @@ class _OTPscreenState extends State<OTPscreen> {
                             color: const Color(0xff9f9f9f), fontSize: 15)),
                     InkWell(
                       onTap: () async {
-                        getOtp(context, {otpProvider.countryCode},
+                        setState(() {
+                           PhoneNumberControllers.otpCon.text = "";
+                        });
+                       
+                      await  getOtp(context, {otpProvider.countryCode},
                             {otpProvider.phoneNo}, true);
                         setState(() {
                           isResendButtonClicked = true;
                         });
+                        
                         await Future.delayed(const Duration(seconds: 2));
                         setState(() {
                           isResendButtonClicked = false;
+                          
                         });
+                         initSmsListener();
                       },
                       child: isResendButtonClicked
                           ? const SizedBox(
@@ -274,6 +324,36 @@ class _OTPscreenState extends State<OTPscreen> {
     } on Exception catch (_) {
       showSnackBar("Connection Timed Out", context);
     }
+  }
+
+  String _comingSms = 'Unknown';
+
+  Future<void> initSmsListener() async {
+    String? comingSms = "";
+    try {
+      comingSms = await AltSmsAutofill().listenForSms;
+    } on Exception {
+      comingSms = 'Failed to get Sms.';
+    }
+    if (!mounted) return;
+    setState(() {
+      _comingSms = comingSms!;
+      print("====>Message: ${_comingSms}");
+      print("${_comingSms[46]}");
+      PhoneNumberControllers.otpCon.text = _comingSms[45] +
+          _comingSms[46] +
+          _comingSms[47] +
+          _comingSms[48] +
+          _comingSms[49] +
+          _comingSms[50];
+    });
+  }
+
+  @override
+  void dispose() {
+    PhoneNumberControllers.otpCon.dispose();
+    AltSmsAutofill().unregisterListener();
+    super.dispose();
   }
 }
 

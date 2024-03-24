@@ -203,11 +203,35 @@ class _UserAddressUpdateState extends State<UserAddressUpdate> {
                   ),
                   GButton(
                     icon: FontAwesomeIcons.message,
-                    leading: SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: SvgPicture.asset(ImageAssets.chatIconSvg),
-                    ),
+                    leading:Stack(
+                      children: [InkWell(
+                        child: SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: SvgPicture.asset(ImageAssets.chatIconSvg)),
+         
+             ),  Positioned(
+        right: 0,top: 0,
+        child: new Container(
+          padding: EdgeInsets.all(1),
+          decoration: new BoxDecoration(
+            color: Colors.red,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          constraints: BoxConstraints(
+            minWidth: 15,
+            minHeight: 15,
+          ),
+          child:Text(provider.chatListDetails!.chatMessage!.data!.isNotEmpty? 
+              provider.chatListDetails!.chatMessage!.data![0].unreadCount.toString()
+             :'0', style: new TextStyle(
+              color: Colors.white,
+              fontSize: 11,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ) ]),
                   ),
                 ],
                 haptic: true,

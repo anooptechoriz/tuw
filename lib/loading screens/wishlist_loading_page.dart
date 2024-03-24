@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:social_media_services/API/get_favorites.dart';
 import 'package:social_media_services/components/assets_manager.dart';
@@ -14,6 +15,8 @@ import 'package:social_media_services/screens/serviceHome.dart';
 import 'package:social_media_services/screens/wishlist/wishlist.dart';
 import 'package:social_media_services/widgets/custom_drawer.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../providers/data_provider.dart';
 
 class WishList extends StatefulWidget {
   const WishList({super.key});
@@ -45,6 +48,8 @@ class _WishListState extends State<WishList> {
 
   @override
   Widget build(BuildContext context) {
+     final provider = Provider.of<DataProvider>(context, listen: false);
+   
     final size = MediaQuery.of(context).size;
     final str = AppLocalizations.of(context)!;
     return Scaffold();
@@ -115,11 +120,35 @@ class _WishListState extends State<WishList> {
                         );
                       }));
                     },
-                    child: SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: SvgPicture.asset(ImageAssets.chatIconSvg),
-                    ),
+                    child: Stack(
+                      children: [InkWell(
+                        child: SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: SvgPicture.asset(ImageAssets.chatIconSvg)),
+         
+             ),  Positioned(
+        right: 0,top: 0,
+        child: new Container(
+          padding: EdgeInsets.all(1),
+          decoration: new BoxDecoration(
+            color: Colors.red,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          constraints: BoxConstraints(
+            minWidth: 15,
+            minHeight: 15,
+          ),
+          child: Text(provider.chatListDetails!.chatMessage!.data!.isNotEmpty? 
+              provider.chatListDetails!.chatMessage!.data![0].unreadCount.toString()
+             :'0',style: new TextStyle(
+              color: Colors.white,
+              fontSize: 11,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ) ]),
                   ),
                 ),
               ],

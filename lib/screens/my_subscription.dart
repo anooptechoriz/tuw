@@ -39,6 +39,8 @@ class _MySubscriptionPageState extends State<MySubscriptionPage> {
 
   @override
   Widget build(BuildContext context) {
+     final provider = Provider.of<DataProvider>(context, listen: false);
+   
     final subscription = Provider.of<DataProvider>(context, listen: false)
         .activeSubscription
         ?.subscriptions;
@@ -122,11 +124,35 @@ class _MySubscriptionPageState extends State<MySubscriptionPage> {
                             ),
                           ));
                     },
-                    child: SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: SvgPicture.asset(ImageAssets.chatIconSvg)),
-                  ),
+                    child: Stack(
+                      children: [InkWell(
+                        child: SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: SvgPicture.asset(ImageAssets.chatIconSvg)),
+         
+             ),  Positioned(
+        right: 0,top: 0,
+        child: new Container(
+          padding: EdgeInsets.all(1),
+          decoration: new BoxDecoration(
+            color: Colors.red,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          constraints: BoxConstraints(
+            minWidth: 15,
+            minHeight: 15,
+          ),
+          child:Text(provider.chatListDetails!.chatMessage!.data!.isNotEmpty? 
+              provider.chatListDetails!.chatMessage!.data![0].unreadCount.toString()
+             :'0', style: new TextStyle(
+              color: Colors.white,
+              fontSize: 11,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ) ]),       ),
                 ),
               ],
               haptic: true,

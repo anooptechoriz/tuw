@@ -25,7 +25,7 @@ getChatList(BuildContext context) async {
         headers: {"device-id": provider.deviceId ?? '', "api-token": apiToken});
     var jsonResponse = jsonDecode(response.body);
     if (response.statusCode == 200) {
-      log(response.body);
+      print('chatlistresponse:${response.body}');
       bool isLogOut =
           jsonResponse["message"].toString().contains("Please login again");
       if (isLogOut) {
@@ -38,6 +38,7 @@ getChatList(BuildContext context) async {
       log("Something Went Wrong");
     }
   } on Exception catch (e) {
+    print('errr:${e}');
     log("Something Went Wrong1");
     print(e.toString().contains("Failed host lookup"));
   }

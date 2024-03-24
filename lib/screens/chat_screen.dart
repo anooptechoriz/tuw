@@ -1077,8 +1077,12 @@ class _ChatScreenState extends State<ChatScreen> {
 // * Select Image Function
 
   selectImage() async {
+    
     final List<XFile>? images = await _picker.pickMultiImage();
     if (images == null) {
+      setState(() {
+        
+      });
       return;
     }
 
@@ -1150,7 +1154,10 @@ class _ChatScreenState extends State<ChatScreen> {
     await viewChatMessages(context, servicerProvider.servicerId);
 
     if (jsonResponse["result"] == false) {
-      showAnimatedSnackBar(context, jsonResponse["message"]);
+      if (jsonResponse["message"] != null) {
+        showAnimatedSnackBar(context, jsonResponse["message"]);
+      }
+
       setState(() {});
       return;
     }

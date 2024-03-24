@@ -5,7 +5,9 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hive/hive.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
+import 'package:social_media_services/providers/data_provider.dart';
 import 'package:social_media_services/responsive/responsive_width.dart';
 import 'package:social_media_services/components/assets_manager.dart';
 import 'package:social_media_services/components/color_manager.dart';
@@ -55,6 +57,8 @@ class _PaymentFailurePageState extends State<PaymentFailurePage> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<DataProvider>(context, listen: true);
+   
     final size = MediaQuery.of(context).size;
     final str = AppLocalizations.of(context)!;
     final w = MediaQuery.of(context).size.width;
@@ -110,11 +114,36 @@ class _PaymentFailurePageState extends State<PaymentFailurePage> {
                 ),
                 GButton(
                   icon: FontAwesomeIcons.message,
-                  leading: SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: SvgPicture.asset(ImageAssets.chatIconSvg)),
-                ),
+                  leading: Stack(
+                      children: [InkWell(
+                        child: SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: SvgPicture.asset(ImageAssets.chatIconSvg)),
+         
+             ),  Positioned(
+        right: 0,top: 0,
+        child: new Container(
+          padding: EdgeInsets.all(1),
+          decoration: new BoxDecoration(
+            color: Colors.red,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          constraints: BoxConstraints(
+            minWidth: 15,
+            minHeight: 15,
+          ),
+          child:Text(provider.chatListDetails!.chatMessage!.data!.isNotEmpty? 
+              provider.chatListDetails!.chatMessage!.data![0].unreadCount.toString()
+             :'0',
+             style: new TextStyle(
+              color: Colors.white,
+              fontSize: 11,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ) ]),    ),
               ],
               haptic: true,
               selectedIndex: _selectedIndex,

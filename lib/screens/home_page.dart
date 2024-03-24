@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'package:social_media_services/components/assets_manager.dart';
 import 'package:social_media_services/components/color_manager.dart';
 import 'package:social_media_services/responsive/responsive_width.dart';
@@ -11,6 +12,9 @@ import 'package:social_media_services/screens/messagePage.dart';
 
 import 'package:social_media_services/screens/serviceHome.dart';
 import 'package:social_media_services/widgets/custom_drawer.dart';
+
+import '../API/get_chat_list.dart';
+import '../providers/data_provider.dart';
 
 class HomePage extends StatefulWidget {
   final int selectedIndex;
@@ -44,11 +48,19 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+   
     super.initState();
     _selectedIndex = widget.selectedIndex;
     lang = Hive.box('LocalLan').get(
       'lang',
     );
+     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await getChatList(
+        context,
+      );
+  
+    });
+  
   }
 
   @override
@@ -66,6 +78,7 @@ class _HomePageState extends State<HomePage> {
     final w = MediaQuery.of(context).size.width;
     final mobWth = ResponsiveWidth.isMobile(context);
     final smobWth = ResponsiveWidth.issMobile(context);
+    final provider = Provider.of<DataProvider>(context, listen: true);
     return WillPopScope(
       onWillPop: handleBackButton,
       child: Scaffold(
@@ -109,6 +122,7 @@ class _HomePageState extends State<HomePage> {
                 color: ColorManager.black,
                 tabs: [
                   GButton(
+                    
                     // text: ' Home',
                     icon: FontAwesomeIcons.message,
                     leading: SizedBox(
@@ -119,12 +133,36 @@ class _HomePageState extends State<HomePage> {
                   GButton(
                     icon: FontAwesomeIcons.message,
                     // text: ' Chat',
-                    leading: InkWell(
-                      child: SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: SvgPicture.asset(ImageAssets.chatIconSvg)),
-                    ),
+                    leading: Stack(
+                      children: [InkWell(
+                        child: SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: SvgPicture.asset(ImageAssets.chatIconSvg)),
+         
+             ),  Positioned(
+        right: 0,top: 0,
+        child: new Container(
+          padding: EdgeInsets.all(1),
+          decoration: new BoxDecoration(
+            color: Colors.red,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          constraints: BoxConstraints(
+            minWidth: 15,
+            minHeight: 15,
+          ),
+          child:Text(provider.chatListDetails!.chatMessage!.data!.isNotEmpty? 
+              provider.chatListDetails!.chatMessage!.data![0].unreadCount.toString()
+             :'0',
+            style: new TextStyle(
+              color: Colors.white,
+              fontSize: 11,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ) ]),
                   ),
                 ],
                 selectedIndex: _selectedIndex,

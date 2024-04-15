@@ -1,9 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
-import 'package:sms_autofill/sms_autofill.dart';
 import 'package:social_media_services/API/firebase_api.dart';
 import 'package:social_media_services/components/routes_manager.dart';
 import 'package:social_media_services/components/theme_manager.dart';
@@ -20,17 +17,12 @@ import 'package:firebase_core/firebase_core.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-   await FirebaseApi().initNotifications();
+  await FirebaseApi().initNotifications();
   await Hive.initFlutter();
   await Hive.openBox("LocalLan");
   await Hive.openBox("token");
   await Hive.openBox("service");
   await Hive.openBox("regionid");
-  if (Platform.isAndroid) {
-    var f = await SmsAutoFill().getAppSignature;
-    print('sig${f}');
-  }
-
   final GoogleMapsFlutterPlatform mapsImplementation =
       GoogleMapsFlutterPlatform.instance;
   if (mapsImplementation is GoogleMapsFlutterAndroid) {

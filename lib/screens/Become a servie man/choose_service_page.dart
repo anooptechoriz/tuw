@@ -584,7 +584,7 @@ class _ChooseServicePageState extends State<ChooseServicePage> {
                                                                     .pickImage(
                                                               source:
                                                                   ImageSource
-                                                                      .camera,
+                                                                      .camera,maxHeight: 200, maxWidth: 200,
 
                                                               // maxWidth: maxWidth,
                                                               // maxHeight: maxHeight,

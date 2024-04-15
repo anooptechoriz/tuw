@@ -18,6 +18,8 @@ import 'package:social_media_services/loading%20screens/loading_voice_widget.dar
 import 'package:social_media_services/model/view_chat_message_model.dart';
 import 'package:social_media_services/providers/data_provider.dart';
 import 'package:social_media_services/screens/Google%20Map/share_location.dart';
+import 'package:social_media_services/widgets/chat/vedio.dart';
+import 'package:social_media_services/widgets/chat/vedio_load.dart';
 import 'package:social_media_services/widgets/popup_image.dart';
 import 'package:social_media_services/widgets/voice/voice_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -171,275 +173,327 @@ class _CustomChatBubbleState extends State<CustomChatBubble> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  widget.chatMessage?.type == 'image'
+                  widget.chatMessage?.type == 'video'
                       ? widget.chatMessage?.status == 'waiting'
-                          ? ImageLoadingWidget(size: size)
+                          ? VideoLoadingWidget(size: size)
                           : InkWell(
                               onTap: () {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) => PopupImage(
-                                          chatImage:
-                                              "$endPoint${widget.chatMessage?.chatMedia}",
-                                          image: '',
-                                        ),
-                                    barrierDismissible: true);
+                                String videoUrl =
+                                    "$endPoint${widget.chatMessage?.chatMedia}";
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        VideoPlayerScreen(videoUrl: videoUrl),
+                                  ),
+                                );
                               },
                               child: Padding(
                                 padding: const EdgeInsets.fromLTRB(0, 5, 0, 3),
-                                child: SizedBox(
-                                  width: size.width * .6,
-                                  height: 240,
-                                  child: CachedNetworkImage(
-                                    progressIndicatorBuilder:
-                                        (context, url, progress) {
-                                      return const Center(
-                                          child: SizedBox(
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                   Container(color: Colors.black,
+                                      width: size.width * .6,
+                                      height: 240,
+                                      child: VideoPlayerWidget(
+                                          videoUrl:
+                                              "$endPoint${widget.chatMessage?.chatMedia}"),
+                                    ),
+                                    Icon(
+                                      Icons.play_circle_filled,
+                                      size: 48,
+                                      color: Colors.white,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                      : widget.chatMessage?.type == 'image'
+                          ? widget.chatMessage?.status == 'waiting'
+                              ? ImageLoadingWidget(size: size)
+                              : InkWell(
+                                  onTap: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => PopupImage(
+                                        chatImage:
+                                            "$endPoint${widget.chatMessage?.chatMedia}",
+                                        image: '',
+                                      ),
+                                      barrierDismissible: true,
+                                    );
+                                  },
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 5, 0, 3),
+                                    child: SizedBox(
+                                      width: size.width * .6,
+                                      height: 240,
+                                      child: CachedNetworkImage(
+                                        progressIndicatorBuilder:
+                                            (context, url, progress) {
+                                          return const Center(
+                                            child: SizedBox(
                                               width: 45,
                                               height: 45,
                                               child: CircularProgressIndicator(
                                                 strokeWidth: 2,
-                                              )));
-                                    },
-                                    imageUrl:
-                                        "$endPoint${widget.chatMessage?.chatMedia}",
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                            )
-                      : widget.chatMessage?.type == 'audio'
-                          ? widget.chatMessage?.status == 'waiting'
-                              ? const LoadingVoice()
-                              : VoiceWidget(
-                                  path:
-                                      "$endPoint${widget.chatMessage?.chatMedia}",
-                                  seen: isSeen,
-                                  time: time,
-                                  isSendByme: isSendByme,
-                                )
-                          : widget.chatMessage?.type == 'location'
-                              ? widget.chatMessage?.status == 'waiting'
-                                  ? SizedBox(
-                                      height: 140,
-                                      width: size.width * .6,
-                                      child: const Center(
-                                          child: CircularProgressIndicator()),
-                                    )
-                                  : ClipRRect(
-                                      borderRadius: BorderRadius.circular(5),
-                                      child: InkWell(
-                                        onTap: () {
-                                          Navigator.push(context,
-                                              MaterialPageRoute(builder: (ctx) {
-                                            return ShareLocation(
-                                              currentLocator: currentLocator,
-                                            );
-                                          }));
+                                              ),
+                                            ),
+                                          );
                                         },
-                                        child: SizedBox(
+                                        imageUrl:
+                                            "$endPoint${widget.chatMessage?.chatMedia}",
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                          : widget.chatMessage?.type == 'audio'
+                              ? widget.chatMessage?.status == 'waiting'
+                                  ? const LoadingVoice()
+                                  : VoiceWidget(
+                                      path:
+                                          "$endPoint${widget.chatMessage?.chatMedia}",
+                                      seen: isSeen,
+                                      time: time,
+                                      isSendByme: isSendByme,
+                                    )
+                              : widget.chatMessage?.type == 'location'
+                                  ? widget.chatMessage?.status == 'waiting'
+                                      ? SizedBox(
                                           height: 140,
                                           width: size.width * .6,
-                                          child:
-                                              // CachedNetworkImage(
-                                              //     height: 20,
-                                              //     width: 20,
-                                              //     imageUrl:
-                                              //         "https://www.pngall.com/wp-content/uploads/5/Google-Maps-Location-Mark.png")
-                                              GoogleMap(
-                                            liteModeEnabled: false,
-                                            mapType: MapType.satellite,
-                                            onTap: (argyment) {
-                                              openGoogleMaps(
-                                                  currentLocator.latitude,
-                                                  currentLocator.longitude);
-
-                                              // *** with url *
-                                              // openGoogleMapsUrl(
-                                              //     currentLocator.latitude,
-                                              //     currentLocator.longitude);
-                                              //previous
-                                              // Navigator.push(context,
-                                              //     MaterialPageRoute(
-                                              //         builder: (ctx) {
-                                              //   return ShareLocation(
-                                              //     currentLocator:
-                                              //         currentLocator,
-                                              //   );
-                                              // }));
-                                            },
-                                            // myLocationEnabled: true,
-                                            zoomControlsEnabled: false,
-                                            // zoomGesturesEnabled: false,
-                                            onMapCreated: (controller) {
-                                              setState(() {
-                                                mapController = controller;
-                                              });
-                                            },
-                                            initialCameraPosition:
-                                                CameraPosition(
-                                              target: currentLocator,
-                                              zoom: 15.0,
-                                            ),
-                                            markers: <Marker>{
-                                              Marker(
-                                                  markerId: const MarkerId(''),
-                                                  position: currentLocator
-                                                  // infoWindow: const InfoWindow(
-                                                  //   title: 'Home locator',
-                                                  //   snippet: '*',
-                                                  // ),
-                                                  ),
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                              : widget.chatMessage?.type == 'address_card'
-                                  ? InkWell(
-                                      onTap: () {
-                                        final addressId = widget
-                                            .chatMessage?.addressId
-                                            .toString();
-                                        Navigator.push(context,
-                                            MaterialPageRoute(builder: (ctx) {
-                                          return UserAddressCardLoading(
-                                            id: widget.chatMessage!.senderId
-                                                .toString(),
-                                            addressId: addressId,
-                                          );
-                                        }));
-                                        print(addressId);
-                                      },
-                                      child: Column(
-                                        children: [
-                                          SizedBox(
-                                            width: size.width * .6,
-                                            height: 240,
-                                            child: CachedNetworkImage(
-                                              imageUrl:
-                                                  "$endPoint${widget.chatMessage?.addressImage}",
-                                              fit: BoxFit.cover,
-                                              // placeholder: (context, url) {
-                                              //   return const Center(
-                                              //     child: SizedBox(
-                                              //         width: 30,
-                                              //         height: 30,
-                                              //         child:
-                                              //             CircularProgressIndicator(
-                                              //           strokeWidth: 1,
-                                              //         )),
-                                              //   );
-                                              // },
-                                              progressIndicatorBuilder:
-                                                  (context, url, progress) {
-                                                return const Center(
-                                                    child: SizedBox(
-                                                        width: 45,
-                                                        height: 45,
-                                                        child:
-                                                            CircularProgressIndicator(
-                                                          strokeWidth: 2,
-                                                        )));
-                                              },
-                                              // imageBuilder:
-                                              //     (context, imageProvider) =>
-                                              //         Container(
-                                              //   width: 25,
-                                              //   height: 20,
-                                              //   decoration: BoxDecoration(
-                                              //     // shape: BoxShape.circle,
-                                              //     image: DecorationImage(
-                                              //         image: imageProvider,
-                                              //         fit: BoxFit.cover),
-                                              //   ),
-                                              // ),
-                                              errorWidget:
-                                                  (context, url, error) {
-                                                return Center(
-                                                  child: lang == 'ar'
-                                                      ? Text(
-                                                          "لا توجد صورة لعرضها")
-                                                      : lang == 'hi'
-                                                          ? Text(
-                                                              "प्रदर्शित करने के लिए कोई छवि नहीं")
-                                                          : Text(
-                                                              "No Image to display"),
+                                          child: const Center(
+                                              child:
+                                                  CircularProgressIndicator()),
+                                        )
+                                      : ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          child: InkWell(
+                                            onTap: () {
+                                              Navigator.push(context,
+                                                  MaterialPageRoute(
+                                                      builder: (ctx) {
+                                                return ShareLocation(
+                                                  currentLocator:
+                                                      currentLocator,
                                                 );
-                                              },
+                                              }));
+                                            },
+                                            child: SizedBox(
+                                              height: 140,
+                                              width: size.width * .6,
+                                              child:
+                                                  // CachedNetworkImage(
+                                                  //     height: 20,
+                                                  //     width: 20,
+                                                  //     imageUrl:
+                                                  //         "https://www.pngall.com/wp-content/uploads/5/Google-Maps-Location-Mark.png")
+                                                  GoogleMap(
+                                                liteModeEnabled: false,
+                                                mapType: MapType.satellite,
+                                                onTap: (argyment) {
+                                                  openGoogleMaps(
+                                                      currentLocator.latitude,
+                                                      currentLocator.longitude);
+
+                                                  // *** with url *
+                                                  // openGoogleMapsUrl(
+                                                  //     currentLocator.latitude,
+                                                  //     currentLocator.longitude);
+                                                  //previous
+                                                  // Navigator.push(context,
+                                                  //     MaterialPageRoute(
+                                                  //         builder: (ctx) {
+                                                  //   return ShareLocation(
+                                                  //     currentLocator:
+                                                  //         currentLocator,
+                                                  //   );
+                                                  // }));
+                                                },
+                                                // myLocationEnabled: true,
+                                                zoomControlsEnabled: false,
+                                                // zoomGesturesEnabled: false,
+                                                onMapCreated: (controller) {
+                                                  setState(() {
+                                                    mapController = controller;
+                                                  });
+                                                },
+                                                initialCameraPosition:
+                                                    CameraPosition(
+                                                  target: currentLocator,
+                                                  zoom: 15.0,
+                                                ),
+                                                markers: <Marker>{
+                                                  Marker(
+                                                      markerId:
+                                                          const MarkerId(''),
+                                                      position: currentLocator
+                                                      // infoWindow: const InfoWindow(
+                                                      //   title: 'Home locator',
+                                                      //   snippet: '*',
+                                                      // ),
+                                                      ),
+                                                },
+                                              ),
                                             ),
                                           ),
-                                          Text(
-                                            widget.chatMessage?.message ?? '',
-                                            style: getRegularStyle(
-                                                color: ColorManager.primary3,
-                                                fontSize: 14),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  : widget.chatMessage?.type == 'document'
-                                      ? widget.chatMessage?.status == 'waiting'
-                                          ? SizedBox(
-                                              height: size.height * .2,
-                                              width: size.width * .3,
-                                              child: const Center(
-                                                child:
-                                                    CircularProgressIndicator(),
-                                              ))
-                                          : InkWell(
-                                              onTap: () {
-                                                final url = Uri.parse(
-                                                    "$endPoint${widget.chatMessage?.chatMedia}");
-                                                print(url);
-                                                launchUrl(url,
-                                                    mode: LaunchMode
-                                                        .externalApplication);
-                                              },
-                                              child: Container(
-                                                height: size.height * .2,
-                                                width: size.width * .3,
-                                                decoration: BoxDecoration(
-                                                    color: isSendByme
-                                                        ? ColorManager.chatGreen
-                                                        : ColorManager
-                                                            .background,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10)),
-                                                child: Center(
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      CachedNetworkImage(
-                                                        imageUrl: isPdf
-                                                            ? pdfImage
-                                                            : documentImage,
-                                                        fit: BoxFit.cover,
-                                                        height:
-                                                            size.height * .18,
-                                                      ),
-                                                      const Spacer(),
-                                                      Text(
-                                                        "${widget.chatMessage?.uploads}",
-                                                        style: getRegularStyle(
-                                                            color: ColorManager
-                                                                .black,
-                                                            fontSize: 8),
-                                                      ),
-                                                    ],
-                                                  ),
+                                        )
+                                  : widget.chatMessage?.type == 'address_card'
+                                      ? InkWell(
+                                          onTap: () {
+                                            final addressId = widget
+                                                .chatMessage?.addressId
+                                                .toString();
+                                            Navigator.push(context,
+                                                MaterialPageRoute(
+                                                    builder: (ctx) {
+                                              return UserAddressCardLoading(
+                                                id: widget.chatMessage!.senderId
+                                                    .toString(),
+                                                addressId: addressId,
+                                              );
+                                            }));
+                                            print(addressId);
+                                          },
+                                          child: Column(
+                                            children: [
+                                              SizedBox(
+                                                width: size.width * .6,
+                                                height: 240,
+                                                child: CachedNetworkImage(
+                                                  imageUrl:
+                                                      "$endPoint${widget.chatMessage?.addressImage}",
+                                                  fit: BoxFit.cover,
+                                                  // placeholder: (context, url) {
+                                                  //   return const Center(
+                                                  //     child: SizedBox(
+                                                  //         width: 30,
+                                                  //         height: 30,
+                                                  //         child:
+                                                  //             CircularProgressIndicator(
+                                                  //           strokeWidth: 1,
+                                                  //         )),
+                                                  //   );
+                                                  // },
+                                                  progressIndicatorBuilder:
+                                                      (context, url, progress) {
+                                                    return const Center(
+                                                        child: SizedBox(
+                                                            width: 45,
+                                                            height: 45,
+                                                            child:
+                                                                CircularProgressIndicator(
+                                                              strokeWidth: 2,
+                                                            )));
+                                                  },
+                                                  // imageBuilder:
+                                                  //     (context, imageProvider) =>
+                                                  //         Container(
+                                                  //   width: 25,
+                                                  //   height: 20,
+                                                  //   decoration: BoxDecoration(
+                                                  //     // shape: BoxShape.circle,
+                                                  //     image: DecorationImage(
+                                                  //         image: imageProvider,
+                                                  //         fit: BoxFit.cover),
+                                                  //   ),
+                                                  // ),
+                                                  errorWidget:
+                                                      (context, url, error) {
+                                                    return Center(
+                                                      child: lang == 'ar'
+                                                          ? Text(
+                                                              "لا توجد صورة لعرضها")
+                                                          : lang == 'hi'
+                                                              ? Text(
+                                                                  "प्रदर्शित करने के लिए कोई छवि नहीं")
+                                                              : Text(
+                                                                  "No Image to display"),
+                                                    );
+                                                  },
                                                 ),
                                               ),
-                                            )
-                                      : Text(
-                                          widget.chatMessage?.message ?? '',
-                                          style: getRegularStyle(
-                                              color: ColorManager.black,
-                                              fontSize: 14),
-                                        ),
+                                              Text(
+                                                widget.chatMessage?.message ??
+                                                    '',
+                                                style: getRegularStyle(
+                                                    color:
+                                                        ColorManager.primary3,
+                                                    fontSize: 14),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      : widget.chatMessage?.type == 'document'
+                                          ? widget.chatMessage?.status ==
+                                                  'waiting'
+                                              ? SizedBox(
+                                                  height: size.height * .2,
+                                                  width: size.width * .3,
+                                                  child: const Center(
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  ))
+                                              : InkWell(
+                                                  onTap: () {
+                                                    final url = Uri.parse(
+                                                        "$endPoint${widget.chatMessage?.chatMedia}");
+                                                    print(url);
+                                                    launchUrl(url,
+                                                        mode: LaunchMode
+                                                            .externalApplication);
+                                                  },
+                                                  child: Container(
+                                                    height: size.height * .2,
+                                                    width: size.width * .3,
+                                                    decoration: BoxDecoration(
+                                                        color: isSendByme
+                                                            ? ColorManager
+                                                                .chatGreen
+                                                            : ColorManager
+                                                                .background,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10)),
+                                                    child: Center(
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          CachedNetworkImage(
+                                                            imageUrl: isPdf
+                                                                ? pdfImage
+                                                                : documentImage,
+                                                            fit: BoxFit.cover,
+                                                            height:
+                                                                size.height *
+                                                                    .18,
+                                                          ),
+                                                          const Spacer(),
+                                                          Text(
+                                                            "${widget.chatMessage?.uploads}",
+                                                            style: getRegularStyle(
+                                                                color:
+                                                                    ColorManager
+                                                                        .black,
+                                                                fontSize: 8),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                          : Text(
+                                              widget.chatMessage?.message ?? '',
+                                              style: getRegularStyle(
+                                                  color: ColorManager.black,
+                                                  fontSize: 14),
+                                            ),
                   widget.chatMessage?.type != 'audio'
                       ? Padding(
                           padding: const EdgeInsets.fromLTRB(0, 2, 0, 0),

@@ -152,7 +152,7 @@ class _HomePageState extends State<HomePage> {
             minWidth: 15,
             minHeight: 15,
           ),
-          child:Text(provider.chatListDetails!.chatMessage!.data!.isNotEmpty? 
+          child:(provider.chatListDetails!=null)? Text( provider.chatListDetails!.chatMessage!.data!.isNotEmpty? 
               provider.chatListDetails!.chatMessage!.data![0].unreadCount.toString()
              :'0',
             style: new TextStyle(
@@ -160,7 +160,7 @@ class _HomePageState extends State<HomePage> {
               fontSize: 11,
             ),
             textAlign: TextAlign.center,
-          ),
+          ):Text('0',textAlign: TextAlign.center),
         ),
       ) ]),
                   ),

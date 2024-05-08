@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -130,7 +131,7 @@ class _ServiceHomePageState extends State<ServiceHomePage> {
     final provider = Provider.of<DataProvider>(context, listen: true);
     final servicerProvider =
         Provider.of<ServicerProvider>(context, listen: false);
-    final homeData = provider.homeModel?.services;
+    final homeData = provider.homeModel?.services ?? [];
 
     return BackButtonHandler(
       child: Scaffold(
@@ -294,69 +295,70 @@ class _ServiceHomePageState extends State<ServiceHomePage> {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(8, 10, 8, 20),
                         child: GridView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                SliverGridDelegateWithMaxCrossAxisExtent(
-                                    maxCrossAxisExtent: mob ? 130 : 100,
-                                    childAspectRatio: 3 / 3,
-                                    crossAxisSpacing: 14,
-                                    mainAxisExtent: mob ? 123 : 100,
-                                    mainAxisSpacing: 20),
-                            itemCount: homeData?.length ?? 0,
-                            itemBuilder: (BuildContext ctx, index) {
-                              return InkWell(
-                                onTap: () {
-                                  Hive.box('service').put('service',
-                                      homeData![index].service.toString());
-                                  Navigator.push(context,
-                                      FadePageRoute(page: LoadingListPage()));
-                                  final id = homeData[index].id;
-                                  servicerProvider.serviceId = id;
-                                  getSubService(
-                                      context, id, false, homeData[index]);
-                                  print("$endPoint${homeData[index].image}");
-                                },
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                      boxShadow: [
-                                        BoxShadow(
-                                          blurRadius: 10.0,
-                                          color: Colors.grey.shade300,
-                                          offset: const Offset(2, 2.5),
-                                        ),
-                                      ],
-                                      color: ColorManager.whiteColor,
-                                      borderRadius: BorderRadius.circular(5)),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      SizedBox(
-                                          width: mob ? 70.0 : 50,
-                                          height: mob ? 70.0 : 50,
-                                          child: SvgPicture.network(
-                                            '$endPoint${homeData?[index].image}',
-                                            color: ColorManager.primary2,
-                                          )),
-                                      Text(homeData![index].service ?? '',
-                                          textAlign: TextAlign.center,
-                                          style: getRegularStyle(
-                                              color:
-                                                  ColorManager.serviceHomeGrey,
-                                              fontSize: homeData[index]
-                                                          .service!
-                                                          .length >
-                                                      13
-                                                  ? 10
-                                                  : 12)),
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate:
+                              SliverGridDelegateWithMaxCrossAxisExtent(
+                                  maxCrossAxisExtent: mob ? 130 : 100,
+                                  childAspectRatio: 3 / 3,
+                                  crossAxisSpacing: 14,
+                                  mainAxisExtent: mob ? 123 : 100,
+                                  mainAxisSpacing: 20),
+                          itemCount: homeData?.length ?? 0,
+                          itemBuilder: (BuildContext ctx, index) {
+                            return InkWell(
+                              onTap: () {
+                                Hive.box('service').put('service',
+                                    homeData[index].service.toString());
+                                Navigator.push(context,
+                                    FadePageRoute(page: LoadingListPage()));
+                                final id = homeData[index].id;
+                                servicerProvider.serviceId = id;
+                                getSubService(
+                                    context, id, false, homeData[index]);
+                                log("$endPoint${homeData[index].image}");
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                        blurRadius: 10.0,
+                                        color: Colors.grey.shade300,
+                                        offset: const Offset(2, 2.5),
+                                      ),
                                     ],
-                                  ),
+                                    color: ColorManager.whiteColor,
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      width: mob ? 70.0 : 50,
+                                      height: mob ? 70.0 : 50,
+                                      child: SvgPicture.network(
+                                        '$endPoint${homeData[index].image}',
+                                        color: ColorManager.primary2,
+                                      ),
+                                    ),
+                                    Text(
+                                      homeData[index].service ?? '',
+                                      textAlign: TextAlign.center,
+                                      style: getRegularStyle(
+                                        color: ColorManager.serviceHomeGrey,
+                                        fontSize:
+                                            homeData[index].service!.length > 13
+                                                ? 10
+                                                : 12,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              );
-                            }),
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),

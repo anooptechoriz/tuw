@@ -32,11 +32,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
   void initState() {
     super.initState();
     apiToken = Hive.box("token").get('api_token');
-    lang = Hive.box('LocalLan').get(
-      'lang',
-    );
-    print(lang);
-    print("___________");
+    lang = Hive.box('LocalLan').get('lang');
   }
 
   @override
@@ -44,124 +40,144 @@ class _CustomDrawerState extends State<CustomDrawer> {
     final str = AppLocalizations.of(context)!;
     final provider = Provider.of<DataProvider>(context, listen: false);
 
-    return Container(
-        decoration: BoxDecoration(
-          color: ColorManager.primary3,
-          borderRadius: lang == 'ar'
-              ? const BorderRadius.only(
-                  topRight: Radius.circular(8), bottomRight: Radius.circular(8))
-              : const BorderRadius.only(
-                  topLeft: Radius.circular(8), bottomLeft: Radius.circular(8)),
-        ),
-        // margin: const EdgeInsets.all(0.0),
-        // padding: const EdgeInsets.all(0.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: apiToken == null
-              ? [
-                  CustomDrawerList(
-                    title: str.d_become,
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, Routes.phoneNumber);
-                    },
-                  ),
-                  CustomDrawerList(
-                    title: str.d_privacy,
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, Routes.privacyPolicy);
-                    },
-                  ),
-                  CustomDrawerList(
-                    title: str.t_2,
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, Routes.termsAndConditions);
-                    },
-                  ),
-                ]
-              : [
-                  CustomDrawerList(
-                      title: str.d_my_profile,
-                      onTap: () {
-                        Navigator.pop(context);
-                        // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-                        //   builder: (context) {
-                        //     return const ProfilePage();
-                        //   },
-                        // ), (route) => false);
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (ctx) {
-                          return const ProfilePage();
-                        }));
-                      }),
-                  CustomDrawerList(
-                    title: str.d_address,
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.push(context, MaterialPageRoute(builder: (ctx) {
-                        return const AddressPage();
-                      }));
-                    },
-                  ),
-                  CustomDrawerList(
-                    title: provider.viewProfileModel?.userdetails?.userType ==
-                            'customer'
-                        ? str.d_become
-                        : str.d_add_service,
-                    onTap: becomeService,
-                  ),
-                  CustomDrawerList(
-                    title: str.d_privacy,
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, Routes.privacyPolicy);
-                    },
-                  ),
-                  CustomDrawerList(
-                    title: str.t_2,
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, Routes.termsAndConditions);
-                    },
-                  ),
-                  CustomDrawerList(
-                    title: str.pp_settings,
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.push(context, MaterialPageRoute(builder: (ctx) {
-                        return SelectLanguageScreen();
-                      }));
-                    },
-                  ),
-                  isDeletionloading
-                      ? Container(
-                          alignment: Alignment.topCenter,
-                          margin: const EdgeInsets.all(10),
-                          child: const LinearProgressIndicator(
-                              // value: 0.7,
-                              ))
-                      : CustomDrawerList(
-                          title: str.delete_account,
-                          onTap: deleteAccount,
-                        ),
-                  loading
-                      ? Container(
-                          alignment: Alignment.topCenter,
-                          margin: const EdgeInsets.all(10),
-                          child: const LinearProgressIndicator(
-                              // value: 0.7,
-                              ))
-                      : CustomDrawerList(
-                          title: str.d_logout,
-                          onTap: logOUtFunction,
-                        ),
-                  // const SizedBox(
-                  //   height: 150,
-                  // )
-                ],
-        ));
+    return Padding(
+      padding: EdgeInsets.only(left: 80),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Expanded(
+            child: Container(
+                decoration: BoxDecoration(
+                  color: ColorManager.primary3,
+                  borderRadius: lang == 'ar'
+                      ? const BorderRadius.only(
+                          topRight: Radius.circular(8),
+                          bottomRight: Radius.circular(8))
+                      : const BorderRadius.only(
+                          topLeft: Radius.circular(8),
+                          bottomLeft: Radius.circular(8)),
+                ),
+                // margin: const EdgeInsets.all(0.0),
+                padding: const EdgeInsets.only(right: 15),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: apiToken == null
+                      ? [
+                          CustomDrawerList(
+                            title: str.d_become,
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.pushNamed(context, Routes.phoneNumber);
+                            },
+                          ),
+                          CustomDrawerList(
+                            title: str.d_privacy,
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.pushNamed(
+                                  context, Routes.privacyPolicy);
+                            },
+                          ),
+                          CustomDrawerList(
+                            title: str.t_2,
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.pushNamed(
+                                  context, Routes.termsAndConditions);
+                            },
+                          ),
+                        ]
+                      : [
+                          CustomDrawerList(
+                              title: str.d_my_profile,
+                              onTap: () {
+                                Navigator.pop(context);
+                                // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                                //   builder: (context) {
+                                //     return const ProfilePage();
+                                //   },
+                                // ), (route) => false);
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (ctx) {
+                                  return const ProfilePage();
+                                }));
+                              }),
+                          CustomDrawerList(
+                            title: str.d_address,
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (ctx) {
+                                return const AddressPage();
+                              }));
+                            },
+                          ),
+                          CustomDrawerList(
+                            title: provider.viewProfileModel?.userdetails
+                                        ?.userType ==
+                                    'customer'
+                                ? str.d_become
+                                : str.d_add_service,
+                            onTap: becomeService,
+                          ),
+                          CustomDrawerList(
+                            title: str.d_privacy,
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.pushNamed(
+                                  context, Routes.privacyPolicy);
+                            },
+                          ),
+                          CustomDrawerList(
+                            title: str.t_2,
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.pushNamed(
+                                  context, Routes.termsAndConditions);
+                            },
+                          ),
+                          CustomDrawerList(
+                            title: str.pp_settings,
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (ctx) {
+                                return SelectLanguageScreen();
+                              }));
+                            },
+                          ),
+                          isDeletionloading
+                              ? Container(
+                                  alignment: Alignment.topCenter,
+                                  margin: const EdgeInsets.all(10),
+                                  child: const LinearProgressIndicator(
+                                      // value: 0.7,
+                                      ))
+                              : CustomDrawerList(
+                                  title: str.delete_account,
+                                  onTap: deleteAccount,
+                                ),
+                          loading
+                              ? Container(
+                                  alignment: Alignment.topCenter,
+                                  margin: const EdgeInsets.all(10),
+                                  child: const LinearProgressIndicator(
+                                      // value: 0.7,
+                                      ))
+                              : CustomDrawerList(
+                                  title: str.d_logout,
+                                  onTap: logOUtFunction,
+                                ),
+                          // const SizedBox(
+                          //   height: 150,
+                          // )
+                        ],
+                )),
+          ),
+        ],
+      ),
+    );
   }
 
   deleteAccount() async {

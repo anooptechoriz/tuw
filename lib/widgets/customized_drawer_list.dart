@@ -15,22 +15,15 @@ class CustomDrawerList extends StatelessWidget {
       color: ColorManager.primary3,
       child: InkWell(
         splashColor: ColorManager.whiteColor,
-        // hoverColor: ColorManager.whiteColor,
-        // customBorder: const CircleBorder(),
         enableFeedback: true,
         excludeFromSemantics: true,
         onTap: onTap,
-        child: SizedBox(
-          // decoration: BoxDecoration(
-          //     color: ColorManager.whiteColor,
-          //     border: Border.all(color: ColorManager.black)),
-          height: 35,
-          child: Center(
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 8),
             child: Row(
               children: [
-                const SizedBox(
-                  width: 15,
-                ),
+                const SizedBox(width: 15),
                 Text(
                   String.fromCharCode(Icons.arrow_forward_ios.codePoint),
                   style: TextStyle(
@@ -42,13 +35,17 @@ class CustomDrawerList extends StatelessWidget {
                     package: Icons.arrow_forward_ios.fontPackage,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 3),
-                  child: Text(
-                    title,
-                    style: getBoldtStyle(
-                        color: ColorManager.black,
-                        fontSize: Responsive.isMobile(context) ? 16 : 13),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 3),
+                    child: Text(
+                      title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: getBoldtStyle(
+                          color: ColorManager.black,
+                          fontSize: Responsive.isMobile(context) ? 16 : 13),
+                    ),
                   ),
                 ),
               ],

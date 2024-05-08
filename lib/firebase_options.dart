@@ -26,10 +26,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -59,4 +56,14 @@ class DefaultFirebaseOptions {
     projectId: 'tuwapp-eb272',
     storageBucket: 'tuwapp-eb272.appspot.com',
   );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyCX-qgcBZropNh_vk9xEV4qk_gMpEtFRpw',
+    appId: '1:327206873471:ios:38d6d049773c8fc32f124a',
+    messagingSenderId: '327206873471',
+    projectId: 'tuwapp-eb272',
+    storageBucket: 'tuwapp-eb272.appspot.com',
+    iosBundleId: 'com.tuwconnect.servises',
+  );
+
 }

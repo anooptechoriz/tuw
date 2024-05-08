@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -110,6 +111,7 @@ class DataProvider with ChangeNotifier {
 
   void subServicesModelData(value) {
     subServicesModel = value;
+    log('subServicesModel--------${subServicesModel?.message}');
     notifyListeners();
   }
 

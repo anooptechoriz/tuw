@@ -28,6 +28,8 @@ import 'package:social_media_services/widgets/report_user_diologue.dart';
 import 'package:social_media_services/widgets/scrollable_pop.dart';
 import 'package:social_media_services/widgets/top_logo.dart';
 
+import '../../model/chat_list.dart';
+
 class ServiceManDetails extends StatefulWidget {
   GlobalKey<ScaffoldState>? scaffoldKey;
   Serviceman? serviceman;
@@ -65,6 +67,14 @@ class _ServiceManDetailsState extends State<ServiceManDetails> {
       transport = userData.transport!.contains('four') ? str.s_four : str.s_two;
     }
     print(userData?.profilePic);
+    ChatListModel? chatListDetails = provider.chatListDetails;
+    ChatMessage? chatMessage = chatListDetails?.chatMessage;
+    List<MessageData> data = chatMessage?.data ?? [];
+    String unreadCount = '0';
+    if (data.isNotEmpty) {
+      unreadCount = data.first.unreadCount.toString();
+    }
+
     return Scaffold(
       drawerEnableOpenDragGesture: false,
       endDrawer: SizedBox(
@@ -140,35 +150,37 @@ class _ServiceManDetailsState extends State<ServiceManDetails> {
                             ),
                           ));
                     },
-                    child: Stack(
-                      children: [InkWell(
+                    child: Stack(children: [
+                      InkWell(
                         child: SizedBox(
                             width: 24,
                             height: 24,
                             child: SvgPicture.asset(ImageAssets.chatIconSvg)),
-         
-             ),  Positioned(
-        right: 0,top: 0,
-        child: new Container(
-          padding: EdgeInsets.all(1),
-          decoration: new BoxDecoration(
-            color: Colors.red,
-            borderRadius: BorderRadius.circular(6),
-          ),
-          constraints: BoxConstraints(
-            minWidth: 15,
-            minHeight: 15,
-          ),
-          child:Text(provider.chatListDetails!.chatMessage!.data!.isNotEmpty? 
-              provider.chatListDetails!.chatMessage!.data![0].unreadCount.toString()
-             :'0', style: new TextStyle(
-              color: Colors.white,
-              fontSize: 11,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ) ]),
+                      ),
+                      Positioned(
+                        right: 0,
+                        top: 0,
+                        child: new Container(
+                          padding: EdgeInsets.all(1),
+                          decoration: new BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          constraints: BoxConstraints(
+                            minWidth: 15,
+                            minHeight: 15,
+                          ),
+                          child: Text(
+                            unreadCount,
+                            style: new TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      )
+                    ]),
                   ),
                 ),
               ],

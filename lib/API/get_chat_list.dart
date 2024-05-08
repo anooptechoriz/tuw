@@ -13,7 +13,6 @@ import 'package:social_media_services/providers/data_provider.dart';
 import 'package:social_media_services/utils/initPlatformState.dart';
 
 getChatList(BuildContext context) async {
-  log("message list api");
   final provider = Provider.of<DataProvider>(context, listen: false);
   // provider.subServicesModel = null;
   final apiToken = Hive.box("token").get('api_token');
@@ -23,6 +22,8 @@ getChatList(BuildContext context) async {
     var response = await http.post(
         Uri.parse('$api/chat-list?page=1&language_id=$lanId'),
         headers: {"device-id": provider.deviceId ?? '', "api-token": apiToken});
+    log("getChatList-------${response.body}");
+
     var jsonResponse = jsonDecode(response.body);
     if (response.statusCode == 200) {
       print('chatlistresponse:${response.body}');

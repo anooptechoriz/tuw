@@ -22,6 +22,8 @@ import 'package:social_media_services/loading%20screens/loading_page.dart';
 import 'package:social_media_services/widgets/backbutton.dart';
 import 'package:social_media_services/widgets/custom_drawer.dart';
 
+import '../model/chat_list.dart';
+
 class SubServicesPage extends StatefulWidget {
   const SubServicesPage({Key? key, required this.homeService})
       : super(key: key);
@@ -55,6 +57,15 @@ class _SubServicesPageState extends State<SubServicesPage> {
     final w = MediaQuery.of(context).size.width;
     final mobWth = ResponsiveWidth.isMobile(context);
     final smobWth = ResponsiveWidth.issMobile(context);
+    ChatListModel? chatListDetails = provider.chatListDetails;
+    ChatMessage? chatMessage = chatListDetails?.chatMessage;
+    List<MessageData> data = chatMessage?.data ?? [];
+    // String unreadCount = (data.isEmpty ? data[0].unreadCount : 0).toString();
+    int unreadCount = data
+            .firstWhere((element) => element.id != null,
+                orElse: () => MessageData())
+            .unreadCount ??
+        0;
     return Scaffold(
       drawerEnableOpenDragGesture: false,
       endDrawer: SizedBox(
@@ -117,42 +128,47 @@ class _SubServicesPageState extends State<SubServicesPage> {
                   leading: InkWell(
                     onTap: () {
                       Navigator.pop(context);
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (ctx) {
-                        return const HomePage(
-                          selectedIndex: 1,
-                        );
-                      }));
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (ctx) {
+                            return const HomePage(selectedIndex: 1);
+                          },
+                        ),
+                      );
                     },
-                    child:Stack(
-                      children: [InkWell(
-                        child: SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: SvgPicture.asset(ImageAssets.chatIconSvg)),
-         
-             ),  Positioned(
-        right: 0,top: 0,
-        child: new Container(
-          padding: EdgeInsets.all(1),
-          decoration: new BoxDecoration(
-            color: Colors.red,
-            borderRadius: BorderRadius.circular(6),
-          ),
-          constraints: BoxConstraints(
-            minWidth: 15,
-            minHeight: 15,
-          ),
-          child:Text(provider.chatListDetails!.chatMessage!.data!.isNotEmpty? 
-              provider.chatListDetails!.chatMessage!.data![0].unreadCount.toString()
-             :'0',style: new TextStyle(
-              color: Colors.white,
-              fontSize: 11,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ) ]),  ),
+                    child: Stack(
+                      children: [
+                        InkWell(
+                          child: SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: SvgPicture.asset(ImageAssets.chatIconSvg)),
+                        ),
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: new Container(
+                            padding: EdgeInsets.all(1),
+                            decoration: new BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            constraints: BoxConstraints(
+                              minWidth: 15,
+                              minHeight: 15,
+                            ),
+                            child: Text(
+                              unreadCount.toString(),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 11),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
               selectedIndex: _selectedIndex,
@@ -269,7 +285,9 @@ class _SubServicesPageState extends State<SubServicesPage> {
                                     style: getRegularStyle(
                                         color: ColorManager.serviceHomeGrey,
                                         fontSize:
-                                            homeData[index].service!.length > 13
+                                            (homeData[index].service?.length ??
+                                                        0) >
+                                                    13
                                                 ? 10
                                                 : 12)),
                               ],

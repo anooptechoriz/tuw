@@ -35,13 +35,10 @@ class _ServiceManDetailsState extends State<ProfileLoading> {
           widget.serviceId ?? widget.serviceman?.data
             ?..toString());
       Navigator.pushReplacement(
-        context,
-        PageTransition(
-            type: PageTransitionType.bottomToTop,
-            child: ServiceManDetails(
-              serviceman: widget.serviceman,
-            )),
-      );
+          context,
+          PageTransition(
+              type: PageTransitionType.bottomToTop,
+              child: ServiceManDetails(serviceman: widget.serviceman)));
     });
   }
 

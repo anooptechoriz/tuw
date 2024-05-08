@@ -17,7 +17,7 @@ import 'package:social_media_services/screens/sub_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 getSubService(BuildContext context, id, bool changeLan, homeService) async {
-  print('1');
+  log('1');
   final provider = Provider.of<DataProvider>(context, listen: false);
   // provider.subServicesModel = null;
   String? apiToken = Hive.box("token").get('api_token');
@@ -31,6 +31,7 @@ getSubService(BuildContext context, id, bool changeLan, homeService) async {
     var response = await http.post(
         Uri.parse('$subServices?parent_service_id=$id&language_id=$lanId'),
         headers: {"device-id": provider.deviceId ?? '', "api-token": apiToken});
+    log(response.request.toString());
     if (response.statusCode == 200) {
       var jsonResponse = jsonDecode(response.body);
       log(response.body);
@@ -46,26 +47,19 @@ getSubService(BuildContext context, id, bool changeLan, homeService) async {
         selectServiceType(context, id, jsonResponse, homeService);
       }
     } else {
-      // print(response.statusCode);
-      // print(response.body);
       // print('Something went wrong');
     }
   } on Exception catch (_) {}
 }
 
 selectServiceType(context, id, jsonResponse, homeService) async {
-  print(id);
   final provider = Provider.of<DataProvider>(context, listen: false);
-  final str = AppLocalizations.of(context)!;
   if (jsonResponse['type'] == 'service') {
     final subServicesData = SubServicesModel.fromJson(jsonResponse);
+    log('homeService------${homeService}');
     provider.subServicesModelData(subServicesData);
-    Navigator.pushReplacement(
-        context,
-        FadePageRoute(
-            page: SubServicesPage(
-          homeService: homeService,
-        )));
+    Navigator.pushReplacement(context,
+        FadePageRoute(page: SubServicesPage(homeService: homeService)));
   }
   //  else if (provider.viewProfileModel?.userdetails?.latitude == null &&
   //     provider.explorerLat == null)

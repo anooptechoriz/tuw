@@ -63,6 +63,7 @@ requestExplorerLocationPermission(
     permission = await Geolocator.requestPermission();
     if (permission == LocationPermission.denied) {
       print('Location permissions are denied');
+      await Geolocator.openLocationSettings();
     } else if (permission == LocationPermission.deniedForever) {
       print("'Location permissions are permanently denied");
       showAnimatedSnackBar(context, str.snack_enable_loc);
@@ -149,6 +150,7 @@ sendLocation(context, String latLon) async {
 Future<List<double>> getCurrentLocationPermission(
   BuildContext context,
 ) async {
+  log('permission request send for location----------------------------------------------------');
   late List<double> latLon;
   LocationPermission permission = await Geolocator.checkPermission();
   final str = AppLocalizations.of(context)!;
@@ -182,12 +184,16 @@ Future<List<double>> getCurrentLocationPermission(
 }
 
 Future<List<double>> getCurrentLocation() async {
-  Position position = await Geolocator.getCurrentPosition(
+  List<double> latLon = [];
+  // if (await Geolocator.isLocationServiceEnabled()) {
+  Position? position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high);
   double latitude = position.latitude;
   double longitude = position.longitude;
-  List<double> latLon = [];
   latLon.addAll([latitude, longitude]);
+  // } else {
+  //   await Geolocator.openLocationSettings();
+  // }
 
   return latLon;
 }

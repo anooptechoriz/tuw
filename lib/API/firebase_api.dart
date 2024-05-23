@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import '../constants/constant.dart';
@@ -28,13 +30,13 @@ class FirebaseApi {
   }
 
   Future<void> initNotifications() async {
-    _firebaseMessaging.requestPermission();
+    await _firebaseMessaging.requestPermission();
     // _firebaseMessaging.getToken().then((token) {
     //   print("FCM Token: $token");
     // });
     final fCMToken = await _firebaseMessaging.getToken();
     fcmToken = fCMToken!;
-    print("FCM Token: $fCMToken");
+    log("FCM Token: $fCMToken");
     initPushNotifications();
   }
 }

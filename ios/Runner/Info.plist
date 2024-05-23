@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-
 <dict>
-    <key>NSAllowsLocalNetworking</key>
-    <true/>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>For users to share there photo with other users or serviceman and to update users profile photo and address photo</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>We need access to your location to provide you with location-based services and improve your app experience</string>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -33,21 +24,35 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<true/>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>tel</string>
 	</array>
-	
 	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NSAllowsLocalNetworking</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>For users to capture and send their photos to other users</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>We need access to your location to provide you with location-based services and improve your app experience</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs access to location when the user wants to share their location to other users and to find there distance inbetween the user and serviceman.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Microphone use to record your voice and sent to other users by your own voice. We will not share this recorded voices to any other third party tools.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>For users to share there photo with other users or serviceman and to update users profile photo and address photo</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -55,15 +60,13 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>

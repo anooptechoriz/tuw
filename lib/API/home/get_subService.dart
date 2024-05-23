@@ -10,14 +10,11 @@ import 'package:provider/provider.dart';
 import 'package:social_media_services/API/endpoint.dart';
 import 'package:social_media_services/API/home/get_service_man.dart';
 import 'package:social_media_services/components/routes_manager.dart';
-
 import 'package:social_media_services/model/sub_services_model.dart';
 import 'package:social_media_services/providers/data_provider.dart';
 import 'package:social_media_services/screens/sub_service.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 getSubService(BuildContext context, id, bool changeLan, homeService) async {
-  log('1');
   final provider = Provider.of<DataProvider>(context, listen: false);
   // provider.subServicesModel = null;
   String? apiToken = Hive.box("token").get('api_token');
@@ -40,9 +37,7 @@ getSubService(BuildContext context, id, bool changeLan, homeService) async {
 
         return;
       }
-
       print(jsonResponse['type']);
-
       if (changeLan != true) {
         selectServiceType(context, id, jsonResponse, homeService);
       }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
-import 'package:social_media_services/API/firebase_api.dart';
 import 'package:social_media_services/components/routes_manager.dart';
 import 'package:social_media_services/components/theme_manager.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -17,7 +16,8 @@ import 'package:firebase_core/firebase_core.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await FirebaseApi().initNotifications();
+  // await FirebaseApi().initNotifications();
+
   await Hive.initFlutter();
   await Hive.openBox("LocalLan");
   await Hive.openBox("token");

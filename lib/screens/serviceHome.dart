@@ -304,7 +304,7 @@ class _ServiceHomePageState extends State<ServiceHomePage> {
                                   crossAxisSpacing: 14,
                                   mainAxisExtent: mob ? 123 : 100,
                                   mainAxisSpacing: 20),
-                          itemCount: homeData?.length ?? 0,
+                          itemCount: homeData.length,
                           itemBuilder: (BuildContext ctx, index) {
                             return InkWell(
                               onTap: () {

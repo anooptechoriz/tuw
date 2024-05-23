@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -11,6 +12,43 @@ import 'package:social_media_services/model/serviceManLIst.dart';
 import 'package:social_media_services/providers/data_provider.dart';
 import 'package:social_media_services/providers/servicer_provider.dart';
 import 'package:social_media_services/screens/serviceman/servicer.dart';
+
+Future<Position> determinePosition() async {
+  bool serviceEnabled;
+  LocationPermission permission;
+
+  // Test if location services are enabled.
+  serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  if (!serviceEnabled) {
+    // Location services are not enabled don't continue
+    // accessing the position and request users of the
+    // App to enable the location services.
+    return Future.error('Location services are disabled.');
+  }
+
+  permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied) {
+      // Permissions are denied, next time you could try
+      // requesting permissions again (this is also where
+      // Android's shouldShowRequestPermissionRationale
+      // returned true. According to Android guidelines
+      // your App should show an explanatory UI now.
+      return Future.error('Location permissions are denied');
+    }
+  }
+
+  if (permission == LocationPermission.deniedForever) {
+    // Permissions are denied forever, handle appropriately.
+    return Future.error(
+        'Location permissions are permanently denied, we cannot request permissions.');
+  }
+
+  // When we reach here, permissions are granted and we can
+  // continue accessing the position of the device.
+  return await Geolocator.getCurrentPosition();
+}
 
 getServiceMan(BuildContext context, id, homeservice) async {
   //  final otpProvider = Provider.of<OTPProvider>(context, listen: false);
@@ -24,13 +62,20 @@ getServiceMan(BuildContext context, id, homeservice) async {
     apiToken = '';
   }
   try {
+    log('user details -------- ${userDetails?.latitude}');
+    if (userDetails?.latitude == null) {
+      Position position = await determinePosition();
+      log('position-------_${position.latitude}------${position.longitude}');
+      userDetails?.latitude = position.latitude.toString();
+      userDetails?.longitude = position.longitude.toString();
+    }
     var response = await http.post(
         Uri.parse(
             '$servicemanList?service_id=$id&page=1&latitude=${userDetails?.latitude ?? provider.explorerLat}&longitude=${userDetails?.longitude ?? provider.explorerLong}&language_id=${lanId}'),
         headers: {"device-id": provider.deviceId ?? '', "api-token": apiToken});
     if (response.statusCode == 200) {
       var jsonResponse = jsonDecode(response.body);
-      log(response.body);
+      log('getServiceMan------------>> ${response.body}------_${response.request}');
       print("Navigation active");
       navToServiceMan(context, id, homeservice);
       if (jsonResponse['result'] == false) {

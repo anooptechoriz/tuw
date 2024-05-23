@@ -44,9 +44,7 @@ Future<void> initPlatformState(BuildContext context) async {
   } else {
     await viewProfile(context);
     await getUserAddress(context);
-    await getChatList(
-      context,
-    );
+    await getChatList(context);
     await getHome(context);
     await getCountriesData(context);
     provider.viewProfileModel?.userdetails?.userType == 'customer'

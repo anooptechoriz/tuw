@@ -10,18 +10,15 @@ import 'package:social_media_services/components/assets_manager.dart';
 import 'package:social_media_services/components/color_manager.dart';
 import 'package:social_media_services/components/styles_manager.dart';
 import 'package:social_media_services/model/get_home.dart';
-
 import 'package:social_media_services/providers/data_provider.dart';
 import 'package:social_media_services/responsive/responsive.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:social_media_services/responsive/responsive_width.dart';
 import 'package:social_media_services/screens/home_page.dart';
-import 'package:social_media_services/screens/messagePage.dart';
-import 'package:social_media_services/screens/serviceHome.dart';
 import 'package:social_media_services/loading%20screens/loading_page.dart';
+import 'package:social_media_services/utils/get_location.dart';
 import 'package:social_media_services/widgets/backbutton.dart';
 import 'package:social_media_services/widgets/custom_drawer.dart';
-
 import '../model/chat_list.dart';
 
 class SubServicesPage extends StatefulWidget {
@@ -36,14 +33,10 @@ class SubServicesPage extends StatefulWidget {
 class _SubServicesPageState extends State<SubServicesPage> {
   final int _selectedIndex = 0;
   String lang = '';
-  final List<Widget> _screens = [const ServiceHomePage(), const MessagePage()];
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    lang = Hive.box('LocalLan').get(
-      'lang',
-    );
+    lang = Hive.box('LocalLan').get('lang');
   }
 
   @override
@@ -92,9 +85,7 @@ class _SubServicesPageState extends State<SubServicesPage> {
           SizedBox(
             height: 44,
             child: GNav(
-              tabMargin: const EdgeInsets.symmetric(
-                vertical: 0,
-              ),
+              tabMargin: const EdgeInsets.symmetric(vertical: 0),
               gap: 0,
               backgroundColor: ColorManager.whiteColor,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -110,12 +101,11 @@ class _SubServicesPageState extends State<SubServicesPage> {
                   leading: InkWell(
                     onTap: () {
                       Navigator.pop(context);
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (ctx) {
-                        return const HomePage(
-                          selectedIndex: 0,
-                        );
-                      }));
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (ctx) =>
+                                  const HomePage(selectedIndex: 0)));
                     },
                     child: SizedBox(
                         width: 24,
@@ -129,13 +119,10 @@ class _SubServicesPageState extends State<SubServicesPage> {
                     onTap: () {
                       Navigator.pop(context);
                       Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (ctx) {
-                            return const HomePage(selectedIndex: 1);
-                          },
-                        ),
-                      );
+                          context,
+                          MaterialPageRoute(
+                              builder: (ctx) =>
+                                  const HomePage(selectedIndex: 1)));
                     },
                     child: Stack(
                       children: [
@@ -181,24 +168,25 @@ class _SubServicesPageState extends State<SubServicesPage> {
             ),
           ),
           Positioned(
-              left: lang == 'ar' ? 5 : null,
-              right: lang != 'ar' ? 5 : null,
-              bottom: 0,
-              child: Builder(
-                builder: (context) => InkWell(
-                  onTap: () {
-                    Scaffold.of(context).openEndDrawer();
-                  },
-                  child: const Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Icon(
-                      Icons.menu,
-                      size: 25,
-                      color: ColorManager.black,
-                    ),
+            left: lang == 'ar' ? 5 : null,
+            right: lang != 'ar' ? 5 : null,
+            bottom: 0,
+            child: Builder(
+              builder: (context) => InkWell(
+                onTap: () {
+                  Scaffold.of(context).openEndDrawer();
+                },
+                child: const Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Icon(
+                    Icons.menu,
+                    size: 25,
+                    color: ColorManager.black,
                   ),
                 ),
-              ))
+              ),
+            ),
+          ),
         ],
       ),
       body: SafeArea(
@@ -216,11 +204,8 @@ class _SubServicesPageState extends State<SubServicesPage> {
                       Spacer(),
                       CircleAvatar(
                           backgroundColor: Color(0xff08dc2c),
-                          child: Image.asset(
-                            'assets/logo/app-logo-T.jpg',
-                            height: 30,
-                            width: 30,
-                          ))
+                          child: Image.asset('assets/logo/app-logo-T.jpg',
+                              height: 30, width: 30))
                     ],
                   ),
                 ),
@@ -232,69 +217,70 @@ class _SubServicesPageState extends State<SubServicesPage> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(8, 10, 8, 0),
                   child: GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: mob ? 130 : 100,
-                          childAspectRatio: 3 / 3,
-                          crossAxisSpacing: 14,
-                          mainAxisExtent: mob ? 123 : 100,
-                          mainAxisSpacing: 20),
-                      itemCount: homeData?.length ?? 0,
-                      itemBuilder: (BuildContext ctx, index) {
-                        return InkWell(
-                          onTap: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (ctx) {
-                              return const LoadingListPage();
-                            }));
-                            final id = homeData![index].id;
-                            getSubService(
-                                context, id, false, widget.homeService);
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: mob ? 130 : 100,
+                        childAspectRatio: 3 / 3,
+                        crossAxisSpacing: 14,
+                        mainAxisExtent: mob ? 123 : 100,
+                        mainAxisSpacing: 20),
+                    itemCount: homeData?.length ?? 0,
+                    itemBuilder: (BuildContext ctx, index) {
+                      return InkWell(
+                        onTap: () async {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (ctx) {
+                            return const LoadingListPage();
+                          }));
+                          final id = homeData?[index].id;
+                          await requestExplorerLocationPermission(context);
+                          getSubService(context, id, false, widget.homeService);
 
-                            // Navigator.push(context,
-                            //     MaterialPageRoute(builder: (ctx) {
-                            //   return const ServicerPage();
-                            // }));
-                          },
-                          child: Container(
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    blurRadius: 10.0,
-                                    color: Colors.grey.shade300,
-                                    offset: const Offset(2, 2.5),
-                                  ),
-                                ],
-                                color: ColorManager.whiteColor,
-                                borderRadius: BorderRadius.circular(5)),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                    width: mob ? 70.0 : 50,
-                                    height: mob ? 70.0 : 50,
-                                    child: SvgPicture.network(
-                                      '$endPoint${homeData?[index].image}',
-                                      color: ColorManager.primary2,
-                                    )),
-                                Text(homeData![index].service ?? '',
-                                    textAlign: TextAlign.center,
-                                    style: getRegularStyle(
-                                        color: ColorManager.serviceHomeGrey,
-                                        fontSize:
-                                            (homeData[index].service?.length ??
-                                                        0) >
-                                                    13
-                                                ? 10
-                                                : 12)),
+                          // Navigator.push(context,
+                          //     MaterialPageRoute(builder: (ctx) {
+                          //   return const ServicerPage();
+                          // }));
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  blurRadius: 10.0,
+                                  color: Colors.grey.shade300,
+                                  offset: const Offset(2, 2.5),
+                                ),
                               ],
-                            ),
+                              color: ColorManager.whiteColor,
+                              borderRadius: BorderRadius.circular(5)),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                  width: mob ? 70.0 : 50,
+                                  height: mob ? 70.0 : 50,
+                                  child: SvgPicture.network(
+                                    '$endPoint${homeData?[index].image}',
+                                    color: ColorManager.primary2,
+                                  )),
+                              Text(homeData?[index].service ?? '',
+                                  textAlign: TextAlign.center,
+                                  style: getRegularStyle(
+                                      color: ColorManager.serviceHomeGrey,
+                                      fontSize:
+                                          (homeData?[index].service?.length ??
+                                                      0) >
+                                                  13
+                                              ? 10
+                                              : 12)),
+                            ],
                           ),
-                        );
-                      }),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ],
             ),

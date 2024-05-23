@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:social_media_services/components/color_manager.dart';
+import 'package:social_media_services/config/fcm.dart';
 import 'package:social_media_services/providers/data_provider.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -22,9 +23,15 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
   @override
   void initState() {
     super.initState();
+    _init();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      requestExplorerLocationPermission(context);
+      // await FCM.init();
     });
+  }
+
+  _init() async {
+    await FCM.init();
+    await requestExplorerLocationPermission(context);
   }
 
   @override

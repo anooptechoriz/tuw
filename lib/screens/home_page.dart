@@ -1,5 +1,10 @@
+import 'dart:developer';
+import 'dart:io';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -49,6 +54,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    _firebaseMessagingInit();
     _selectedIndex = widget.selectedIndex;
     lang = Hive.box('LocalLan').get(
       'lang',
@@ -206,4 +212,82 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  //--------------------------------------------Push Notifications------------------------------------------------//
+
+  _firebaseMessagingInit() async {
+    getFirebaseMessages();
+    String? token = await FirebaseMessaging.instance.getToken();
+    debugPrint('FCM token --->> $token');
+    FirebaseMessaging.onMessage.listen(_handleMessage);
+    FirebaseMessaging.onMessageOpenedApp.listen(
+      (RemoteMessage message) => _handleMessageData(message.data),
+    );
+  }
+
+  getFirebaseMessages() async {
+    RemoteMessage? initialMsg =
+        await FirebaseMessaging.instance.getInitialMessage();
+    if (initialMsg != null) {
+      _handleMessageData(initialMsg.data);
+    }
+  }
+
+  void _handleMessage(RemoteMessage message) async {
+    sendLocalNotification(message);
+  }
+
+  sendLocalNotification(RemoteMessage message) async {
+    debugPrint("Notification data ${message.data}");
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
+    AndroidInitializationSettings initializationSettingsAndroid =
+        const AndroidInitializationSettings('@mipmap/ic_launcher');
+    final DarwinInitializationSettings initializationSettingsDarwin =
+        DarwinInitializationSettings(
+            onDidReceiveLocalNotification: (id, title, body, payload) =>
+                _handleMessageData(message.data));
+    final InitializationSettings initializationSettings =
+        InitializationSettings(
+            android: initializationSettingsAndroid,
+            iOS: initializationSettingsDarwin);
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (details) =>
+          _handleMessageData(message.data),
+    );
+
+    const AndroidNotificationChannel channel = AndroidNotificationChannel(
+      'high_importance_channel', // id
+      'High Importance Notifications', // titledescription
+      importance: Importance.max,
+    );
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
+    RemoteNotification notification = message.notification!;
+
+    AndroidNotificationDetails? androidNotificationDetails;
+    if (Platform.isAndroid) {
+      AndroidNotification android = message.notification!.android!;
+      androidNotificationDetails = AndroidNotificationDetails(
+        channel.id,
+        channel.name,
+        icon: android.smallIcon,
+        // other properties...
+      );
+    }
+
+    // If `onMessage` is triggered with a notification, construct our own
+    // local notification to show to users using the created channel.
+    flutterLocalNotificationsPlugin.show(
+      notification.hashCode,
+      notification.title,
+      notification.body,
+      NotificationDetails(android: androidNotificationDetails),
+    );
+  }
+
+  void _handleMessageData(Map<String, dynamic> data) async {}
 }

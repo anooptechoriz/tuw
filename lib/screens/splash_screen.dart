@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/providers/data_provider.dart';
 import 'package:social_media_services/utils/initPlatformState.dart';
 import 'package:social_media_services/widgets/introduction_logo.dart';
 
@@ -27,7 +24,7 @@ class _SplashState extends State<Splash> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<DataProvider>(context, listen: false);
+    // final provider = Provider.of<DataProvider>(context, listen: false);
     // InternetConnectionChecker().onStatusChange.listen((status) {
     //   switch (status) {
     //     case InternetConnectionStatus.connected:

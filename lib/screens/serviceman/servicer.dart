@@ -20,6 +20,7 @@ import 'package:social_media_services/controllers/controllers.dart';
 import 'package:social_media_services/model/get_countries.dart';
 import 'package:social_media_services/model/get_home.dart';
 import 'package:social_media_services/model/region_info_model.dart';
+import 'package:social_media_services/model/serviceManLIst.dart';
 import 'package:social_media_services/model/state_info_model.dart';
 import 'package:social_media_services/providers/data_provider.dart';
 import 'package:social_media_services/providers/servicer_provider.dart';
@@ -37,6 +38,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:social_media_services/widgets/servicer_list_tile.dart';
 import 'package:social_media_services/widgets/title_widget.dart';
 import 'package:social_media_services/widgets/top_logo.dart';
+
+import '../../model/chat_list.dart';
 
 class ServicerPage extends StatefulWidget {
   bool isUpdate;
@@ -162,10 +165,15 @@ class _ServicerPageState extends State<ServicerPage> {
     final smobWth = ResponsiveWidth.issMobile(context);
     final str = AppLocalizations.of(context)!;
     final provider = Provider.of<DataProvider>(context, listen: false);
-    final servicerProvider =
-        Provider.of<ServicerProvider>(context, listen: false);
-    final serviceManData = provider.serviceManListModel?.serviceman;
-
+    ChatListModel? chatListDetails = provider.chatListDetails;
+    ChatMessage? chatMessage = chatListDetails?.chatMessage;
+    List<MessageData> data = chatMessage?.data ?? [];
+    // String unreadCount = (data.isEmpty ? data[0].unreadCount : 0).toString();
+    int unreadCount = data
+            .firstWhere((element) => element.id != null,
+                orElse: () => MessageData())
+            .unreadCount ??
+        0;
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -271,10 +279,37 @@ class _ServicerPageState extends State<ServicerPage> {
                                 ),
                               ));
                         },
-                        child: SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: SvgPicture.asset(ImageAssets.chatIconSvg),
+                        child: Stack(
+                          children: [
+                            InkWell(
+                              child: SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: SvgPicture.asset(
+                                      ImageAssets.chatIconSvg)),
+                            ),
+                            Positioned(
+                              right: 0,
+                              top: 0,
+                              child: new Container(
+                                padding: EdgeInsets.all(1),
+                                decoration: new BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                constraints: BoxConstraints(
+                                  minWidth: 15,
+                                  minHeight: 15,
+                                ),
+                                child: Text(
+                                  unreadCount.toString(),
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 11),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -390,9 +425,7 @@ class _ServicerPageState extends State<ServicerPage> {
                               //     ],
                               //   ),
                               // ),
-                              SizedBox(
-                                height: 5,
-                              ),
+                              SizedBox(height: 5),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -408,9 +441,7 @@ class _ServicerPageState extends State<ServicerPage> {
                                   ),
                                 ],
                               ),
-                              SizedBox(
-                                height: 5,
-                              ),
+                              SizedBox(height: 5),
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
@@ -564,6 +595,7 @@ class _ServicerPageState extends State<ServicerPage> {
                                   )
                                 ],
                               ),
+                              // -------------- servicer
                               // * Country & Region
                               isAdvancedSearchEnabled
                                   ? FadeCustomAnimation(
@@ -665,9 +697,8 @@ class _ServicerPageState extends State<ServicerPage> {
                                                                       provider
                                                                           .clearStates();
                                                                       await getRegionData(
-                                                                        context,
-                                                                        countryid,
-                                                                      );
+                                                                          context,
+                                                                          countryid);
                                                                       setState(
                                                                           () {});
                                                                     },
@@ -865,6 +896,11 @@ class _ServicerPageState extends State<ServicerPage> {
                                                                     child: Text(
                                                                         item.cityName ??
                                                                             '',
+                                                                        overflow:
+                                                                            TextOverflow
+                                                                                .ellipsis,
+                                                                        maxLines:
+                                                                            2,
                                                                         style: getRegularStyle(
                                                                             color:
                                                                                 ColorManager.black,
@@ -884,9 +920,6 @@ class _ServicerPageState extends State<ServicerPage> {
                                                                   .toString();
                                                               regid = value?.id;
                                                             });
-                                                            print(
-                                                                "def=======$defRegion");
-
                                                             ProfileServiceControllers
                                                                     .regionController
                                                                     .text =
@@ -895,8 +928,6 @@ class _ServicerPageState extends State<ServicerPage> {
                                                             defstate = null;
                                                             provider
                                                                 .clearStates();
-                                                            print(
-                                                                "regid==============================================$regid");
                                                             await getStateData(
                                                                 context, regid);
                                                             setState(() {});
@@ -1435,53 +1466,54 @@ class _ServicerPageState extends State<ServicerPage> {
                                         ),
                                       ),
                                     ),
-                              provider.serviceManListModel?.serviceman?.data
-                                          ?.isEmpty ==
-                                      true
-                                  ? Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 10),
-                                      child: Text(
-                                        str.no_ser,
-                                        style: getSemiBoldtStyle(
-                                            color: ColorManager.grayLight,
-                                            fontSize: 16),
-                                      ),
-                                    )
-                                  : ListView.builder(
-                                      shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      itemBuilder: ((context, index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 5, 0, 5),
-                                          child: InkWell(
-                                              onTap: () {
-                                                servicerProvider.navServiceId =
-                                                    serviceManData!
-                                                        .data?[index].id;
-                                                Navigator.push(context,
-                                                    MaterialPageRoute(
-                                                        builder: (ctx) {
-                                                  return ProfileLoading(
-                                                    serviceman: serviceManData,
-                                                    key: _scaffoldKey,
-                                                    serviceId: serviceManData
-                                                        .data?[index].id
-                                                        .toString(),
-                                                  );
-                                                }));
-                                              },
-                                              child: ServicerListTile(
-                                                serviceman: serviceManData,
-                                                index: index,
-                                              )),
-                                        );
-                                      }),
-                                      itemCount:
-                                          serviceManData?.data?.length ?? 0,
+
+                              Consumer<DataProvider>(
+                                  builder: (context, provider, _) {
+                                Serviceman? serviceManData =
+                                    provider.serviceManListModel?.serviceman;
+                                List<Data> data = serviceManData?.data ?? [];
+                                if (data.isEmpty) {
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10),
+                                    child: Text(
+                                      str.no_ser,
+                                      style: getSemiBoldtStyle(
+                                          color: ColorManager.grayLight,
+                                          fontSize: 16),
                                     ),
+                                  );
+                                }
+                                return ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemBuilder: ((context, index) {
+                                    return Padding(
+                                      padding:
+                                          const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                      child: InkWell(
+                                          onTap: () {
+                                            data[index].id;
+                                            Navigator.push(context,
+                                                MaterialPageRoute(
+                                                    builder: (ctx) {
+                                              return ProfileLoading(
+                                                serviceman: serviceManData,
+                                                key: _scaffoldKey,
+                                                serviceId:
+                                                    data[index].id.toString(),
+                                              );
+                                            }));
+                                          },
+                                          child: ServicerListTile(
+                                            serviceman: serviceManData,
+                                            index: index,
+                                          )),
+                                    );
+                                  }),
+                                  itemCount: data.length,
+                                );
+                              }),
 
                               const SizedBox(
                                 height: 5,

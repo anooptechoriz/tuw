@@ -1,8 +1,13 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -54,9 +59,7 @@ class _ChooseMoreServicePageState extends State<ChooseMoreServicePage> {
   @override
   void initState() {
     super.initState();
-    lang = Hive.box('LocalLan').get(
-      'lang',
-    );
+    lang = Hive.box('LocalLan').get('lang');
     selectedValue = widget.services;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       final provider = Provider.of<DataProvider>(context, listen: false);
@@ -81,6 +84,7 @@ class _ChooseMoreServicePageState extends State<ChooseMoreServicePage> {
       setState(() {});
       // getCustomerChild(context);
     });
+    _firebaseMessagingInit();
   }
 
   @override
@@ -143,35 +147,42 @@ class _ChooseMoreServicePageState extends State<ChooseMoreServicePage> {
                 ),
                 GButton(
                   icon: FontAwesomeIcons.message,
-                  leading:Stack(
-                      children: [InkWell(
-                        child: SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: SvgPicture.asset(ImageAssets.chatIconSvg)),
-         
-             ),  Positioned(
-        right: 0,top: 0,
-        child: new Container(
-          padding: EdgeInsets.all(1),
-          decoration: new BoxDecoration(
-            color: Colors.red,
-            borderRadius: BorderRadius.circular(6),
-          ),
-          constraints: BoxConstraints(
-            minWidth: 15,
-            minHeight: 15,
-          ),
-          child: Text(provider.chatListDetails!.chatMessage!.data!.isNotEmpty? 
-              provider.chatListDetails!.chatMessage!.data![0].unreadCount.toString()
-             :'0', style: new TextStyle(
-              color: Colors.white,
-              fontSize: 11,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ) ]),
+                  leading: Stack(children: [
+                    InkWell(
+                      child: SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: SvgPicture.asset(ImageAssets.chatIconSvg)),
+                    ),
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      child: new Container(
+                        padding: EdgeInsets.all(1),
+                        decoration: new BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        constraints: BoxConstraints(
+                          minWidth: 15,
+                          minHeight: 15,
+                        ),
+                        child: Text(
+                          provider.chatListDetails!.chatMessage!.data!
+                                  .isNotEmpty
+                              ? provider.chatListDetails!.chatMessage!.data![0]
+                                  .unreadCount
+                                  .toString()
+                              : '0',
+                          style: new TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
+                  ]),
                 ),
               ],
               haptic: true,
@@ -677,4 +688,83 @@ class _ChooseMoreServicePageState extends State<ChooseMoreServicePage> {
     }
     setState(() {});
   }
+  //--------------------------------------------Push Notifications------------------------------------------------//
+
+  _firebaseMessagingInit() {
+    log('_firebaseMessagingInit');
+    getFirebaseMessages();
+    FirebaseMessaging.onMessage.listen(_handleMessage);
+    FirebaseMessaging.onMessageOpenedApp.listen(
+      (RemoteMessage message) => _handleMessageData(message.data),
+    );
+  }
+
+  getFirebaseMessages() async {
+    log('getFirebaseMessages');
+    RemoteMessage? initialMsg =
+        await FirebaseMessaging.instance.getInitialMessage();
+    if (initialMsg != null) {
+      _handleMessageData(initialMsg.data);
+    }
+  }
+
+  void _handleMessage(RemoteMessage message) async {
+    log('_handleMessage');
+    sendLocalNotification(message);
+  }
+
+  sendLocalNotification(RemoteMessage message) async {
+    log('sendLocalNotification');
+    debugPrint("Notification data ${message.data}");
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
+    AndroidInitializationSettings initializationSettingsAndroid =
+        const AndroidInitializationSettings('@mipmap/ic_launcher');
+    final DarwinInitializationSettings initializationSettingsDarwin =
+        DarwinInitializationSettings(
+            onDidReceiveLocalNotification: (id, title, body, payload) =>
+                _handleMessageData(message.data));
+    final InitializationSettings initializationSettings =
+        InitializationSettings(
+            android: initializationSettingsAndroid,
+            iOS: initializationSettingsDarwin);
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (details) =>
+          _handleMessageData(message.data),
+    );
+
+    const AndroidNotificationChannel channel = AndroidNotificationChannel(
+      'high_importance_channel', // id
+      'High Importance Notifications', // titledescription
+      importance: Importance.max,
+    );
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(channel);
+    RemoteNotification notification = message.notification!;
+
+    AndroidNotificationDetails? androidNotificationDetails;
+    if (Platform.isAndroid) {
+      AndroidNotification android = message.notification!.android!;
+      androidNotificationDetails = AndroidNotificationDetails(
+        channel.id,
+        channel.name,
+        icon: android.smallIcon,
+        // other properties...
+      );
+    }
+
+    // If `onMessage` is triggered with a notification, construct our own
+    // local notification to show to users using the created channel.
+    flutterLocalNotificationsPlugin.show(
+      notification.hashCode,
+      notification.title,
+      notification.body,
+      NotificationDetails(android: androidNotificationDetails),
+    );
+  }
+
+  void _handleMessageData(Map<String, dynamic> data) async {}
 }

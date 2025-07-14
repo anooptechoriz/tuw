@@ -31,9 +31,9 @@ import 'package:social_media_services/widgets/top_logo.dart';
 import '../../model/chat_list.dart';
 
 class ServiceManDetails extends StatefulWidget {
-  GlobalKey<ScaffoldState>? scaffoldKey;
-  Serviceman? serviceman;
-  ServiceManDetails({super.key, this.serviceman});
+ final GlobalKey<ScaffoldState>? scaffoldKey;
+ final Serviceman? serviceman;
+ const ServiceManDetails({super.key, this.serviceman, this.scaffoldKey});
 
   @override
   State<ServiceManDetails> createState() => _ServiceManDetailsState();

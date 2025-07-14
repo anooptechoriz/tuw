@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -24,8 +23,10 @@ import 'package:social_media_services/widgets/popup_image.dart';
 import 'package:social_media_services/widgets/voice/voice_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'chat_text_message_bubble.dart';
+
 class CustomChatBubble extends StatefulWidget {
-  ChatData? chatMessage;
+  final ChatData? chatMessage;
   CustomChatBubble({Key? key, this.chatMessage}) : super(key: key);
 
   @override
@@ -148,7 +149,15 @@ class _CustomChatBubbleState extends State<CustomChatBubble> {
             CameraPosition(target: currentLocator, zoom: 12)));
       }
     }
+String type = widget.chatMessage?.type??'';
+String status = widget.chatMessage?.status??'';
 
+debugPrint('${widget.chatMessage?.type} ------------- ${widget.chatMessage?.status}');
+  if(type == 'text'){
+    return Align(
+      alignment: isSendByme ? Alignment.centerRight:Alignment.centerLeft,
+      child: ChatTextMessageBubble(isSendByMe: isSendByme, message:widget.chatMessage?.message??'' ,status: status,time: time));
+  }
     return Padding(
       padding: const EdgeInsets.only(bottom: 15),
       child: Row(
@@ -193,7 +202,8 @@ class _CustomChatBubbleState extends State<CustomChatBubble> {
                                 child: Stack(
                                   alignment: Alignment.center,
                                   children: [
-                                   Container(color: Colors.black,
+                                    Container(
+                                      color: Colors.black,
                                       width: size.width * .6,
                                       height: 240,
                                       child: VideoPlayerWidget(
@@ -488,12 +498,16 @@ class _CustomChatBubbleState extends State<CustomChatBubble> {
                                                     ),
                                                   ),
                                                 )
-                                          : Text(
-                                              widget.chatMessage?.message ?? '',
-                                              style: getRegularStyle(
-                                                  color: ColorManager.black,
-                                                  fontSize: 14),
-                                            ),
+                                          : Container(
+                                            //  child: Text(
+                                            //     widget.chatMessage?.message ?? '',
+                                            //     style: getRegularStyle(
+                                            //         color: ColorManager.black,
+                                            //         fontSize: 14, 
+                                            //         ),
+                                            //         overflow: TextOverflow.ellipsis,
+                                            //   ),
+                                          ),
                   widget.chatMessage?.type != 'audio'
                       ? Padding(
                           padding: const EdgeInsets.fromLTRB(0, 2, 0, 0),
@@ -612,14 +626,14 @@ class ImageLoadingWidget extends StatelessWidget {
                 },
               )),
           const Positioned(
-              child: Center(
-            child: SizedBox(
+            child: Center(
+              child: SizedBox(
                 width: 45,
                 height: 45,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                )),
-          ))
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            ),
+          ),
         ],
       ),
     );

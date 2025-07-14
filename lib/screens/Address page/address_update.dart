@@ -1,7 +1,5 @@
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
@@ -42,12 +40,12 @@ import 'package:async/async.dart';
 
 class UserAddressUpdate extends StatefulWidget {
   final UserAddress userAddress;
-  bool isUpdate;
-  String? defaultReg;
-  String? defRegion;
-  int? regid;
-  String? stateid;
-  UserAddressUpdate(
+ final bool isUpdate;
+ final String? defaultReg;
+ final String? defRegion;
+ final int? regid;
+ final String? stateid;
+ const UserAddressUpdate(
       {super.key,
       required this.userAddress,
       this.isUpdate = false,
@@ -143,7 +141,7 @@ class _UserAddressUpdateState extends State<UserAddressUpdate> {
     final str = AppLocalizations.of(context)!;
     final size = MediaQuery.of(context).size;
     final provider = Provider.of<DataProvider>(context, listen: true);
-    final userDetails = provider.viewProfileModel?.userdetails;
+    // final userDetails = provider.viewProfileModel?.userdetails;
     final w = MediaQuery.of(context).size.width;
     final mobWth = ResponsiveWidth.isMobile(context);
     final smobWth = ResponsiveWidth.issMobile(context);
@@ -777,7 +775,7 @@ class _UserAddressUpdateState extends State<UserAddressUpdate> {
                                               ],
                                             ),
                                       searchMatchFn: (item, searchValue) {
-                                        return (item.value.countryName
+                                        return (item.value!.countryName
                                             .toString()
                                             .toLowerCase()
                                             .contains(searchValue));
@@ -892,8 +890,7 @@ class _UserAddressUpdateState extends State<UserAddressUpdate> {
                                         //         horizontal: 10,
                                         //         vertical: 8,
                                         //       ),
-                                        //       // TODO: localisation
-                                        //       hintText:
+                                         //       hintText:
                                         //           str.s_search_country,
                                         //       hintStyle:
                                         //           const TextStyle(
@@ -1089,8 +1086,7 @@ class _UserAddressUpdateState extends State<UserAddressUpdate> {
                                           //         horizontal: 10,
                                           //         vertical: 8,
                                           //       ),
-                                          //       // TODO: localisation
-                                          //       hintText:
+                                           //       hintText:
                                           //           str.s_search_country,
                                           //       hintStyle:
                                           //           const TextStyle(
@@ -1213,11 +1209,11 @@ class _UserAddressUpdateState extends State<UserAddressUpdate> {
   validateAddressFields() {
     final str = AppLocalizations.of(context)!;
     final addressName = AddressEditControllers.addressNameController.text;
-    final address = AddressEditControllers.addressController.text;
-    final country = selectedValue?.countryId;
-    // final region = AddressEditControllers.regionController.text;
-    final state = AddressEditControllers.stateController.text;
-    final flat = AddressEditControllers.flatNoController.text;
+    // final address = AddressEditControllers.addressController.text;
+    // final country = selectedValue?.countryId;
+    // // final region = AddressEditControllers.regionController.text;
+    // final state = AddressEditControllers.stateController.text;
+    // final flat = AddressEditControllers.flatNoController.text;
 
     if (addressName.isEmpty) {
       showAnimatedSnackBar(context, str.a_address_name_req);
@@ -1283,7 +1279,7 @@ class _UserAddressUpdateState extends State<UserAddressUpdate> {
           filename: (imageFile!.path),
         );
         request.files.add(multipartFile);
-        var response = await request.send();
+        // var response = await request.send();
       }
 
       var response = await http.post(uri, headers: {
@@ -1291,7 +1287,7 @@ class _UserAddressUpdateState extends State<UserAddressUpdate> {
         "api-token": apiToken
       });
       if (response.statusCode == 200) {
-        var jsonResponse = jsonDecode(response.body);
+        // var jsonResponse = jsonDecode(response.body);
         log(response.body);
         await getUserAddress(context);
         setState(() {
@@ -1405,7 +1401,7 @@ class _UserAddressUpdateState extends State<UserAddressUpdate> {
       provider.image = image;
     });
 
-    final imageName = image?.name;
+    // final imageName = image?.name;
     print(image?.name);
     print(image?.path);
     // final XFile? photo =
@@ -1433,7 +1429,7 @@ class AddressImageWidget2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final str = AppLocalizations.of(context)!;
+    // final str = AppLocalizations.of(context)!;
     return SizedBox(
       child: imagePath!.isEmpty
           ? CachedNetworkImage(

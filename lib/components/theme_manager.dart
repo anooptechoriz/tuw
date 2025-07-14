@@ -35,31 +35,31 @@ ThemeData getApplicationTheme(BuildContext context) {
         ),
       )),
       textTheme: TextTheme(
-        headline1: getBoldtStyle(
+        displayLarge: getBoldtStyle(
           color: ColorManager.black,
           fontSize: 24,
         ),
-        headline2: getMediumtStyle(
+        displayMedium: getMediumtStyle(
           color: ColorManager.black,
           fontSize: 28,
         ),
-        headline3: getMediumtStyle(
+        displaySmall: getMediumtStyle(
           color: ColorManager.black,
           fontSize: 20,
         ),
-        subtitle1: getRegularStyle(
+        titleMedium: getRegularStyle(
           color: ColorManager.black,
           fontSize: 16,
         ),
-        subtitle2: getRegularStyle(
+        titleSmall: getRegularStyle(
           color: ColorManager.black,
           fontSize: 16,
         ),
-        bodyText1: getRegularStyle(
+        bodyLarge: getRegularStyle(
           color: ColorManager.black,
           fontSize: 14,
         ),
-        bodyText2: getRegularStyle(
+        bodyMedium: getRegularStyle(
           color: ColorManager.black,
           fontSize: 14,
         ),

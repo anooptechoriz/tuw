@@ -30,9 +30,9 @@ import 'package:social_media_services/widgets/top_logo.dart';
 import '../../widgets/popup_image.dart';
 
 class ServiceManProfileViewPage extends StatefulWidget {
-  Serviceman? serviceman;
-  UserAddress? userAddress;
-  ServiceManProfileViewPage({super.key, this.serviceman, this.userAddress});
+final  Serviceman? serviceman;
+ final UserAddress? userAddress;
+ const ServiceManProfileViewPage({super.key, this.serviceman, this.userAddress});
 
   @override
   State<ServiceManProfileViewPage> createState() =>
@@ -61,8 +61,8 @@ class _ServiceManProfileViewPageState extends State<ServiceManProfileViewPage> {
     final provider = Provider.of<DataProvider>(context, listen: true);
     final mob = Responsive.isMobile(context);
     final userData = provider.serviceManProfile?.userData;
-    final fieldData = provider.viewProfileModel?.userdetails;
-    String statename = fieldData?.statename?.toString() ?? "";
+    // final fieldData = provider.viewProfileModel?.userdetails;
+    // String statename = fieldData?.statename?.toString() ?? "";
 
     final size = MediaQuery.of(context).size;
     final str = AppLocalizations.of(context)!;

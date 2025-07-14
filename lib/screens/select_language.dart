@@ -127,8 +127,8 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen> {
                           final servicerProvider =
                               Provider.of<ServicerProvider>(context,
                                   listen: false);
-                          final serviceManData =
-                              provider.serviceManListModel?.serviceman;
+                          // final serviceManData =
+                          //     provider.serviceManListModel?.serviceman;
                           return InkWell(
                             onTap: () async {
                               setState(() {

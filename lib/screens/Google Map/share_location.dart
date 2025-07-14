@@ -12,7 +12,7 @@ import 'package:social_media_services/controllers/controllers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ShareLocation extends StatefulWidget {
-  LatLng? currentLocator;
+ final LatLng? currentLocator;
   ShareLocation({Key? key, this.currentLocator}) : super(key: key);
 
   @override
@@ -31,8 +31,7 @@ class _ShareLocationState extends State<ShareLocation> {
 
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
+     super.initState();
     currentLocator = widget.currentLocator;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await getPlaceAddress(currentLocator ?? widget.currentLocator);

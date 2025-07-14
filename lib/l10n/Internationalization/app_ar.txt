@@ -49,6 +49,7 @@
     "p_first_name_h":"أدخل الأسم الأول",
     "p_last_name":"الأسم الأخير",
     "p_last_name_h":"أدخل الأسم الأخير",
+    "p_email_h":"بريد إلكتروني",
     "p_civil":"رقم الهوية",
     "p_civil_h":"أدخل رقم الهوية",
     "p_dob":"تاريخ الميلاد",
@@ -271,7 +272,7 @@
     "re_bother":"is this person bothering you?",
     "re_tell_us":"Tell us what they did.",
     "re_report_success":"Reported Customer Successfully",
-
+"waiting_for_admin_apporval":"تم بنجاح، في انتظار موافقة الإدارة."
     
 
 }

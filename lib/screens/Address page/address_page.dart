@@ -3,24 +3,20 @@
 // import 'dart:math';
 
 import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
+ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
+ import 'package:provider/provider.dart';
 import 'package:social_media_services/API/address/getUserAddress.dart';
 import 'package:social_media_services/API/endpoint.dart';
 import 'package:social_media_services/API/viewProfile.dart';
 import 'package:social_media_services/model/viewProfileModel.dart';
 import 'package:social_media_services/providers/data_provider.dart';
 import 'package:social_media_services/responsive/responsive_width.dart';
-
 import 'package:social_media_services/components/assets_manager.dart';
 import 'package:social_media_services/components/color_manager.dart';
 import 'package:social_media_services/components/styles_manager.dart';
@@ -33,8 +29,7 @@ import 'package:social_media_services/widgets/backbutton.dart';
 import 'package:social_media_services/widgets/custom_drawer.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:social_media_services/widgets/top_logo.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:http/http.dart' as http;
+ import 'package:http/http.dart' as http;
 import 'package:async/async.dart';
 
 class AddressPage extends StatefulWidget {
@@ -68,32 +63,32 @@ class _AddressPageState extends State<AddressPage> {
     getUserAddress(context);
   }
 
-  void _openGoogleMaps(double latitude, double longitude) async {
-    final url =
-        'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
-    // if (await launchUrl(Uri.parse(url))) {
-    await launchUrl(Uri.parse(url));
-    // } else {
-    // throw 'Could not launch $url';
-    // }
-  }
+  // void _openGoogleMaps(double latitude, double longitude) async {
+  //   final url =
+  //       'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+  //   // if (await launchUrl(Uri.parse(url))) {
+  //   await launchUrl(Uri.parse(url));
+  //   // } else {
+  //   // throw 'Could not launch $url';
+  //   // }
+  // }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final str = AppLocalizations.of(context)!;
     final provider = Provider.of<DataProvider>(context, listen: true);
-    final userDetails = provider.viewProfileModel?.userdetails;
+    // final userDetails = provider.viewProfileModel?.userdetails;
     final userAddress = provider.userAddressShow?.userAddress;
     final w = MediaQuery.of(context).size.width;
     final mobWth = ResponsiveWidth.isMobile(context);
     final smobWth = ResponsiveWidth.issMobile(context);
 
-    final firstName = toBeginningOfSentenceCase(
-        provider.viewProfileModel?.userdetails?.firstname);
-    final currentLocator = LatLng(
-        double.parse(userDetails?.latitude ?? '41.612849'),
-        double.parse(userDetails?.longitude ?? '13.046816'));
+    // final firstName = toBeginningOfSentenceCase(
+    //     provider.viewProfileModel?.userdetails?.firstname);
+    // final currentLocator = LatLng(
+    //     double.parse(userDetails?.latitude ?? '41.612849'),
+    //     double.parse(userDetails?.longitude ?? '13.046816'));
     return Scaffold(
         drawerEnableOpenDragGesture: false,
         endDrawer: SizedBox(
@@ -589,8 +584,8 @@ class _AddressPageState extends State<AddressPage> {
   selectImage() async {
     print("Img picker");
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    final imagePath = image?.path;
-    final imageName = image?.name;
+    // final imagePath = image?.path;
+    // final imageName = image?.name;
     print(image?.name);
     print(image?.path);
     // final XFile? photo =

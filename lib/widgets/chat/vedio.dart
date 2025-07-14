@@ -21,6 +21,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   }
 
   void _initializeVideoPlayer() {
+    // ignore: deprecated_member_use
     _controller = VideoPlayerController.network(widget.videoUrl);
     _initializeVideoPlayerFuture = _controller.initialize().then((_) {
       setState(() {});
@@ -91,6 +92,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   void initState() {
   
     super.initState();
+    // ignore: deprecated_member_use
     _controller = VideoPlayerController.network(widget.videoUrl);
 
      _initializeVideoPlayerFuture = _controller.initialize();

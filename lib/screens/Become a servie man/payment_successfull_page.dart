@@ -21,8 +21,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:social_media_services/widgets/payment_custom_listTile.dart';
 
 class PaymentSuccessPage extends StatefulWidget {
-  var discount;
- PaymentSuccessPage({Key? key,required this.discount}) : super(key: key);
+ final   discount;
+const PaymentSuccessPage({Key? key,required this.discount}) : super(key: key);
 
   @override
   State<PaymentSuccessPage> createState() => _PaymentSuccessPageState();
@@ -38,7 +38,7 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
   bool isLoading = false;
 
   paySuccessSound() async {
-    final duration = await player.setAsset('assets/Gpay.mp3');
+    // final duration = await player.setAsset('assets/Gpay.mp3');
   }
 
   @override

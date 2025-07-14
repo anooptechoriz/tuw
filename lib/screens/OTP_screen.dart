@@ -377,10 +377,12 @@ import 'dart:developer';
 
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive/hive.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 import 'package:social_media_services/API/address/getUserAddress.dart';
 import 'package:social_media_services/API/endpoint.dart';
 import 'package:social_media_services/API/get_chat_list.dart';
@@ -404,6 +406,8 @@ import 'package:social_media_services/utils/snack_bar.dart';
 import 'package:social_media_services/API/viewProfile.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
+import 'package:smart_auth/smart_auth.dart';
+
 
 class OTPscreen extends StatefulWidget {
   const OTPscreen({Key? key}) : super(key: key);
@@ -412,19 +416,44 @@ class OTPscreen extends StatefulWidget {
   State<OTPscreen> createState() => _OTPscreenState();
 }
 
-class _OTPscreenState extends State<OTPscreen> {
+class _OTPscreenState extends State<OTPscreen> with CodeAutoFill {
   bool isResendButtonClicked = false;
   bool loading = false;
   String lang = '';
-
+  String? appSignature;
+  String? otpCode;
+ 
   @override
   void initState() {
     super.initState();
     PhoneNumberControllers.otpCon.text = '';
-    lang = Hive.box('LocalLan').get(
-      'lang',
-    );
+    lang = Hive.box('LocalLan').get('lang');
     print("FCMT : $fcmToken");
+    listenForCode();
+    // _initSmsAutoFill();
+
+    SmsAutoFill().getAppSignature.then((signature) {
+      setState(() {
+        appSignature = signature;
+      });
+    });
+     
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    cancel();
+  }
+
+  @override
+  void codeUpdated() {
+    setState(() {
+      otpCode = code;
+      if (otpCode != null) {
+        PhoneNumberControllers.otpCon.text = otpCode ?? '';
+      }
+    });
   }
 
   @override
@@ -436,114 +465,133 @@ class _OTPscreenState extends State<OTPscreen> {
     final mob = Responsive.isMobile(context);
 
     return Scaffold(
-      // resizeToAvoidBottomInset: false,
       body: SafeArea(
-          child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
                 height: Responsive.isMini(context) ? h * 0.46 : h * .36,
                 child: FadeCustomAnimation(
                   delay: .1,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
-                    // crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SizedBox(
-                          width: w * .6,
-                          height: h * .2,
-                          child: SvgPicture.asset(
-                              'assets/logo/app_logo_green.svg')),
+                        width: w * .6,
+                        height: h * .2,
+                        child: SvgPicture.asset(
+                          'assets/logo/app_logo_green.svg',
+                        ),
+                      ),
                       Padding(
                         padding: EdgeInsets.fromLTRB(0, h * .01, 0, 0),
-                        child: Text(str.o_verification,
-                            style: getBoldtStyle(
-                                color: ColorManager.black, fontSize: 20)),
+                        child: Text(
+                          str.o_verification,
+                          style: getBoldtStyle(
+                            color: ColorManager.black,
+                            fontSize: 20,
+                          ),
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                         child: Text(
-                            "${str.o_pls_type} \n+${otpProvider.countryCode} ${otpProvider.phoneNo}",
-                            textAlign: TextAlign.center,
-                            style: getRegularStyle(
-                                color: const Color(0xff9f9f9f),
-                                fontSize: mob ? 15 : 12)),
+                          "${str.o_pls_type} \n+${otpProvider.countryCode} ${otpProvider.phoneNo}",
+                          textAlign: TextAlign.center,
+                          style: getRegularStyle(
+                            color: const Color(0xff9f9f9f),
+                            fontSize: mob ? 15 : 12,
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                )),
-            FadeSlideCustomAnimation(
-              delay: .1,
-              isRight: lang == 'ar' ? true : false,
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(10, h * .03, 10, 0),
-                child: Pinput(
-                  defaultPinTheme: defaultPinTheme,
-                  separator: const SizedBox(
-                    width: 5,
+                ),
+              ),
+              FadeSlideCustomAnimation(
+                delay: .1,
+                isRight: lang == 'ar',
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(10, h * .03, 10, 0),
+                  child: Pinput(
+                    defaultPinTheme: defaultPinTheme,
+                    // separator: const SizedBox(width: 5),
+                    length: 6,
+                    controller: PhoneNumberControllers.otpCon,
+                    focusedPinTheme: focusedPinTheme,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
+                    showCursor: true,
+                    onCompleted: (pin) {
+                      verifyNow();
+                    },
+                    // androidSmsAutofillMethod:
+                    //     AndroidSmsAutofillMethod.smsRetrieverApi,
+                    // listenForMultipleSmsOnAndroid: true,
+                     closeKeyboardWhenCompleted: true,
+                    hapticFeedbackType: HapticFeedbackType.lightImpact,
                   ),
-                  length: 6,
-                  controller: PhoneNumberControllers.otpCon,
-                  focusedPinTheme: focusedPinTheme,
-                  // validator: (s) {
-                  //   return s == '2222' ? null : 'Pin is incorrect';
-                  // },
-                  pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
-                  showCursor: true,
-                  onCompleted: (pin) {
-                    verifyNow();
-                  },
                 ),
               ),
-            ),
-            FadeSlideCustomAnimation(
-              delay: .1,
-              isRight: lang == 'ar' ? true : false,
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(0, h * .05, 0, h * .05),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(str.o_dont,
+              FadeSlideCustomAnimation(
+                delay: .1,
+                isRight: lang == 'ar',
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(0, h * .05, 0, h * .05),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        str.o_dont,
                         style: getRegularStyle(
-                            color: const Color(0xff9f9f9f), fontSize: 15)),
-                    InkWell(
-                      onTap: () async {
-                        getOtp(context, {otpProvider.countryCode},
-                            {otpProvider.phoneNo}, true);
-                        setState(() {
-                          isResendButtonClicked = true;
-                        });
-                        await Future.delayed(const Duration(seconds: 2));
-                        setState(() {
-                          isResendButtonClicked = false;
-                        });
-                      },
-                      child: isResendButtonClicked
-                          ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: ColorManager.primary3,
-                                backgroundColor: ColorManager.whiteColor,
+                          color: const Color(0xff9f9f9f),
+                          fontSize: 15,
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () async {
+                          getOtp(
+                            context: context,
+                            countryCode: otpProvider.countryCode,
+                            phoneNo: otpProvider.phoneNo,
+                            resend: true,
+                            appSignature: appSignature,
+                          );
+                          setState(() {
+                            isResendButtonClicked = true;
+                          });
+                          await Future.delayed(const Duration(seconds: 2));
+                          setState(() {
+                            isResendButtonClicked = false;
+                          });
+                        },
+                        child: isResendButtonClicked
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: ColorManager.primary3,
+                                  backgroundColor: ColorManager.whiteColor,
+                                ),
+                              )
+                            : Text(
+                                str.o_resend,
+                                style: getRegularStyle(
+                                  color: ColorManager.primary,
+                                  fontSize: 15,
+                                ),
                               ),
-                            )
-                          : Text(str.o_resend,
-                              style: getRegularStyle(
-                                  color: ColorManager.primary, fontSize: 15)),
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-
-            // * Verify Now Button
-            FadeSlideCustomAnimation(
-              isRight: lang == 'ar' ? true : false,
-              delay: .1,
-              child: Container(
+              FadeSlideCustomAnimation(
+                isRight: lang == 'ar',
+                delay: .1,
+                child: Container(
                   decoration: BoxDecoration(
                     boxShadow: [
                       BoxShadow(
@@ -556,26 +604,30 @@ class _OTPscreenState extends State<OTPscreen> {
                   width: 220,
                   height: 50,
                   child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(elevation: 0),
-                      onPressed: verifyNow,
-                      child: loading
-                          ? const CircularProgressIndicator(
-                              color: ColorManager.primary3,
-                              backgroundColor: ColorManager.whiteColor,
-                            )
-                          : Text(
-                              str.o_verify,
-                              style: getRegularStyle(
-                                  color: ColorManager.whiteText, fontSize: 18),
-                            ))),
-            ),
-            SizedBox(
-              height: Responsive.isMobile(context) ? h * .24 : h * .04,
-            ),
-            // const TermsAndCondition()
-          ],
+                    style: ElevatedButton.styleFrom(elevation: 0),
+                    onPressed: verifyNow,
+                    child: loading
+                        ? const CircularProgressIndicator(
+                            color: ColorManager.primary3,
+                            backgroundColor: ColorManager.whiteColor,
+                          )
+                        : Text(
+                            str.o_verify,
+                            style: getRegularStyle(
+                              color: ColorManager.whiteText,
+                              fontSize: 18,
+                            ),
+                          ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: Responsive.isMobile(context) ? h * .24 : h * .04,
+              ),
+            ],
+          ),
         ),
-      )),
+      ),
     );
   }
 
@@ -589,14 +641,12 @@ class _OTPscreenState extends State<OTPscreen> {
     if (PhoneNumberControllers.otpCon.text.length < 6 ||
         PhoneNumberControllers.otpCon.text.toString() !=
             otpProvider.getOtp?.oTP.toString()) {
-      AnimatedSnackBar.material(str.o_snack,
-              type: AnimatedSnackBarType.error,
-              borderRadius: BorderRadius.circular(6),
-              // brightness: Brightness.dark,
-              duration: const Duration(seconds: 1))
-          .show(
-        context,
-      );
+      AnimatedSnackBar.material(
+        str.o_snack,
+        type: AnimatedSnackBarType.error,
+        borderRadius: BorderRadius.circular(6),
+        duration: const Duration(seconds: 1),
+      ).show(context);
     } else {
       setState(() {
         loading = true;
@@ -618,6 +668,8 @@ class _OTPscreenState extends State<OTPscreen> {
           Uri.parse(
               "$apiUser/otp_verification?countrycode=${otpProvider.countryCode}&phone=${otpProvider.phoneNo}&otp=${otpProvider.getOtp?.oTP.toString()}&fcm=$fcmToken"),
           headers: {"device-id": provider.deviceId ?? ''});
+
+      log('verifyOtpApi--->>${response.request}');
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
         log(response.body);

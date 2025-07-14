@@ -25,28 +25,27 @@ class HowToWorkPageState extends State<HowToWorkPage> {
     Navigator.pushNamed(context, Routes.phoneNumber);
   }
 
-  Widget _buildFullscreenImage() {
-    return Image.asset(
-      'assets/fullscreen.jpg',
-      fit: BoxFit.cover,
-      height: double.infinity,
-      width: double.infinity,
-      alignment: Alignment.center,
-    );
-  }
+  // Widget _buildFullscreenImage() {
+  //   return Image.asset(
+  //     'assets/fullscreen.jpg',
+  //     fit: BoxFit.cover,
+  //     height: double.infinity,
+  //     width: double.infinity,
+  //     alignment: Alignment.center,
+  //   );
+  // }
 
-  Widget _buildImage(String assetName, [double width = 350]) {
-    return Image.asset(
-      'assets/$assetName',
-      width: width,
-      height: 80,
-    );
-  }
+  // Widget _buildImage(String assetName, [double width = 350]) {
+  //   return Image.asset(
+  //     'assets/$assetName',
+  //     width: width,
+  //     height: 80,
+  //   );
+  // }
 
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
+     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       getlocalLanguage(context);
     });
@@ -55,16 +54,16 @@ class HowToWorkPageState extends State<HowToWorkPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    const bodyStyle = TextStyle(fontSize: 19.0);
+    // const bodyStyle = TextStyle(fontSize: 19.0);
     final str = AppLocalizations.of(context)!;
 
-    const pageDecoration = PageDecoration(
-      titleTextStyle: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w700),
-      bodyTextStyle: bodyStyle,
-      bodyPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-      pageColor: Colors.white,
-      imagePadding: EdgeInsets.zero,
-    );
+    // const pageDecoration = PageDecoration(
+    //   titleTextStyle: TextStyle(fontSize: 28.0, fontWeight: FontWeight.w700),
+    //   bodyTextStyle: bodyStyle,
+    //   bodyPadding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+    //   pageColor: Colors.white,
+    //   imagePadding: EdgeInsets.zero,
+    // );
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -295,19 +294,16 @@ class HowToWorkPageState extends State<HowToWorkPage> {
                           //     ],
                           //   ),
                           // ),
-                          Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 15, horizontal: 25),
-                                child: Text(
-                                  str.how3,
-                                  style: getSemiBoldtStyle(
-                                      color: ColorManager.grayDark,
-                                      fontSize: 18),
-                                ),
-                              ),
-                            ],
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 15, horizontal: 25),
+                            child: Text(
+                              str.how3,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                              style: getSemiBoldtStyle(
+                                  color: ColorManager.grayDark, fontSize: 18),
+                            ),
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 25),
@@ -331,20 +327,19 @@ class HowToWorkPageState extends State<HowToWorkPage> {
                       padding: EdgeInsets.only(top: size.height * .2),
                       child: Column(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 15, horizontal: 25),
-                                child: Text(
-                                  str.how4,
-                                  style: getSemiBoldtStyle(
-                                      color: ColorManager.grayDark,
-                                      fontSize: 18),
-                                ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 15, horizontal: 25),
+                              child: Text(
+                                str.how4,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 3,
+                                style: getSemiBoldtStyle(
+                                    color: ColorManager.grayDark, fontSize: 18),
                               ),
-                            ],
+                            ),
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 25),
@@ -368,19 +363,19 @@ class HowToWorkPageState extends State<HowToWorkPage> {
                       padding: EdgeInsets.only(top: size.height * .25),
                       child: Column(
                         children: [
-                          Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 15, horizontal: 25),
-                                child: Text(
-                                  str.how5,
-                                  style: getSemiBoldtStyle(
-                                      color: ColorManager.grayDark,
-                                      fontSize: 18),
-                                ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 15, horizontal: 25),
+                              child: Text(
+                                str.how5,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 3,
+                                style: getSemiBoldtStyle(
+                                    color: ColorManager.grayDark, fontSize: 18),
                               ),
-                            ],
+                            ),
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 25),

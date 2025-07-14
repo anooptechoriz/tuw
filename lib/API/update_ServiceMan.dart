@@ -1,6 +1,4 @@
-import 'dart:convert';
-import 'dart:developer';
-
+ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
@@ -23,8 +21,8 @@ updateServiceManApiFun(BuildContext context, state, region, id, about, profile,
         headers: {"device-id": provider.deviceId ?? '', "api-token": apiToken});
 
     if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
-      log(response.body);
+      // var jsonResponse = jsonDecode(response.body);
+      // log(response.body);
       await getServiceManProfileFun(context);
       Navigator.pop(context);
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) {

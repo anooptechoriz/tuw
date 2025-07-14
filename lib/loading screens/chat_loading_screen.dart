@@ -3,31 +3,23 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:page_transition/page_transition.dart';
+ import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:social_media_services/API/get_chat_list.dart';
 import 'package:social_media_services/API/get_serviceManProfileDetails.dart';
 import 'package:social_media_services/API/other%20User/other_user_address_list.dart';
 import 'package:social_media_services/API/update_read_status.dart';
 import 'package:social_media_services/API/view_chat_messages.dart';
-import 'package:social_media_services/components/assets_manager.dart';
 import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/components/styles_manager.dart';
 import 'package:social_media_services/providers/data_provider.dart';
-
-import 'package:social_media_services/responsive/responsive.dart';
+// import 'package:social_media_services/responsive/responsive.dart';
 import 'package:social_media_services/screens/chat_screen.dart';
-import 'package:social_media_services/widgets/chat/chat_add_tile.dart';
-import 'package:stop_watch_timer/stop_watch_timer.dart';
-import 'package:vibration/vibration.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+//  import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 // import 'package:video_player/video_player.dart';
 
 class ChatLoadingScreen extends StatefulWidget {
-  String? serviceManId;
-  ChatLoadingScreen({super.key, this.serviceManId});
+final  String? serviceManId;
+const  ChatLoadingScreen({super.key, this.serviceManId});
 
   @override
   State<ChatLoadingScreen> createState() => _ChatScreenState();
@@ -42,11 +34,11 @@ class _ChatScreenState extends State<ChatLoadingScreen> {
   bool isVibrantFeatureAvailable = false;
   String lang = '';
 
-  final ImagePicker _picker = ImagePicker();
+  // final ImagePicker _picker = ImagePicker();
 
-  final StopWatchTimer _stopWatchTimer = StopWatchTimer(
-    mode: StopWatchMode.countUp,
-  );
+  // final StopWatchTimer _stopWatchTimer = StopWatchTimer(
+  //   mode: StopWatchMode.countUp,
+  // );
 
   @override
   void initState() {
@@ -79,9 +71,9 @@ class _ChatScreenState extends State<ChatLoadingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    bool mob = Responsive.isMobile(context);
-    final str = AppLocalizations.of(context)!;
+    // final size = MediaQuery.of(context).size;
+    // bool mob = Responsive.isMobile(context);
+    // final str = AppLocalizations.of(context)!;
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -532,52 +524,52 @@ class _ChatScreenState extends State<ChatLoadingScreen> {
     );
   }
 
-  Future<void> _onImageButtonPressed(ImageSource source) async {
-    // if (isVideo) {
-    //   final XFile? file = await _picker.pickVideo(
-    //       source: source, maxDuration: const Duration(seconds: 10));
-    //   await _playVideo(file);
-    // } else
-    //  if (isMultiImage) {
-    //   await _displayPickImageDialog(context!,
-    //       (double? maxWidth, double? maxHeight, int? quality) async {
-    //     try {
-    //       final List<XFile> pickedFileList = await _picker.pickMultiImage(
-    //         maxWidth: maxWidth,
-    //         maxHeight: maxHeight,
-    //         imageQuality: quality,
-    //       );
-    //       setState(() {
-    //         _imageFileList = pickedFileList;
-    //       });
-    //     } catch (e) {
-    //       setState(() {
-    //         _pickImageError = e;
-    //       });
-    //     }
-    //   });
-    // }
-    // if {
-    // await _displayPickImageDialog(context!,
-    //     (double? maxWidth, double? maxHeight, int? quality) async {
-    try {
-      final XFile? pickedFile = await _picker.pickImage(
-        source: source,
-        // maxWidth: maxWidth,
-        // maxHeight: maxHeight,
-        // imageQuality: quality,
-      );
-      setState(() {
-        // _setImageFileListFromFile(pickedFile);
-      });
-    } catch (e) {
-      setState(() {
-        // _pickImageError = e;
-      });
-    }
-    // });
-    // }
-  }
+  // Future<void> _onImageButtonPressed(ImageSource source) async {
+  //   // if (isVideo) {
+  //   //   final XFile? file = await _picker.pickVideo(
+  //   //       source: source, maxDuration: const Duration(seconds: 10));
+  //   //   await _playVideo(file);
+  //   // } else
+  //   //  if (isMultiImage) {
+  //   //   await _displayPickImageDialog(context!,
+  //   //       (double? maxWidth, double? maxHeight, int? quality) async {
+  //   //     try {
+  //   //       final List<XFile> pickedFileList = await _picker.pickMultiImage(
+  //   //         maxWidth: maxWidth,
+  //   //         maxHeight: maxHeight,
+  //   //         imageQuality: quality,
+  //   //       );
+  //   //       setState(() {
+  //   //         _imageFileList = pickedFileList;
+  //   //       });
+  //   //     } catch (e) {
+  //   //       setState(() {
+  //   //         _pickImageError = e;
+  //   //       });
+  //   //     }
+  //   //   });
+  //   // }
+  //   // if {
+  //   // await _displayPickImageDialog(context!,
+  //   //     (double? maxWidth, double? maxHeight, int? quality) async {
+  //   try {
+  //     final XFile? pickedFile = await _picker.pickImage(
+  //       source: source,
+  //       // maxWidth: maxWidth,
+  //       // maxHeight: maxHeight,
+  //       // imageQuality: quality,
+  //     );
+  //     setState(() {
+  //       // _setImageFileListFromFile(pickedFile);
+  //     });
+  //   } catch (e) {
+  //     setState(() {
+  //       // _pickImageError = e;
+  //     });
+  //   }
+  //   // });
+  //   // }
+  // }
 
   pickGallery() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -587,7 +579,7 @@ class _ChatScreenState extends State<ChatLoadingScreen> {
     );
 
     if (result != null) {
-      PlatformFile file = result.files.first;
+      // PlatformFile file = result.files.first;
       setState(() {
         // fileName = file.name;
       });
@@ -605,7 +597,7 @@ class _ChatScreenState extends State<ChatLoadingScreen> {
     );
 
     if (result != null) {
-      PlatformFile file = result.files.first;
+      // PlatformFile file = result.files.first;
       setState(() {
         // fileName = file.name;
       });

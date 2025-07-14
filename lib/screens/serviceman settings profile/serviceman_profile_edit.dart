@@ -87,7 +87,7 @@ class _ServiceManProfileEditPageState extends State<ServiceManProfileEditPage> {
       // print(timeStamp);
       final provider = Provider.of<DataProvider>(context, listen: false);
       final userData = provider.serviceManProfile?.userData;
-      final fieldData = provider.viewProfileModel?.userdetails;
+      // final fieldData = provider.viewProfileModel?.userdetails;
       final str = AppLocalizations.of(context)!;
       int? n = provider.countriesModel?.countries?.length;
       int i = 0;
@@ -129,7 +129,7 @@ class _ServiceManProfileEditPageState extends State<ServiceManProfileEditPage> {
     final provider = Provider.of<DataProvider>(context, listen: true);
     final size = MediaQuery.of(context).size;
     final userData = provider.serviceManProfile?.userData;
-    final fieldData = provider.viewProfileModel?.userdetails;
+    // final fieldData = provider.viewProfileModel?.userdetails;
     final str = AppLocalizations.of(context)!;
     final w = MediaQuery.of(context).size.width;
     final mobWth = ResponsiveWidth.isMobile(context);
@@ -587,8 +587,7 @@ class _ServiceManProfileEditPageState extends State<ServiceManProfileEditPage> {
                                                           horizontal: 10,
                                                           vertical: 8,
                                                         ),
-                                                        // TODO: localisation
-                                                        hintText: str
+                                                         hintText: str
                                                             .s_search_country,
                                                         hintStyle:
                                                             const TextStyle(
@@ -784,8 +783,7 @@ class _ServiceManProfileEditPageState extends State<ServiceManProfileEditPage> {
                                               //         horizontal: 10,
                                               //         vertical: 8,
                                               //       ),
-                                              //       // TODO: localisation
-                                              //       hintText:
+                                               //       hintText:
                                               //           str.s_search_country,
                                               //       hintStyle:
                                               //           const TextStyle(
@@ -982,8 +980,7 @@ class _ServiceManProfileEditPageState extends State<ServiceManProfileEditPage> {
                                               //         horizontal: 10,
                                               //         vertical: 8,
                                               //       ),
-                                              //       // TODO: localisation
-                                              //       hintText:
+                                               //       hintText:
                                               //           str.s_search_country,
                                               //       hintStyle:
                                               //           const TextStyle(
@@ -1142,7 +1139,7 @@ class _ServiceManProfileEditPageState extends State<ServiceManProfileEditPage> {
                                             builder: (context) =>
                                                 PageView.builder(
                                                   itemCount:
-                                                      galleryImages.length ?? 0,
+                                                      galleryImages.length  ,
                                                   itemBuilder:
                                                       (context, index) {
                                                     return PopupImage(
@@ -1484,7 +1481,7 @@ class _ServiceManProfileEditPageState extends State<ServiceManProfileEditPage> {
     final provider = Provider.of<DataProvider>(context, listen: false);
     final str = AppLocalizations.of(context)!;
     final userData = provider.serviceManProfile?.userData;
-    final fieldData = provider.viewProfileModel?.userdetails;
+    // final fieldData = provider.viewProfileModel?.userdetails;
     final state = stateid;
     final region = regid;
 

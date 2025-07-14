@@ -4,18 +4,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
-
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:social_media_services/components/color_manager.dart';
 import 'package:social_media_services/components/styles_manager.dart';
 import 'package:social_media_services/controllers/controllers.dart';
-import 'package:social_media_services/providers/data_provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
+ 
 class ViewLocationScreen extends StatefulWidget {
-  String latitude;
-  String longitude;
+ final String latitude;
+ final String longitude;
   ViewLocationScreen(
       {Key? key, required this.latitude, required this.longitude})
       : super(key: key);
@@ -45,10 +41,10 @@ class _ViewLocationState extends State<ViewLocationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<DataProvider>(context, listen: false);
+    // final provider = Provider.of<DataProvider>(context, listen: false);
     final size = MediaQuery.of(context).size;
-    final userDetails = provider.viewProfileModel?.userdetails;
-    final str = AppLocalizations.of(context)!;
+    // final userDetails = provider.viewProfileModel?.userdetails;
+    // final str = AppLocalizations.of(context)!;
     currentLocator =
         LatLng(double.parse(widget.latitude), double.parse(widget.longitude));
 

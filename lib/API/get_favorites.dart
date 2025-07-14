@@ -12,7 +12,7 @@ import 'package:social_media_services/providers/data_provider.dart';
 getFavoritesListFun(BuildContext context) async {
   //  final otpProvider = Provider.of<OTPProvider>(context, listen: false);
   final provider = Provider.of<DataProvider>(context, listen: false);
-  final userDetails = provider.viewProfileModel?.userdetails;
+  // final userDetails = provider.viewProfileModel?.userdetails;
   provider.subServicesModel = null;
   final apiToken = Hive.box("token").get('api_token');
   if (apiToken == null) return;

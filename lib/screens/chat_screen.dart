@@ -6,13 +6,11 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
-import 'package:path/path.dart' as path;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
-
 import 'package:hive/hive.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
@@ -50,8 +48,8 @@ import 'package:video_compress/video_compress.dart';
 // import 'package:video_compress/video_compress.dart' as video_compress;
 
 class ChatScreen extends StatefulWidget {
-  Serviceman? serviceman;
-  ChatScreen({super.key, this.serviceman});
+ final Serviceman? serviceman;
+ const ChatScreen({super.key, this.serviceman});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -69,11 +67,14 @@ class _ChatScreenState extends State<ChatScreen> {
   bool isScrolling = true;
 
   List<ChatData>? chatMessages = [];
+  bool isLoadingMore = false;
+  int currentPage = 1;
   final ScrollController _scrollController = ScrollController();
 
   late Timer timer;
   late Timer Ltimer;
   String lang = '';
+  late DataProvider _provider;
   final ImagePicker _picker = ImagePicker();
   final StopWatchTimer _stopWatchTimer = StopWatchTimer(
     mode: StopWatchMode.countUp,
@@ -101,25 +102,22 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    final provider = Provider.of<DataProvider>(context, listen: false);
+    _provider = Provider.of<DataProvider>(context, listen: false);
     lang = Hive.box('LocalLan').get(
       'lang',
     );
-    chatMessages = provider.viewChatMessageModel?.chatMessage?.data;
-    provider.isSendingSuccessFull = false;
-    provider.isLocationSending = false;
+    chatMessages = _provider.viewChatMessageModel?.chatMessage?.data;
+    _provider.isSendingSuccessFull = false;
+    _provider.isLocationSending = false;
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      timer = Timer.periodic(const Duration(seconds: 20), (timer) async {
+      timer = Timer.periodic(const Duration(seconds: 60), (timer) async {
         if (mounted) {
           final servicerProvider =
               Provider.of<ServicerProvider>(context, listen: false);
 
-          await viewChatMessages(
-            context,
-            servicerProvider.servicerId,
-          );
-          chatMessages = provider.viewChatMessageModel?.chatMessage?.data;
+          // await viewChatMessages(context, servicerProvider.servicerId);
+          chatMessages = _provider.viewChatMessageModel?.chatMessage?.data;
           updateReadStatus(context, servicerProvider.servicerId);
         }
       });
@@ -138,6 +136,34 @@ class _ChatScreenState extends State<ChatScreen> {
           isScrolling = true;
         });
       }
+      if (_scrollController.position.extentAfter < 200 && !isLoadingMore) {
+        _fetchMoreChatMessages();
+      }
+    });
+    _fetchChatMessages();
+  }
+
+  Future<void> _fetchChatMessages() async {
+    final servicerProvider =
+        Provider.of<ServicerProvider>(context, listen: false);
+    await viewChatMessages(context, servicerProvider.servicerId, page: 1);
+  }
+
+  Future<void> _fetchMoreChatMessages() async {
+    final servicerProvider =
+        Provider.of<ServicerProvider>(context, listen: false);
+    if (isLoadingMore) return;
+
+    setState(() {
+      isLoadingMore = true;
+    });
+
+    await viewChatMessages(context, servicerProvider.servicerId,
+        page: currentPage + 1);
+
+    setState(() {
+      isLoadingMore = false;
+      currentPage++;
     });
   }
 
@@ -170,9 +196,9 @@ class _ChatScreenState extends State<ChatScreen> {
     final size = MediaQuery.of(context).size;
     final str = AppLocalizations.of(context)!;
     final w = size.width;
-    final provider = Provider.of<DataProvider>(context, listen: true);
-    final chatData = provider.viewChatMessageModel?.chatMessage;
-    final userAddress = provider.userAddressShow?.userAddress;
+
+    final chatData = _provider.viewChatMessageModel?.chatMessage;
+    final userAddress = _provider.userAddressShow?.userAddress;
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -185,177 +211,60 @@ class _ChatScreenState extends State<ChatScreen> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           flexibleSpace: SafeArea(
-            child: Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Leading section (Back button and profile image)
-                  Row(
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                textAlign: TextAlign.center,
-                                String.fromCharCode(
-                                    Icons.arrow_back_ios_rounded.codePoint),
-                                style: TextStyle(
-                                  inherit: false,
-                                  color: ColorManager.primary,
-                                  fontSize: 30.0,
-                                  fontWeight: FontWeight.w700,
-                                  fontFamily: Icons.search.fontFamily,
-                                  package:
-                                      Icons.arrow_back_ios_rounded.fontPackage,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            PageTransition(
-                              type: PageTransitionType.topToBottom,
-                              child: ServiceManDetails(
-                                serviceman: widget.serviceman,
-                              ),
-                            ),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(5, 0, 0, 2),
-                          child: CircleAvatar(
-                            radius: 26,
-                            backgroundImage: provider.serviceManDetails
-                                        ?.userData?.profileImage ==
-                                    null
-                                ? const AssetImage('assets/user.png')
-                                    as ImageProvider
-                                : CachedNetworkImageProvider(
-                                    '$endPoint${provider.serviceManDetails?.userData?.profileImage}'),
-                          ),
-                        ),
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                PageTransition(
-                                  type: PageTransitionType.topToBottom,
-                                  child: ServiceManDetails(
-                                    serviceman: widget.serviceman,
-                                  ),
-                                ),
-                              );
-                            },
-                            child: Column(
-                              children: [
-                                lang == 'ar'
-                                    ? Text(
-                                        " ${provider.serviceManDetails?.userData?.lastname ?? ''} ${provider.serviceManDetails?.userData?.firstname ?? provider.serviceManDetails?.userData?.phone}",
-                                        style: getRegularStyle(
-                                            color: ColorManager.black,
-                                            fontSize: 16),
-                                      )
-                                    : Text(
-                                        " ${provider.serviceManDetails?.userData?.firstname ?? provider.serviceManDetails?.userData?.phone} ${provider.serviceManDetails?.userData?.lastname ?? ''}",
-                                        style: getRegularStyle(
-                                            color: ColorManager.black,
-                                            fontSize: 16),
-                                      ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-
-                  // Actions section (Call icon)
-                  Row(
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          FlutterPhoneDirectCaller.callNumber(
-                              provider.serviceManDetails?.userData?.phone ??
-                                  '');
-                        },
-                        child: const Icon(Icons.call_outlined, size: 25),
-                      ),
-                      const SizedBox(
-                        width: 25,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+            child: _profileSection(),
           ),
         ),
         body: Stack(
           children: [
             Padding(
-                padding:
-                    EdgeInsets.fromLTRB(15, 15, 15, isRecordingOn ? 100 : 60),
-                child: ListView.builder(
-                  controller: _scrollController,
-                  reverse: true,
-                  itemCount: chatData?.data?.length ?? 0,
-                  itemBuilder: (context, index) {
-                    final status = chatData?.data?[index].status;
+              padding:
+                  EdgeInsets.fromLTRB(15, 15, 15, isRecordingOn ? 100 : 60),
+              child: ListView.builder(
+                controller: _scrollController,
+                reverse: true,
+                itemCount: chatData?.data?.length ?? 0,
+                itemBuilder: (context, index) {
+                  final status = chatData?.data?[index].status;
 
-                    final len = chatData?.data?.length;
-                    var locale = 'en';
-                    if (lang == 'ar') {
-                      locale = 'ar';
-                    } else if (lang == 'hi') {
-                      locale = 'hi';
-                    }
-                    var date = DateFormat("yyyy-MM-dd").parse(
-                        chatData?.data?[index].createdAt?.substring(0, 10) ??
-                            '',
-                        true);
-                    String localDate =
-                        DateFormat.yMEd(locale).format(date.toLocal());
+                  final len = chatData?.data?.length;
+                  var locale = 'en';
+                  if (lang == 'ar') {
+                    locale = 'ar';
+                  } else if (lang == 'hi') {
+                    locale = 'hi';
+                  }
+                  var date = DateFormat("yyyy-MM-dd").parse(
+                      chatData?.data?[index].createdAt?.substring(0, 10) ?? '',
+                      true);
+                  String localDate =
+                      DateFormat.yMEd(locale).format(date.toLocal());
 
-                    return Column(
-                      children: [
-                        status != 'waiting'
-                            ? Column(
-                                children: [
-                                  (len! - 1) == index
-                                      ? ChatDateWidget(localDate: localDate)
-                                      : Container(),
-                                  (len - 1) != index &&
-                                          chatData?.data?[index].createdAt
-                                                  ?.substring(0, 10) !=
-                                              chatData
-                                                  ?.data?[index + 1].createdAt
-                                                  ?.substring(0, 10)
-                                      ? ChatDateWidget(localDate: localDate)
-                                      : Container(),
-                                ],
-                              )
-                            : Container(),
-                        CustomChatBubble(
-                          chatMessage: chatData?.data?[index],
-                        ),
-                      ],
-                    );
-                  },
-                )),
+                  return Column(
+                    children: [
+                      status != 'waiting'
+                          ? Column(
+                              children: [
+                                (len! - 1) == index
+                                    ? ChatDateWidget(localDate: localDate)
+                                    : Container(),
+                                (len - 1) != index &&
+                                        chatData?.data?[index].createdAt
+                                                ?.substring(0, 10) !=
+                                            chatData?.data?[index + 1].createdAt
+                                                ?.substring(0, 10)
+                                    ? ChatDateWidget(localDate: localDate)
+                                    : Container(),
+                              ],
+                            )
+                          : Container(),
+                      CustomChatBubble(
+                        chatMessage: chatData?.data?[index],
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
 
             ismenuVisible
                 ? Positioned(
@@ -413,85 +322,102 @@ class _ChatScreenState extends State<ChatScreen> {
                             //       image: ImageAssets.gallery),
                             // ),
                             InkWell(
-      onTap: () async {
-        setState(() {
-          ismenuVisible = false;
-        });
-        await showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return Dialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Container(
-                width: size.height*.25,
-                padding: EdgeInsets.all(20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [ Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                IconButton(style: ButtonStyle(),
-                  icon: Icon(Icons.close,color: Colors.black,size: 15,),
-                  onPressed: () {
-                    Navigator.of(context).pop(); // Close the dialog without doing anything
-                  },
-                ),
-              ],
-            ),
-                    Text('Select Option', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                     SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        InkWell(
-                          onTap: () async {
-                            Navigator.of(context).pop();
-                            await selectImage();
-                            setState(() {});
-                          },
-                          child: Column(
-                            children: [
-                              Icon(Icons.image, size: 70, color: Colors.grey),
-                              SizedBox(height: 5),
-                               Text('Photo'),
-                            ],
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () async {
-                            Navigator.of(context).pop();
-                            await selectVedios();
-                            setState(() {});
-                          },
-                          child: Column(
-                            children: [
-                              Icon(Icons.videocam, size: 70, color: Colors.grey),
-                              SizedBox(height: 5),
-                               Text('Video'),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                    
-                  ],
-                ),
-              ),
-            );
-          
-        
-          },
-        );
-      },
-      child: ChatAddTile(
-        svg: false,
-        title: lang == 'ar' ? str.cp_photo2 : "${str.cp_photo1}\n${str.cp_photo2}",
-        image: ImageAssets.gallery,
-      ),
-    ),
+                              onTap: () async {
+                                setState(() {
+                                  ismenuVisible = false;
+                                });
+                                await showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return Dialog(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                      ),
+                                      child: Container(
+                                        width: size.height * .25,
+                                        padding: EdgeInsets.all(20),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                IconButton(
+                                                  style: ButtonStyle(),
+                                                  icon: Icon(
+                                                    Icons.close,
+                                                    color: Colors.black,
+                                                    size: 15,
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.of(context)
+                                                        .pop(); // Close the dialog without doing anything
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                            Text('Select Option',
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            SizedBox(height: 20),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                InkWell(
+                                                  onTap: () async {
+                                                    Navigator.of(context).pop();
+                                                    await selectImage();
+                                                    setState(() {});
+                                                  },
+                                                  child: Column(
+                                                    children: [
+                                                      Icon(Icons.image,
+                                                          size: 70,
+                                                          color: Colors.grey),
+                                                      SizedBox(height: 5),
+                                                      Text('Photo'),
+                                                    ],
+                                                  ),
+                                                ),
+                                                InkWell(
+                                                  onTap: () async {
+                                                    Navigator.of(context).pop();
+                                                    await selectVedios();
+                                                    setState(() {});
+                                                  },
+                                                  child: Column(
+                                                    children: [
+                                                      Icon(Icons.videocam,
+                                                          size: 70,
+                                                          color: Colors.grey),
+                                                      SizedBox(height: 5),
+                                                      Text('Video'),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 20),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              child: ChatAddTile(
+                                svg: false,
+                                title: lang == 'ar'
+                                    ? str.cp_photo2
+                                    : "${str.cp_photo1}\n${str.cp_photo2}",
+                                image: ImageAssets.gallery,
+                              ),
+                            ),
                             InkWell(
                               onTap: pickDoc,
                               child: ChatAddTile(
@@ -622,7 +548,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             itemBuilder: (context, index) {
                               return InkWell(
                                 onTap: () async {
-                                  final userAddressId = provider
+                                  final userAddressId = _provider
                                       .userAddressShow?.userAddress?[index].id
                                       .toString();
                                   // log(userAddressId!);
@@ -749,7 +675,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     //   width: w * .02,
                     // ),
                     InkWell(
-                      onTap: (){
+                      onTap: () {
                         _onImageButtonPressed(ImageSource.camera, context);
                       },
                       child: const SizedBox(
@@ -1029,21 +955,25 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     );
   }
- Future<void> _onImageButtonPressed(
+
+  Future<void> _onImageButtonPressed(
       ImageSource source, BuildContext context) async {
     final servicerProvider =
         Provider.of<ServicerProvider>(context, listen: false);
- try {
-      final XFile? pickedFile = await _picker.pickImage(maxHeight: 200, maxWidth: 200,
+    try {
+      final XFile? pickedFile = await _picker.pickImage(
+        // maxHeight: 200,
+        maxWidth: 1000,
         source: source,
+        imageQuality: 100,
       );
-if (pickedFile != null) {
+      if (pickedFile != null) {
         print('not null');
-        final compressedImageBytes =
-            await FlutterImageCompress.compressWithList(
-          await pickedFile.readAsBytes(),
-          quality: 85,
-        );
+        // final compressedImageBytes =
+        //     await FlutterImageCompress.compressWithList(
+        //   await pickedFile.readAsBytes(),
+        //   quality: 85,
+        // );
         await uploadImages([pickedFile]);
 
         await viewChatMessages(context, servicerProvider.servicerId);
@@ -1053,8 +983,8 @@ if (pickedFile != null) {
         setState(() {});
       }
     } catch (e) {
-       print('Error: $e');
-      }
+      print('Error: $e');
+    }
   }
 
   Future<void> uploadCompressedImage(List<int> compressedImageBytes) async {
@@ -1068,10 +998,8 @@ if (pickedFile != null) {
   }
 
   pickDoc() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.any,
-      allowMultiple: true
-    );
+    FilePickerResult? result = await FilePicker.platform
+        .pickFiles(type: FileType.any, allowMultiple: true);
 
     if (result != null) {
       PlatformFile file = result.files.first;
@@ -1186,58 +1114,58 @@ if (pickedFile != null) {
 
   uploadVedios(List<XFile> videoFiles) async {
     showDialog(
-  context: context,
-  builder: (BuildContext context) {
-    return Stack(
-      children: [
-    
-      ChatScreen(),
-        Positioned.fill(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-            child: Container(
-              color: Colors.black.withOpacity(0.3), // Adjust opacity as needed
+      context: context,
+      builder: (BuildContext context) {
+        return Stack(
+          children: [
+            ChatScreen(),
+            Positioned.fill(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                child: Container(
+                  color:
+                      Colors.black.withOpacity(0.3), // Adjust opacity as needed
+                ),
+              ),
             ),
-          ),
-        ),
 
-        // Dialog
-        Center(
-          child: Dialog(
-            backgroundColor: Colors.transparent,
-            insetPadding: EdgeInsets.symmetric(horizontal: 20.0),
-            child: Container(
-              padding: EdgeInsets.all(20.0),
-              width: MediaQuery.of(context).size.width * 0.8,
-              height: MediaQuery.of(context).size.height * 0.3,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.play_circle_fill_outlined, // Video icon
-                    size: 70,
-                    color: Colors.grey,
+            // Dialog
+            Center(
+              child: Dialog(
+                backgroundColor: Colors.transparent,
+                insetPadding: EdgeInsets.symmetric(horizontal: 20.0),
+                child: Container(
+                  padding: EdgeInsets.all(20.0),
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  height: MediaQuery.of(context).size.height * 0.3,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20.0),
                   ),
-                  SizedBox(height: 20),
-                  Text(
-                    'Loading Video...', // Text indicating loading
-                    style: TextStyle(fontSize: 18),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.play_circle_fill_outlined, // Video icon
+                        size: 70,
+                        color: Colors.grey,
+                      ),
+                      SizedBox(height: 20),
+                      Text(
+                        'Loading Video...', // Text indicating loading
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      SizedBox(height: 20),
+                      CircularProgressIndicator(), // Loading indicator
+                    ],
                   ),
-                  SizedBox(height: 20),
-                  CircularProgressIndicator(), // Loading indicator
-                ],
+                ),
               ),
             ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
-  },
-);
 
     chatMessages?.clear();
 
@@ -1343,7 +1271,8 @@ if (pickedFile != null) {
 
     uploadImages(images);
   }
-uploadImages(List<XFile> imageFiles) async {
+
+  uploadImages(List<XFile> imageFiles) async {
     final provider = Provider.of<DataProvider>(context, listen: false);
     final receiverId = provider.serviceManDetails?.userData?.id.toString();
     final servicerProvider =
@@ -1351,7 +1280,7 @@ uploadImages(List<XFile> imageFiles) async {
 
     var uri =
         Uri.parse('$api/chat-store?receiver_id=$receiverId&type=image&page=1');
-    final datetime = DateTime.now();
+    // final datetime = DateTime.now();
 
     for (var i = 0; i < imageFiles.length; i++) {
       var imageFile = imageFiles[i];
@@ -1390,9 +1319,8 @@ uploadImages(List<XFile> imageFiles) async {
           if (jsonResponse["message"] != null) {
             showAnimatedSnackBar(context, jsonResponse["message"]);
           }
-         
-         
-           setState(() {});
+
+          setState(() {});
         }
       }
     }
@@ -1622,5 +1550,111 @@ uploadImages(List<XFile> imageFiles) async {
   scrollToBottom() {
     _scrollController.animateTo(_scrollController.position.minScrollExtent,
         duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
+  }
+
+  Widget _profileSection() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            InkWell(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      textAlign: TextAlign.center,
+                      String.fromCharCode(
+                          Icons.arrow_back_ios_rounded.codePoint),
+                      style: TextStyle(
+                        inherit: false,
+                        color: ColorManager.primary,
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.w700,
+                        fontFamily: Icons.search.fontFamily,
+                        package: Icons.arrow_back_ios_rounded.fontPackage,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  PageTransition(
+                    type: PageTransitionType.topToBottom,
+                    child: ServiceManDetails(
+                      serviceman: widget.serviceman,
+                    ),
+                  ),
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(5, 0, 0, 2),
+                child: CircleAvatar(
+                  radius: 26,
+                  backgroundImage: _provider
+                              .serviceManDetails?.userData?.profileImage ==
+                          null
+                      ? const AssetImage('assets/user.png') as ImageProvider
+                      : CachedNetworkImageProvider(
+                          '$endPoint${_provider.serviceManDetails?.userData?.profileImage}'),
+                ),
+              ),
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      PageTransition(
+                        type: PageTransitionType.topToBottom,
+                        child: ServiceManDetails(
+                          serviceman: widget.serviceman,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Column(
+                    children: [
+                      lang == 'ar'
+                          ? Text(
+                              " ${_provider.serviceManDetails?.userData?.lastname ?? ''} ${_provider.serviceManDetails?.userData?.firstname ?? _provider.serviceManDetails?.userData?.phone}",
+                              style: getRegularStyle(
+                                  color: ColorManager.black, fontSize: 16),
+                            )
+                          : Text(
+                              " ${_provider.serviceManDetails?.userData?.firstname ?? _provider.serviceManDetails?.userData?.phone} ${_provider.serviceManDetails?.userData?.lastname ?? ''}",
+                              style: getRegularStyle(
+                                  color: ColorManager.black, fontSize: 16),
+                            ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        Padding(
+          padding: EdgeInsets.only(right: 25.0),
+          child: InkWell(
+            onTap: () {
+              FlutterPhoneDirectCaller.callNumber(
+                  _provider.serviceManDetails?.userData?.phone ?? '');
+            },
+            child: const Icon(Icons.call_outlined, size: 25),
+          ),
+        ),
+      ],
+    );
   }
 }

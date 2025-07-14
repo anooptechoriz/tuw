@@ -88,7 +88,7 @@ class History extends StatelessWidget {
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: const [],
+                            children:  [],
                           ),
                           Text('Worked Date: 07/05/2021',
                               style: getRegularStyle(

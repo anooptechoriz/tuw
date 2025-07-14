@@ -6,8 +6,8 @@ import 'package:social_media_services/components/styles_manager.dart';
 class ChatAddTile extends StatelessWidget {
   final String title;
   final String image;
-  bool svg = false;
-  ChatAddTile(
+  final bool svg  ;
+ const ChatAddTile(
       {Key? key, required this.title, required this.image, required this.svg})
       : super(key: key);
 

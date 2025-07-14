@@ -7,8 +7,8 @@ import 'package:social_media_services/utils/initPlatformState.dart';
 
 class PopupImage extends StatefulWidget {
   final String? image;
-  String? chatImage;
-  PopupImage({
+ final String? chatImage;
+ const PopupImage({
     required this.image,
     this.chatImage,
     Key? key,

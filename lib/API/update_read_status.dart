@@ -1,6 +1,5 @@
 // ignore_for_file: avoid_print
 
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -21,8 +20,8 @@ updateReadStatus(BuildContext context, id) async {
     var response = await http.post(Uri.parse(url),
         headers: {"device-id": provider.deviceId ?? '', "api-token": apiToken});
     if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
-      log(response.body);
+      // var jsonResponse = jsonDecode(response.body);
+      log('updateReadStatus--${response.body}--${response.request}');
 
       // final subServicesData = SubServicesModel.fromJson(jsonResponse);
       // provider.subServicesModelData(subServicesData);

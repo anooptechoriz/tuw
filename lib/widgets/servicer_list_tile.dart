@@ -12,9 +12,9 @@ import 'package:social_media_services/providers/data_provider.dart';
 import 'package:social_media_services/responsive/responsive.dart';
 
 class ServicerListTile extends StatefulWidget {
-  Serviceman? serviceman;
-  var index;
-  ServicerListTile({super.key, required this.serviceman, this.index});
+  final Serviceman serviceman;
+  final int index;
+  ServicerListTile({super.key, required this.serviceman, required this.index});
 
   @override
   State<ServicerListTile> createState() => _ServicerListTileState();
@@ -27,34 +27,30 @@ class _ServicerListTileState extends State<ServicerListTile> {
   @override
   void initState() {
     super.initState();
-    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-    //   final provider = Provider.of<DataProvider>(context, listen: false);
-    // });
     apiToken = Hive.box("token").get('api_token');
 
     isFavorite =
-        widget.serviceman?.data![widget.index].featured == 1 ? true : false;
+        widget.serviceman.data![widget.index].featured == 1 ? true : false;
   }
 
   @override
   Widget build(BuildContext context) {
-    final s =
-        widget.serviceman?.data?[widget.index].distance.toString().split('.');
+    List<String> s =
+        widget.serviceman.data?[widget.index].distance.toString().split('.') ??
+            [];
+
     final size = MediaQuery.of(context).size;
     bool mob = Responsive.isMobile(context);
     final provider = Provider.of<DataProvider>(context, listen: false);
-    // final userData = provider.serviceManDetails?.userData;
-    // print("citystate=======${widget.serviceman?.state}");
 
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(6),
         boxShadow: [
           BoxShadow(
-            blurRadius: 10.0,
-            color: Colors.grey.shade200,
-            offset: const Offset(5, 8.5),
-          ),
+              blurRadius: 10.0,
+              color: Colors.grey.shade200,
+              offset: const Offset(5, 8.5)),
         ],
       ),
       width: size.width,
@@ -83,13 +79,13 @@ class _ServicerListTileState extends State<ServicerListTile> {
                       child: CircleAvatar(
                         radius: mob ? 40 : 20,
                         // backgroundColor: ColorManager.grayDark,
-                        backgroundImage: widget.serviceman?.data?[widget.index]
+                        backgroundImage: widget.serviceman.data?[widget.index]
                                     .profilePic ==
                                 null
                             ? const AssetImage('assets/user.png')
                                 as ImageProvider
                             : CachedNetworkImageProvider(
-                                '$endPoint${widget.serviceman?.data?[widget.index].profilePic}'),
+                                '$endPoint${widget.serviceman.data?[widget.index].profilePic}'),
                       ),
                     ),
                   ),
@@ -100,10 +96,10 @@ class _ServicerListTileState extends State<ServicerListTile> {
                   child: CircleAvatar(
                     radius: mob ? 8 : 6,
                     backgroundColor: widget
-                                .serviceman?.data?[widget.index].onlineStatus ==
+                                .serviceman.data?[widget.index].onlineStatus ==
                             'online'
                         ? ColorManager.primary
-                        : widget.serviceman?.data?[widget.index].onlineStatus ==
+                        : widget.serviceman.data?[widget.index].onlineStatus ==
                                 'offline'
                             ? ColorManager.grayLight
                             : ColorManager.errorRed,
@@ -111,9 +107,7 @@ class _ServicerListTileState extends State<ServicerListTile> {
                 )
               ],
             ),
-            const SizedBox(
-              width: 18,
-            ),
+            const SizedBox(width: 18),
             SizedBox(
               width: size.width * 0.35,
               child: Column(
@@ -121,24 +115,21 @@ class _ServicerListTileState extends State<ServicerListTile> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                      '${widget.serviceman?.data?[widget.index].firstname ?? ''} ${widget.serviceman?.data?[widget.index].lastname ?? ''}',
+                      '${widget.serviceman.data?[widget.index].firstname ?? ''} ${widget.serviceman.data?[widget.index].lastname ?? ''}',
                       style: getRegularStyle(
                           color: ColorManager.black, fontSize: mob ? 16 : 10)),
                   const SizedBox(
                     height: 4,
                   ),
-                  Text(widget.serviceman?.data?[widget.index].countryName ?? '',
+                  Text(widget.serviceman.data?[widget.index].countryName ?? '',
                       style: getRegularStyle(
                           color: const Color.fromARGB(255, 173, 173, 173),
                           fontSize: mob ? 12 : 8)),
-                  const SizedBox(
-                    height: 4,
-                  ),
+                  const SizedBox(height: 4),
                   Row(
                     children: [
                       Text(
-                          widget.serviceman?.data?[widget.index].stateName ??
-                              '',
+                          widget.serviceman.data?[widget.index].stateName ?? '',
                           style: getRegularStyle(
                               color: const Color.fromARGB(255, 173, 173, 173),
                               fontSize: mob ? 12 : 8)),
@@ -152,41 +143,34 @@ class _ServicerListTileState extends State<ServicerListTile> {
                       SizedBox(
                         width: 5,
                       ),
-                      Text(
-                          widget.serviceman?.data?[widget.index].cityName ?? '',
+                      Text(widget.serviceman.data?[widget.index].cityName ?? '',
                           style: getRegularStyle(
                               color: const Color.fromARGB(255, 173, 173, 173),
                               fontSize: mob ? 12 : 8)),
                     ],
                   ),
-                  const SizedBox(
-                    height: 4,
-                  ),
-                  Text(widget.serviceman?.data?[widget.index].about ?? '',
+                  const SizedBox(height: 4),
+                  Text(widget.serviceman.data?[widget.index].about ?? '',
                       style: getRegularStyle(
                           color: const Color.fromARGB(255, 173, 173, 173),
                           fontSize: mob ? 12 : 8)),
-                  const SizedBox(
-                    height: 4,
-                  ),
+                  const SizedBox(height: 4),
 
                   // Text(widget.serviceman?.phone ?? '',
                   //     style: getRegularStyle(
                   //         color: const Color.fromARGB(255, 173, 173, 173),
                   //         fontSize: mob ? 15 : 10)),
-                  const SizedBox(
-                    height: 4,
-                  ),
+                  const SizedBox(height: 4),
                 ],
               ),
             ),
             const Spacer(),
-            widget.serviceman?.data?[widget.index].distance == null
+            widget.serviceman.data?[widget.index].distance == null
                 ? Container()
                 : Padding(
                     padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                     child: SizedBox(
-                      width: size.width * 0.145,
+                      // width: size.width * 0.145,
                       child: InkWell(
                         onTap: () {
                           setState(() {
@@ -194,9 +178,9 @@ class _ServicerListTileState extends State<ServicerListTile> {
                           });
                           isFavorite
                               ? addFavoritesListFun(context,
-                                  widget.serviceman?.data?[widget.index].id)
+                                  widget.serviceman.data?[widget.index].id)
                               : removeFavoritesListFun(context,
-                                  widget.serviceman?.data?[widget.index].id);
+                                  widget.serviceman.data?[widget.index].id);
                         },
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -217,23 +201,46 @@ class _ServicerListTileState extends State<ServicerListTile> {
                                         ? ColorManager.primary2
                                         : Colors.black12,
                                   ),
-                            Column(
-                              children: [
-                                Image.asset(provider.isTwoSelected
-                                    ? ImageAssets.scooter
-                                    : ImageAssets.car),
-                                Text(s![0],
-                                    style: getMediumtStyle(
-                                        color: const Color.fromARGB(
-                                            255, 173, 173, 173),
-                                        fontSize: 12))
-                              ],
-                            )
+                            Container(
+                              // color: Colors.red,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Image.asset(provider.isTwoSelected
+                                      ? ImageAssets.scooter
+                                      : ImageAssets.car),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        s[0],
+                                        // '6786',
+                                        style: getMediumtStyle(
+                                          color: const Color.fromARGB(
+                                              255, 173, 173, 173),
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        'KM',
+                                        style: getMediumtStyle(
+                                          color: const Color.fromARGB(
+                                              255, 173, 173, 173),
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 4),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                       ),
                     ),
-                  )
+                  ),
           ],
         ),
       ),

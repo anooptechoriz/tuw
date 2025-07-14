@@ -25,7 +25,7 @@ getHome(
   }
   ;
   try {
-    String? url;
+    // String? url;
     // if (changeLan == true) {
     //   url = "$home?language_id=$id";
     // } else {
@@ -43,6 +43,26 @@ getHome(
       }
 
       final homeData = HomeModel.fromJson(jsonResponse);
+      // homeData.homebanner?.add(Homebanner(
+      //     target: 'static',
+      //     title: 'title',
+      //     image:
+      //         'https://www.leonardodavincischool.org/sites/main/files/imagecache/lightbox/main-images/camera_lense_0.jpeg'));
+      // homeData.homebanner?.add(Homebanner(
+      //     target: 'static',
+      //     title: 'title 2',
+      //     image:
+      //         'https://static.photocdn.pt/images/articles/2017/11/29/articles/2017_8/iStock-641093712-min-1.webp'));
+      // homeData.homebanner?.add(Homebanner(
+      //     target: 'static',
+      //     title: 'title 3',
+      //     image:
+      //         'https://as1.ftcdn.net/v2/jpg/07/06/77/90/1000_F_706779057_gMAIM3zJMi1OXCGjRklwOCoE4bITO0WF.jpg'));
+      // homeData.homebanner?.add(Homebanner(
+      //     target: 'static',
+      //     title: 'title 4',
+      //     image:
+      //         'https://as1.ftcdn.net/v2/jpg/08/19/94/00/1000_F_819940079_6dUbjhbYxkomZoqgBjRHCPm5yDxKWsyO.jpg'));
       provider.homeModelData(homeData);
       print(jsonResponse);
     } else {

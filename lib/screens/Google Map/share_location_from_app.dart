@@ -34,15 +34,14 @@ class _SelectLocationFromAppState extends State<SelectLocationFromApp> {
 
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
+     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      final servicerProvider =
-          Provider.of<ServicerProvider>(context, listen: false);
+      // final servicerProvider =
+      //     Provider.of<ServicerProvider>(context, listen: false);
       final provider = Provider.of<DataProvider>(context, listen: false);
       final userDetails = provider.viewProfileModel?.userdetails;
-      final str = AppLocalizations.of(context)!;
+      // final str = AppLocalizations.of(context)!;
       currentLocator = LatLng(
           double.parse(userDetails?.latitude ?? '41.612849'),
           double.parse(userDetails?.longitude ?? '13.046816'));

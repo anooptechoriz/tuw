@@ -15,8 +15,7 @@ class HowToWorkPage1 extends StatefulWidget {
 class _HowToWorkPageState extends State<HowToWorkPage1> {
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
+     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       getlocalLanguage(context);
     });

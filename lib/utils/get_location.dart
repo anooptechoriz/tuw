@@ -1,8 +1,6 @@
 // ignore_for_file: avoid_print, use_build_context_synchronously
 
-import 'dart:convert';
 import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -12,8 +10,7 @@ import 'package:social_media_services/API/endpoint.dart';
 import 'package:social_media_services/API/updateLocation.dart';
 import 'package:social_media_services/API/viewProfile.dart';
 import 'package:social_media_services/providers/data_provider.dart';
-import 'package:social_media_services/providers/servicer_provider.dart';
-import 'package:social_media_services/utils/animatedSnackBar.dart';
+ import 'package:social_media_services/utils/animatedSnackBar.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -132,12 +129,12 @@ sendLocation(context, String latLon) async {
     var response = await http.post(Uri.parse(url),
         headers: {"device-id": provider.deviceId ?? '', "api-token": apiToken});
     if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
+      // var jsonResponse = jsonDecode(response.body);
       log("Location sended successfully");
       provider.isSendingSuccessFull = true;
       log(response.body);
-      final servicerProvider =
-          Provider.of<ServicerProvider>(context, listen: false);
+      // final servicerProvider =
+      //     Provider.of<ServicerProvider>(context, listen: false);
     } else {
       showAnimatedSnackBar(context, str.snack_message_sent);
     }

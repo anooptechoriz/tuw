@@ -8,12 +8,11 @@ import 'package:social_media_services/components/styles_manager.dart';
 import 'package:social_media_services/model/chat_list.dart';
 import 'package:social_media_services/providers/data_provider.dart';
 import 'package:social_media_services/responsive/responsive.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
+ 
 class ChatListTile extends StatefulWidget {
   final MessageData? profileData;
-  String? time;
-  ChatListTile({super.key, required this.profileData, required this.time});
+final  String? time;
+const  ChatListTile({super.key, required this.profileData, required this.time});
 
   @override
   State<ChatListTile> createState() => _ChatListTileState();
@@ -37,7 +36,7 @@ class _ChatListTileState extends State<ChatListTile> {
     bool mob = Responsive.isMobile(context);
     // var dateTime = DateFormat("HH:mm")
     // .parse(widget.profileData?.createdAt?.substring(11, 16) ?? '', true);
-    final str = AppLocalizations.of(context)!;
+    // final str = AppLocalizations.of(context)!;
     // var date = DateFormat("dd-MM-yyyy").format(
     //     DateTime.parse(widget.profileData?.createdAt?.substring(0, 10) ?? ''));
 
@@ -132,116 +131,122 @@ class _ChatListTileState extends State<ChatListTile> {
                 const SizedBox(
                   width: 5,
                 ),
-                SizedBox(
-                  // width: size.width * 0.35,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      lang == 'ar'
-                          ? Row(
-                              children: [
-                                Text(
-                                    widget.profileData?.lastname ??
-                                        widget.profileData?.phone ??
-                                        '',
-                                    style: getRegularStyle(
+                Flexible(
+                  child: SizedBox(
+                    // width: size.width * 0.35,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        lang == 'ar'
+                            ? Row(
+                                children: [
+                                  Text(
+                                      widget.profileData?.lastname ??
+                                          widget.profileData?.phone ??
+                                          '',
+                                      style: getRegularStyle(
+                                          color: ColorManager.black,
+                                          fontSize: mob ? 16 : 10)),
+                                  const SizedBox(
+                                    width: 4,
+                                  ),
+                                  Text(widget.profileData?.firstname ?? '',
+                                      style: getRegularStyle(
+                                          color: ColorManager.black,
+                                          fontSize: mob ? 16 : 10)),
+                                ],
+                              )
+                            : Row(
+                                children: [
+                                  Text(
+                                      widget.profileData?.firstname ??
+                                          widget.profileData?.phone ??
+                                          '',
+                                      style: getRegularStyle(
+                                          color: ColorManager.black,
+                                          fontSize: mob ? 16 : 10)),
+                                  const SizedBox(
+                                    width: 4,
+                                  ),
+                                  Text(widget.profileData?.lastname ?? '',
+                                      style: getRegularStyle(
+                                          color: ColorManager.black,
+                                          fontSize: mob ? 16 : 10)),
+                                ],
+                              ),
+                        const SizedBox(
+                          height: 4,
+                        ),
+                        Text(widget.profileData?.serviceName ?? '',
+                            style: getRegularStyle(
+                                color: const Color.fromARGB(255, 173, 173, 173),
+                                fontSize: mob ? 12 : 8)),
+                        const SizedBox(
+                          height: 4,
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            widget.profileData?.senderId ==
+                                    provider.viewProfileModel?.userdetails?.id
+                                ? widget.profileData?.status == "read"
+                                    ? const Icon(
+                                        Icons.done_all,
+                                        color: Colors.blue,
+                                        size: 14,
+                                      )
+                                    : const Icon(
+                                        Icons.done_all,
                                         color: ColorManager.black,
-                                        fontSize: mob ? 16 : 10)),
-                                const SizedBox(
-                                  width: 4,
-                                ),
-                                Text(widget.profileData?.firstname ?? '',
-                                    style: getRegularStyle(
-                                        color: ColorManager.black,
-                                        fontSize: mob ? 16 : 10)),
-                              ],
-                            )
-                          : Row(
-                              children: [
-                                Text(
-                                    widget.profileData?.firstname ??
-                                        widget.profileData?.phone ??
-                                        '',
-                                    style: getRegularStyle(
-                                        color: ColorManager.black,
-                                        fontSize: mob ? 16 : 10)),
-                                const SizedBox(
-                                  width: 4,
-                                ),
-                                Text(widget.profileData?.lastname ?? '',
-                                    style: getRegularStyle(
-                                        color: ColorManager.black,
-                                        fontSize: mob ? 16 : 10)),
-                              ],
+                                        size: 14,
+                                      )
+                                : Container(),
+                            const SizedBox(
+                              width: 5,
                             ),
-                      const SizedBox(
-                        height: 4,
-                      ),
-                      Text(widget.profileData?.serviceName ?? '',
-                          style: getRegularStyle(
-                              color: const Color.fromARGB(255, 173, 173, 173),
-                              fontSize: mob ? 12 : 8)),
-                      const SizedBox(
-                        height: 4,
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          widget.profileData?.senderId ==
-                                  provider.viewProfileModel?.userdetails?.id
-                              ? widget.profileData?.status == "read"
-                                  ? const Icon(
-                                      Icons.done_all,
-                                      color: Colors.blue,
-                                      size: 14,
-                                    )
-                                  : const Icon(
-                                      Icons.done_all,
-                                      color: ColorManager.black,
-                                      size: 14,
-                                    )
-                              : Container(),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Text(
-                              widget.profileData?.type == 'location'
-                                  ? lang == 'ar'
-                                      ? 'موقع'
-                                      : lang == 'hi'
-                                          ? 'जगह'
-                                          : 'Location'
-                                  : widget.profileData?.type == 'image'
+                            Expanded(
+                              child: Text(
+                                  widget.profileData?.type == 'location'
                                       ? lang == 'ar'
-                                          ? 'صورة'
+                                          ? 'موقع'
                                           : lang == 'hi'
-                                              ? 'छवि'
-                                              : "Image"
-                                      : widget.profileData?.type == 'audio'
+                                              ? 'जगह'
+                                              : 'Location'
+                                      : widget.profileData?.type == 'image'
                                           ? lang == 'ar'
-                                              ? 'صوتي'
+                                              ? 'صورة'
                                               : lang == 'hi'
-                                                  ? 'ऑडियो'
-                                                  : "Audio"
-                                          : widget.profileData?.type ==
-                                                  'document'
+                                                  ? 'छवि'
+                                                  : "Image"
+                                          : widget.profileData?.type == 'audio'
                                               ? lang == 'ar'
-                                                  ? 'وثيقة'
+                                                  ? 'صوتي'
                                                   : lang == 'hi'
-                                                      ? 'दस्तावेज़'
-                                                      : "Document"
-                                              : widget.profileData?.message ??
-                                                  '',
-                              style: getRegularStyle(
-                                  color: ColorManager.chatTimeColor,
-                                  fontSize: mob ? 11 : 7)),
-                        ],
-                      ),
-                      // const SizedBox(
-                      //   height: 4,
-                      // ),
-                    ],
+                                                      ? 'ऑडियो'
+                                                      : "Audio"
+                                              : widget.profileData?.type ==
+                                                      'document'
+                                                  ? lang == 'ar'
+                                                      ? 'وثيقة'
+                                                      : lang == 'hi'
+                                                          ? 'दस्तावेज़'
+                                                          : "Document"
+                                                  : widget.profileData?.message ??
+                                                      '',
+                                  style: getRegularStyle(
+                                      color: ColorManager.chatTimeColor,
+                                      fontSize: mob ? 11 : 7,),
+                                      overflow: TextOverflow.ellipsis,
+                                      ),
+                            ),
+                          ],
+                        ),
+                        // const SizedBox(
+                        //   height: 4,
+                        // ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -282,9 +287,9 @@ class _ChatListTileState extends State<ChatListTile> {
                                 color: ColorManager.whiteColor, fontSize: 10),
                           ),
                         ),
-                      )
+                      ),
                     ],
-                  ))
+                  ),),
         ],
       ),
     );

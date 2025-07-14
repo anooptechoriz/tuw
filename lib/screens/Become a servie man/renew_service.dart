@@ -1,7 +1,7 @@
-import 'package:animated_snack_bar/animated_snack_bar.dart';
+import 'dart:developer';
 
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -15,7 +15,6 @@ import 'package:social_media_services/components/styles_manager.dart';
 import 'package:social_media_services/model/get_child_service.dart';
 import 'package:social_media_services/model/get_home.dart';
 import 'package:social_media_services/providers/data_provider.dart';
-import 'package:social_media_services/responsive/responsive.dart';
 import 'package:social_media_services/responsive/responsive_width.dart';
 import 'package:social_media_services/screens/messagePage.dart';
 import 'package:social_media_services/screens/Become%20a%20servie%20man/payment_service_page.dart';
@@ -27,9 +26,11 @@ import 'package:social_media_services/widgets/terms_and_condition.dart';
 import 'package:social_media_services/widgets/title_widget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'widgets/service_doc_widgets.dart';
+
 class RenewServicePage extends StatefulWidget {
-  int? serviceId;
-  RenewServicePage({Key? key, this.serviceId}) : super(key: key);
+  final int? serviceId;
+  const RenewServicePage({Key? key, this.serviceId}) : super(key: key);
 
   @override
   State<RenewServicePage> createState() => _RenewServicePageState();
@@ -52,9 +53,7 @@ class _RenewServicePageState extends State<RenewServicePage> {
   @override
   void initState() {
     super.initState();
-    lang = Hive.box('LocalLan').get(
-      'lang',
-    );
+    lang = Hive.box('LocalLan').get('lang');
     // selectedValue = widget.services;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       final provider = Provider.of<DataProvider>(context, listen: false);
@@ -75,9 +74,16 @@ class _RenewServicePageState extends State<RenewServicePage> {
       setState(() {
         isChild = provider.customerChildSer!.childservices!.isNotEmpty;
       });
-      setState(() {});
+       ChildServiceModel? itemModel = provider.customerChildSer;
+    List<Document> documents = itemModel?.documents ?? [];
+    for(var item in documents){
+      item.file = null;
+      item.fileName = null;
+    }
       // getCustomerChild(context);
     });
+  
+  
   }
 
   @override
@@ -85,11 +91,11 @@ class _RenewServicePageState extends State<RenewServicePage> {
     final str = AppLocalizations.of(context)!;
     final size = MediaQuery.of(context).size;
     final provider = Provider.of<DataProvider>(context, listen: false);
-    final mob = Responsive.isMobile(context);
     final w = MediaQuery.of(context).size.width;
     final mobWth = ResponsiveWidth.isMobile(context);
     final smobWth = ResponsiveWidth.issMobile(context);
-    var isNotEmpty;
+    ChildServiceModel? item = provider.customerChildSer;
+
     return Scaffold(
       drawerEnableOpenDragGesture: false,
       endDrawer: SizedBox(
@@ -225,8 +231,7 @@ class _RenewServicePageState extends State<RenewServicePage> {
                                   // width: 100,
                                   child: Center(
                                       child: Text(
-                                    provider.customerChildSer?.serviceName ??
-                                        '',
+                                    item?.serviceName ?? '',
                                     style: getRegularStyle(
                                         color: ColorManager.black,
                                         fontSize: 14),
@@ -298,7 +303,7 @@ class _RenewServicePageState extends State<RenewServicePage> {
                       //         ?
 
                       // * Service Group
-                      provider.customerChildSer != null
+                      item != null
                           ? isChild
                               ? Column(
                                   children: [
@@ -359,7 +364,7 @@ class _RenewServicePageState extends State<RenewServicePage> {
                                                           value: item,
                                                           child: Text(
                                                               item.serviceName ??
-                                                                  'null',
+                                                                  '',
                                                               style: getRegularStyle(
                                                                   color:
                                                                       ColorManager
@@ -393,7 +398,7 @@ class _RenewServicePageState extends State<RenewServicePage> {
                                                             child: Text(
                                                                 childSelectedValue
                                                                         ?.serviceName ??
-                                                                    'null'),
+                                                                    ''),
                                                           ),
                                                 buttonHeight: 40,
                                                 // buttonWidth: 140,
@@ -417,110 +422,107 @@ class _RenewServicePageState extends State<RenewServicePage> {
                           : Container(),
 
 // * Browse feature
+                      ServiceDocWidget(),
+                      // item != null
+                      //     ? item.documents!.isNotEmpty
+                      //         ? Column(
+                      //             children: [
+                      //               Padding(
+                      //                 padding: const EdgeInsets.fromLTRB(
+                      //                     0, 20, 0, 0),
+                      //                 child: Row(
+                      //                   children: [
+                      //                     TitleWidget(
+                      //                         name: item
+                      //                                 .documents![0]
+                      //                                 .document ??
+                      //                             ''),
+                      //                     const Icon(
+                      //                       Icons.star_outlined,
+                      //                       size: 10,
+                      //                       color: ColorManager.errorRed,
+                      //                     )
+                      //                   ],
+                      //                 ),
+                      //               ),
+                      //               Padding(
+                      //                 padding: const EdgeInsets.fromLTRB(
+                      //                     0, 10, 0, 0),
+                      //                 child: Container(
+                      //                   decoration: BoxDecoration(
+                      //                     boxShadow: [
+                      //                       BoxShadow(
+                      //                         blurRadius: 10.0,
+                      //                         color: Colors.grey.shade300,
+                      //                         // offset: const Offset(5, 8.5),
+                      //                       ),
+                      //                     ],
+                      //                   ),
+                      //                   child: Container(
+                      //                     width: size.width,
+                      //                     height: 60,?
+                      //                     decoration: BoxDecoration(
+                      //                         color: ColorManager.whiteColor,
+                      //                         borderRadius:
+                      //                             BorderRadius.circular(8)),
+                      //                     child: Row(
+                      //                       children: [
+                      //                         Padding(
+                      //                           padding:
+                      //                               const EdgeInsets.fromLTRB(
+                      //                                   10, 13, 10, 13),
+                      //                           child: ElevatedButton(
+                      //                               style:
+                      //                                   ElevatedButton.styleFrom(
+                      //                                       padding:
+                      //                                           const EdgeInsets
+                      //                                                   .fromLTRB(
+                      //                                               13,
+                      //                                               0,
+                      //                                               13,
+                      //                                               0)),
+                      //                               onPressed: () async {
+                      //                                 FilePickerResult? result =
+                      //                                     await FilePicker
+                      //                                         .platform
+                      //                                         .pickFiles(
+                      //                                   type: FileType.custom,
+                      //                                   allowedExtensions: [
+                      //                                     'pdf',
+                      //                                     'doc'
+                      //                                   ],
+                      //                                 );
 
-                      provider.customerChildSer != null
-                          ? provider.customerChildSer!.documents!.isNotEmpty
-                              ? Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          0, 20, 0, 0),
-                                      child: Row(
-                                        children: [
-                                          TitleWidget(
-                                              name: provider
-                                                      .customerChildSer
-                                                      ?.documents![0]
-                                                      .document ??
-                                                  ''),
-                                          const Icon(
-                                            Icons.star_outlined,
-                                            size: 10,
-                                            color: ColorManager.errorRed,
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          0, 10, 0, 0),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          boxShadow: [
-                                            BoxShadow(
-                                              blurRadius: 10.0,
-                                              color: Colors.grey.shade300,
-                                              // offset: const Offset(5, 8.5),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Container(
-                                          width: size.width,
-                                          height: 60,
-                                          decoration: BoxDecoration(
-                                              color: ColorManager.whiteColor,
-                                              borderRadius:
-                                                  BorderRadius.circular(8)),
-                                          child: Row(
-                                            children: [
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        10, 13, 10, 13),
-                                                child: ElevatedButton(
-                                                    style:
-                                                        ElevatedButton.styleFrom(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .fromLTRB(
-                                                                    13,
-                                                                    0,
-                                                                    13,
-                                                                    0)),
-                                                    onPressed: () async {
-                                                      FilePickerResult? result =
-                                                          await FilePicker
-                                                              .platform
-                                                              .pickFiles(
-                                                        type: FileType.custom,
-                                                        allowedExtensions: [
-                                                          'pdf',
-                                                          'doc'
-                                                        ],
-                                                      );
-
-                                                      if (result != null) {
-                                                        PlatformFile file =
-                                                            result.files.first;
-                                                        setState(() {
-                                                          fileName = file.name;
-                                                        });
-                                                      } else {}
-                                                    },
-                                                    child: Text(
-                                                        str.c_browse,
-                                                        style: getLightStyle(
-                                                            color: ColorManager
-                                                                .whiteText,
-                                                            fontSize: 18))),
-                                              ),
-                                              Expanded(
-                                                  child: Text(fileName ?? ''))
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              : Container()
-                          : Container(),
+                      //                                 if (result != null) {
+                      //                                   PlatformFile file =
+                      //                                       result.files.first;
+                      //                                   setState(() {
+                      //                                     fileName = file.name;
+                      //                                   });
+                      //                                 } else {}
+                      //                               },
+                      //                               child: Text(
+                      //                                   str.c_browse,
+                      //                                   style: getLightStyle(
+                      //                                       color: ColorManager
+                      //                                           .whiteText,
+                      //                                       fontSize: 18))),
+                      //                         ),
+                      //                         Expanded(
+                      //                             child: Text(fileName ?? ''))
+                      //                       ],
+                      //                     ),
+                      //                   ),
+                      //                 ),
+                      //               ),
+                      //             ],
+                      //           )
+                      //         : Container()
+                      //     : Container(),
 
                       // * Terms and condition
 
-                      const SizedBox(
-                        height: 20,
-                      ),
+                      const SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -581,9 +583,12 @@ class _RenewServicePageState extends State<RenewServicePage> {
   }
 
   // * Fuctions
-// TODO Localistion add
   continueToPay() {
     final provider = Provider.of<DataProvider>(context, listen: false);
+    ChildServiceModel? item = provider.customerChildSer;
+    List<Document> documents = item?.documents ?? [];
+    log('${documents.map((e) => e.file)}');
+    bool isAnyFileNeedToSelect = documents.any((element) => element.file ==null);
     final str = AppLocalizations.of(context)!;
     if (!isTickSelected) {
       AnimatedSnackBar.material(str.c_snack,
@@ -597,12 +602,11 @@ class _RenewServicePageState extends State<RenewServicePage> {
     //  else if (selectedValue == null) {
     //   showAnimatedSnackBar(context, str.snack_choose_group);
     // }
-    else if (provider.customerChildSer!.documents!.isNotEmpty &&
-        fileName == null) {
+    else if (isAnyFileNeedToSelect ) {
       showAnimatedSnackBar(context, str.snack_upload);
     } else {
       Navigator.push(context, MaterialPageRoute(builder: (ctx) {
-        return const PaymentServicePage();
+        return   PaymentServicePage(orderType: PlaceOrderType.renew);
       }));
     }
   }
@@ -614,12 +618,17 @@ class _RenewServicePageState extends State<RenewServicePage> {
 
   getDropDownData() {
     final provider = Provider.of<DataProvider>(context, listen: false);
-    int? n = provider.customerChildSer?.childservices?.length;
-    int i = 0;
-    while (i < n!.toInt()) {
-      childGroup.add(provider.customerChildSer!.childservices![i]);
-      i++;
+    ChildServiceModel? item = provider.customerChildSer;
+    List<Childservices>? childservices = item?.childservices ?? [];
+    for (var e in childservices) {
+      childGroup.add(e);
+      setState(() {});
     }
-    setState(() {});
+    // int? n = childservices?.length;
+    // int i = 0;
+    // while (i < n!.toInt()) {
+    //   childGroup.add(provider.customerChildSer!.childservices![i]);
+    //   i++;
+    // }
   }
 }

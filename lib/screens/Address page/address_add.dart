@@ -41,18 +41,18 @@ import 'package:social_media_services/widgets/title_widget.dart';
 import 'package:social_media_services/widgets/top_logo.dart';
 
 class UserAddressEdit extends StatefulWidget {
-  bool isUpdate;
+ final bool isUpdate;
   final String? lat;
   final String? lot;
-  XFile? imageFile;
-  String? defaultReg;
-  String? defRegion;
-  String? selectedvalue;
-  bool locUpdate;
-  int? countryid;
-  int? defaultregid;
-  int? stateid;
-  UserAddressEdit(
+final  XFile? imageFile;
+final  String? defaultReg;
+ final String? defRegion;
+final String? selectedvalue;
+ final bool locUpdate;
+final  int? countryid;
+final  int? defaultregid;
+final  int? stateid;
+ const  UserAddressEdit(
       {super.key,
       this.isUpdate = false,
       this.lat,
@@ -147,7 +147,7 @@ class _UserAddressEditState extends State<UserAddressEdit> {
 
     final size = MediaQuery.of(context).size;
     final provider = Provider.of<DataProvider>(context, listen: true);
-    final userDetails = provider.viewProfileModel?.userdetails;
+    // final userDetails = provider.viewProfileModel?.userdetails;
     final w = MediaQuery.of(context).size.width;
     final mobWth = ResponsiveWidth.isMobile(context);
     final smobWth = ResponsiveWidth.issMobile(context);
@@ -803,7 +803,7 @@ class _UserAddressEditState extends State<UserAddressEdit> {
                                                   ],
                                                 ),
                                           searchMatchFn: (item, searchValue) {
-                                            return (item.value.countryName
+                                            return (item.value!.countryName
                                                 .toString()
                                                 .toLowerCase()
                                                 .contains(searchValue));
@@ -927,8 +927,7 @@ class _UserAddressEditState extends State<UserAddressEdit> {
                                             //         horizontal: 10,
                                             //         vertical: 8,
                                             //       ),
-                                            //       // TODO: localisation
-                                            //       hintText:
+                                             //       hintText:
                                             //           str.s_search_country,
                                             //       hintStyle:
                                             //           const TextStyle(
@@ -1135,8 +1134,7 @@ class _UserAddressEditState extends State<UserAddressEdit> {
                                               //         horizontal: 10,
                                               //         vertical: 8,
                                               //       ),
-                                              //       // TODO: localisation
-                                              //       hintText:
+                                               //       hintText:
                                               //           str.s_search_country,
                                               //       hintStyle:
                                               //           const TextStyle(
@@ -1277,11 +1275,11 @@ class _UserAddressEditState extends State<UserAddressEdit> {
   validateAddressFields() {
     final provider = Provider.of<DataProvider>(context, listen: false);
     final addressName = AddressEditControllers.addressNameController.text;
-    final address = AddressEditControllers.addressController.text;
-    final country = countryid;
-    final region = AddressEditControllers.regionController.text;
-    final state = AddressEditControllers.stateController.text;
-    final flat = AddressEditControllers.flatNoController.text;
+    // final address = AddressEditControllers.addressController.text;
+    // final country = countryid;
+    // final region = AddressEditControllers.regionController.text;
+    // final state = AddressEditControllers.stateController.text;
+    // final flat = AddressEditControllers.flatNoController.text;
     final latitude = provider.addressLatitude;
     final longitude = provider.addressLongitude;
     final str = AppLocalizations.of(context)!;
@@ -1383,7 +1381,7 @@ class _UserAddressEditState extends State<UserAddressEdit> {
       imageFile = image;
     });
 
-    final imageName = image?.name;
+    // final imageName = image?.name;
     print(image?.name);
     print(image?.path);
     // final XFile? photo =

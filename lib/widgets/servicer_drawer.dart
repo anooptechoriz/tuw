@@ -11,8 +11,8 @@ import 'package:social_media_services/widgets/ser_drawer_list.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SerDrawer extends StatefulWidget {
-  int? id;
-  SerDrawer({
+ final int? id;
+ const SerDrawer({
     this.id,
     Key? key,
   }) : super(key: key);

@@ -3,7 +3,9 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:core';
-
+import 'dart:io';
+import 'package:animated_snack_bar/animated_snack_bar.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -21,6 +23,9 @@ import 'package:social_media_services/controllers/controllers.dart';
 import 'package:social_media_services/model/getCoupenModel.dart';
 import 'package:social_media_services/model/get_child_service.dart';
 import 'package:social_media_services/model/place_order.dart';
+import 'package:social_media_services/model/region_info_model.dart';
+import 'package:social_media_services/model/state_info_model.dart';
+import 'package:social_media_services/model/viewProfileModel.dart';
 import 'package:social_media_services/providers/data_provider.dart';
 import 'package:social_media_services/responsive/responsive_width.dart';
 import 'package:social_media_services/screens/Become%20a%20servie%20man/thawani_payment.dart/pay_page.dart';
@@ -36,8 +41,12 @@ import 'package:social_media_services/widgets/title_widget.dart';
 import 'package:http/http.dart' as http;
 import 'package:social_media_services/widgets/top_logo.dart';
 
+import '../../API/get_region_info.dart';
+
 class PaymentServicePage extends StatefulWidget {
-  const PaymentServicePage({Key? key}) : super(key: key);
+  final PlaceOrderType orderType;
+  const PaymentServicePage({Key? key, required this.orderType})
+      : super(key: key);
 
   @override
   State<PaymentServicePage> createState() => _PaymentServicePageState();
@@ -77,23 +86,11 @@ class _PaymentServicePageState extends State<PaymentServicePage> {
   String? formattedGrandTotal;
   String? formattedTaxTotal;
   List<Coupons> list = [];
+  late DataProvider _provider;
   @override
   void initState() {
-     super.initState();
-    lang = Hive.box('LocalLan').get(
-      'lang',
-    );
-    PaymentServiceControllers.couponController.clear();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      final data = await getCoupenCodeList(context);
-      if (data) {
-        list = Provider.of<DataProvider>(context, listen: false)
-                .coupenCodeModel!
-                .coupons ??
-            [];
-        print('coup:::${list}');
-      }
-    });
+    super.initState();
+    _init();
   }
 
   @override
@@ -157,35 +154,42 @@ class _PaymentServicePageState extends State<PaymentServicePage> {
                 ),
                 GButton(
                   icon: FontAwesomeIcons.message,
-                  leading: Stack(
-                      children: [InkWell(
-                        child: SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: SvgPicture.asset(ImageAssets.chatIconSvg)),
-         
-             ),  Positioned(
-        right: 0,top: 0,
-        child: new Container(
-          padding: EdgeInsets.all(1),
-          decoration: new BoxDecoration(
-            color: Colors.red,
-            borderRadius: BorderRadius.circular(6),
-          ),
-          constraints: BoxConstraints(
-            minWidth: 15,
-            minHeight: 15,
-          ),
-          child: Text(provider.chatListDetails!.chatMessage!.data!.isNotEmpty? 
-              provider.chatListDetails!.chatMessage!.data![0].unreadCount.toString()
-             :'0', style: new TextStyle(
-              color: Colors.white,
-              fontSize: 11,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ) ]),
+                  leading: Stack(children: [
+                    InkWell(
+                      child: SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: SvgPicture.asset(ImageAssets.chatIconSvg)),
+                    ),
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      child: new Container(
+                        padding: EdgeInsets.all(1),
+                        decoration: new BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        constraints: BoxConstraints(
+                          minWidth: 15,
+                          minHeight: 15,
+                        ),
+                        child: Text(
+                          provider.chatListDetails!.chatMessage!.data!
+                                  .isNotEmpty
+                              ? provider.chatListDetails!.chatMessage!.data![0]
+                                  .unreadCount
+                                  .toString()
+                              : '0',
+                          style: new TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
+                  ]),
                 ),
               ],
               haptic: true,
@@ -360,14 +364,11 @@ class _PaymentServicePageState extends State<PaymentServicePage> {
                                       // focusNode: nfocus,
                                       style: const TextStyle(),
                                       onChanged: (value) {
-                                        
                                         if (value.isEmpty ||
-                                            value == null ||
-                                          value!=  coupencode ) {
+                                            value != coupencode) {
                                           // FocusManager.instance.primaryFocus?.unfocus();
                                           setState(() {
                                             discount = 0.0;
-                                    
                                           });
                                         } else {
                                           setState(() {});
@@ -376,90 +377,91 @@ class _PaymentServicePageState extends State<PaymentServicePage> {
                                       },
                                       controller: PaymentServiceControllers
                                           .couponController,
-                                  
-                                      decoration: InputDecoration(
-                                          suffixIcon: SizedBox(
-                                            width: size.width * .5,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: [
-                                                SizedBox(
-                                                  // width: size.width * .4,
-                                                  child: ElevatedButton(
-                                                      style: ElevatedButton
-                                                          .styleFrom(
-                                                        padding: coupenLoading
-                                                            ? const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal: 35,
-                                                                vertical: 0)
-                                                            : const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal: 20,
-                                                                vertical: 0),
-                                                      ),
-                                                      onPressed: () async {
-                                                        await redeem();
 
-                                                        setState(() {
-                                                          isredeem = true;
-                                                          isVisible = false;
-                                                        });
-                                                      },
-                                                      child: coupenLoading
-                                                          ? const SizedBox(
-                                                              width: 30,
-                                                              height: 30,
-                                                              child:
-                                                                  CircularProgressIndicator())
-                                                          : Text(
-                                                              str.redeem,
-                                                              style: getSemiBoldtStyle(
-                                                                  color: ColorManager
-                                                                      .whiteColor,
-                                                                  fontSize: 15),
-                                                            )),
-                                                ),
-                                                const SizedBox(
-                                                  width: 10,
-                                                ),
-                                                InkWell(
-                                                  onTap: getCoupenFunction,
-                                                  child: getCodeLoading
-                                                      ? const SizedBox(
-                                                          width: 20,
-                                                          height: 20,
-                                                          child:
-                                                              CircularProgressIndicator(
-                                                            strokeWidth: 2,
-                                                          ))
-                                                      : Icon(
-                                                          // provider
-                                                          //             .coupenCodeModel
-                                                          //             ?.coupons
-                                                          //             ?.isNotEmpty ??
-                                                          //         false
-                                                          isVisible
-                                                              ? Icons
-                                                                  .arrow_drop_up_outlined
-                                                              : Icons
-                                                                  .arrow_drop_down_circle,
-                                                          color: ColorManager
-                                                              .primary2,
-                                                        ),
-                                                ),
-                                                const SizedBox(
-                                                  width: 10,
-                                                ),
-                                              ],
-                                            ),
+                                      decoration: InputDecoration(
+                                        suffixIcon: SizedBox(
+                                          width: size.width * .5,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              SizedBox(
+                                                // width: size.width * .4,
+                                                child: ElevatedButton(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      padding: coupenLoading
+                                                          ? const EdgeInsets
+                                                                  .symmetric(
+                                                              horizontal: 35,
+                                                              vertical: 0)
+                                                          : const EdgeInsets
+                                                                  .symmetric(
+                                                              horizontal: 20,
+                                                              vertical: 0),
+                                                    ),
+                                                    onPressed: () async {
+                                                      await redeem();
+
+                                                      setState(() {
+                                                        isredeem = true;
+                                                        isVisible = false;
+                                                      });
+                                                    },
+                                                    child: coupenLoading
+                                                        ? const SizedBox(
+                                                            width: 30,
+                                                            height: 30,
+                                                            child:
+                                                                CircularProgressIndicator())
+                                                        : Text(
+                                                            str.redeem,
+                                                            style: getSemiBoldtStyle(
+                                                                color: ColorManager
+                                                                    .whiteColor,
+                                                                fontSize: 15),
+                                                          )),
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              InkWell(
+                                                onTap: getCoupenFunction,
+                                                child: getCodeLoading
+                                                    ? const SizedBox(
+                                                        width: 20,
+                                                        height: 20,
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                          strokeWidth: 2,
+                                                        ))
+                                                    : Icon(
+                                                        // provider
+                                                        //             .coupenCodeModel
+                                                        //             ?.coupons
+                                                        //             ?.isNotEmpty ??
+                                                        //         false
+                                                        isVisible
+                                                            ? Icons
+                                                                .arrow_drop_up_outlined
+                                                            : Icons
+                                                                .arrow_drop_down_circle,
+                                                        color: ColorManager
+                                                            .primary2,
+                                                      ),
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                            ],
                                           ),
-                                          hintText: str.ps_coupon_h,
-                                          hintStyle: getRegularStyle(
-                                              color: const Color.fromARGB(
-                                                  255, 173, 173, 173),
-                                              fontSize: 15)),
+                                        ),
+                                        hintText: str.ps_coupon_h,
+                                        hintStyle: getRegularStyle(
+                                            color: const Color.fromARGB(
+                                                255, 173, 173, 173),
+                                            fontSize: 15),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -861,27 +863,24 @@ Row(
                                                                   ?.amount) +
                                                           taxTotalAmount;
 
-                                                     
-
                                                       // if (isredeem == true &&
                                                       //     PaymentServiceControllers
                                                       //             .couponController
                                                       //             .text ==
                                                       //         coupencode
-                                                      //             .toString() 
+                                                      //             .toString()
                                                       //     ) {
-                                                      
-                                                        grandTotal =
-                                                            discountedAmount +
-                                                                double.parse(
-                                                                    formattedTaxTotal ??
-                                                                        "0.00");
-                                                                        formattedGrandTotal =
+
+                                                      grandTotal =
+                                                          discountedAmount +
+                                                              double.parse(
+                                                                  formattedTaxTotal ??
+                                                                      "0.00");
+                                                      formattedGrandTotal =
                                                           grandTotal
                                                               .toStringAsFixed(
                                                                   2);
                                                       // }
-                                                      
 
                                                       return Padding(
                                                         padding:
@@ -1032,27 +1031,30 @@ Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                28, 0, 28, 0)),
-                                        onPressed: onContinue,
-                                        child: !isPaymentLoading
-                                            ?
-                                            // Text(str.ps_pay,
-                                            Text(str.proceed,
-                                                style: getRegularStyle(
-                                                    color:
-                                                        ColorManager.whiteText,
-                                                    fontSize: 16))
-                                            : const SizedBox(
-                                                width: 30,
-                                                height: 30,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  color: Colors.white,
-                                                ))),
+                                      style: ElevatedButton.styleFrom(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            28, 0, 28, 0),
+                                      ),
+                                      onPressed: onContinue,
+                                      child: !isPaymentLoading
+                                          ?
+                                          // Text(str.ps_pay,
+                                          Text(
+                                              str.proceed,
+                                              style: getRegularStyle(
+                                                  color: ColorManager.whiteText,
+                                                  fontSize: 16),
+                                            )
+                                          : const SizedBox(
+                                              width: 30,
+                                              height: 30,
+                                              child: CircularProgressIndicator(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                    ),
                                   ],
-                                )
+                                ),
                               ],
                             ),
                             //added extra
@@ -1130,28 +1132,28 @@ Row(
     );
   }
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-        builder: (context, child) {
-          return Theme(
-            data: ThemeData.light().copyWith(
-                colorScheme:
-                    const ColorScheme.light(primary: ColorManager.primary)),
-            child: child!,
-          );
-        },
-        context: context,
-        initialDate: selectedDate,
-        firstDate: DateTime.now(),
-        lastDate: DateTime(2100, 8));
-    if (picked != null && picked != selectedDate) {
-      setState(() {
-        selectedDate = picked;
-        PaymentServiceControllers.dateController.text =
-            selectedDate.toLocal().toString().split(' ')[0];
-      });
-    }
-  }
+  // Future<void> _selectDate(BuildContext context) async {
+  //   final DateTime? picked = await showDatePicker(
+  //       builder: (context, child) {
+  //         return Theme(
+  //           data: ThemeData.light().copyWith(
+  //               colorScheme:
+  //                   const ColorScheme.light(primary: ColorManager.primary)),
+  //           child: child!,
+  //         );
+  //       },
+  //       context: context,
+  //       initialDate: selectedDate,
+  //       firstDate: DateTime.now(),
+  //       lastDate: DateTime(2100, 8));
+  //   if (picked != null && picked != selectedDate) {
+  //     setState(() {
+  //       selectedDate = picked;
+  //       PaymentServiceControllers.dateController.text =
+  //           selectedDate.toLocal().toString().split(' ')[0];
+  //     });
+  //   }
+  // }
 
 // * Search Coupon Function
 
@@ -1218,9 +1220,9 @@ Row(
     final provider = Provider.of<DataProvider>(context, listen: false);
     final apiToken = Hive.box("token").get('api_token');
     if (apiToken == null) return;
+ final str = AppLocalizations.of(context)!;
     final fieldData = provider.viewProfileModel?.userdetails;
-    // final url =
-    //     "${paymentSuccess}firstname=${ProfileServiceControllers.firstNameController}&lastname=${ProfileServiceControllers.lastNameController}&civil_card_no=${ProfileServiceControllers.civilCardController}&dob=${ProfileServiceControllers.dateController}&gender=female&country_id=101&state=kerala&region=sdf&address=dfsdf&package_id=40&service_id=12&coupon_code=ABC&total_amount=100.00&total_tax_amount=0.00&coupon_discount=0.00&grand_total=100.00";
+    log('message ================${provider.viewProfileModel?.userdetails?.regionId}');
     final firstName = ProfileServiceControllers.firstNameController.text.isEmpty
         ? fieldData?.firstname ?? ''
         : ProfileServiceControllers.firstNameController.text;
@@ -1236,65 +1238,112 @@ Row(
         : ProfileServiceControllers.dateController.text;
     final gender =
         provider.gender.isEmpty ? fieldData?.gender ?? '' : provider.gender;
-    final state = ProfileServiceControllers.stateController.text.isEmpty
-        ? fieldData?.state ?? ''
-        : ProfileServiceControllers.stateController.text;
-    final region = ProfileServiceControllers.regionController.text.isEmpty
-        ? fieldData?.region ?? ''
-        : ProfileServiceControllers.regionController.text;
+    int? stateID = fieldData?.stateId;
+    int? regionID = fieldData?.regionId;
+    // log('region = ${fieldData?.region} , state = ${fieldData?.state}');
+    log('states = ${provider.stateinfomodel?.states?.map((e) => '${e.stateName} - ${e.id}').toList()}');
+    log('regions = ${provider.regionInfoModel?.regions?.map((e) => '${e.cityName} - ${e.id}').toList()}');
+    log('stateID = $stateID ,regionID = $regionID ');
+
     final address = ProfileServiceControllers.addressController.text.isEmpty
         ? fieldData?.about ?? ''
         : ProfileServiceControllers.addressController.text;
     final serviceId = provider.serviceId;
-    final coupenCode = PaymentServiceControllers.couponController.text;
     final countryId = provider.selectedCountryId ??
         provider.viewProfileModel?.userdetails?.countryId;
     final packageId = packages?.id;
 
-    final url =
-        '${placeOrderApi}firstname=$firstName&lastname=$lastName&civil_card_no=$civilCardNo&dob=$dob&gender=$gender&country_id=${countryId.toString()}&state=$state&region=$region&address=$address&package_id=$packageId&service_id=$serviceId&coupon_code=$coupenid&total_amount=${packages?.amount}&total_tax_amount=$taxTotalAmount&coupon_discount=$discountamt&grand_total=$grandTotal';
-    try {
-      print(packageId);
-      print(url);
-      // return;
-      var response = await http.post(Uri.parse(url), headers: {
-        "device-id": provider.deviceId ?? '',
-        "api-token": apiToken
-      });
-      if (response.statusCode == 200) {
-        var jsonResponse = jsonDecode(response.body);
-        log(response.body);
-        if (jsonResponse['result'] == true) {
-          // print(jsonResponse['order_id']);
-          String orderId = jsonResponse['order_id'].toString();
+    Dio dio = Dio();
 
-          log(
-            jsonResponse['message'],
+    FormData formData = FormData();
+
+    // Adding basic fields to FormData
+    formData.fields.addAll([
+      MapEntry('firstname', firstName),
+      MapEntry('lastname', lastName),
+      MapEntry('civil_card_no', civilCardNo),
+      MapEntry('dob', dob),
+      MapEntry('gender', gender),
+      MapEntry('country_id', countryId.toString()),
+      if (stateID != null) MapEntry('state', stateID.toString()),
+      if (regionID != null) MapEntry('region', regionID.toString()),
+      MapEntry('address', address),
+      MapEntry('package_id', packageId.toString()),
+      MapEntry('service_id', serviceId.toString()),
+      MapEntry('coupon_code', coupenid.toString()),
+      MapEntry('total_amount', packages?.amount.toString() ?? '0'),
+      MapEntry('total_tax_amount', taxTotalAmount.toString()),
+      MapEntry('coupon_discount', discountamt.toString()),
+      MapEntry('grand_total', grandTotal.toString()),
+    ]);
+
+    ChildServiceModel? itemModel = provider.customerChildSer;
+    List<Document> documents = itemModel?.documents ?? [];
+    for (Document item in documents) {
+      if (item.file != null) {
+        File file = File(item.file!.path);
+        MultipartFile multipartFile = await MultipartFile.fromFile(file.path,
+            filename: file.path.split('/').last);
+        formData.files.add(MapEntry('files[]', multipartFile));
+      }
+    }
+    log('formData.fields -- ${formData.fields} - files= ${formData.files.map((e) => e.value.filename)}');
+    // Adding the file if it exists
+    // if (provider.pickedFile != null) {
+    //   File file = File(provider.pickedFile!.path);
+    // }
+// ----------------------------------------------------shithin
+    try {
+      final response = await dio.post(
+        placeOrderApi,
+        data: formData,
+        options: Options(
+          headers: {
+            "device-id": provider.deviceId ?? '',
+            "api-token": apiToken
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        var jsonResponse = response.data;
+        log('place order -> ${response.data}');
+
+        if (jsonResponse['result'] == true) {
+          String orderId = jsonResponse['order_id'].toString();
+          log(jsonResponse['message']);
+          double amount = (packages?.amount ?? 0.0).toDouble();
+
+          if (amount == 0.0) {
+            isPaymentLoading = false;
+            setState(() {});
+            showAnimatedSnackBar(context, str.waiting_for_admin_apporval,timeDurationInSec: 10,
+                type: AnimatedSnackBarType.success);
+            Navigator.pop(context);
+            Navigator.pop(context);
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            }
+            return;
+          }
+
+          Navigator.push(
+            context,
+            PageTransition(
+              type: PageTransitionType.leftToRight,
+              child: PayPage(
+                packageName: packages?.packageName ?? '',
+                validity: packages?.validity ?? '',
+                amount: grandTotal ?? 0,
+                orderId: orderId,
+                serviceFee: (packages?.amount.toString() ?? ''),
+                taxTotal: formattedTaxTotal ?? 0,
+                discount: ((packages?.amount) * discount) / 100,
+                vat: 4,
+              ),
+            ),
           );
 
-          // Navigator.push(context, MaterialPageRoute(builder: ((context) {
-          //   return const PaymentSelection();
-          // })));
-          Navigator.push(
-              context,
-              PageTransition(
-                  type: PageTransitionType.leftToRight,
-                  // child: PaymentScreen(
-                  //   amount: grandTotal ?? 0,
-                  //   // packages: packages!,
-                  //   // taxTotalAmount: taxTotalAmount.toString(),
-                  // )
-                  child: PayPage(
-                    packageName: packages?.packageName ?? '',
-                    validity: packages?.validity ?? '',
-                    amount: grandTotal ?? 0,
-                    orderId: orderId,
-                    serviceFee: (packages?.amount.toString() ?? ''),
-                    taxTotal: formattedTaxTotal ?? 0,
-                    discount: ((packages?.amount) * discount) / 100,
-                    // validity: packages?.validity ?? '',
-                    vat: 4,
-                  )));
           setState(() {
             isPaymentLoading = false;
           });
@@ -1302,21 +1351,23 @@ Row(
           final placeOrderData = PlaceOrder.fromJson(jsonResponse);
           provider.getPlaceOrderData(placeOrderData);
         } else {
-          print(response.statusCode);
-          showAnimatedSnackBar(
-            context,
-            jsonResponse['errors'],
-          );
-
+          showAnimatedSnackBar(context, jsonResponse['errors']);
           setState(() {
             isPaymentLoading = false;
           });
         }
-        // final childData = ChildServiceModel.fromJson(jsonResponse);
-        // provider.childModelData(childData);
-      } else {}
-    } on Exception catch (e) {
-      print(e);
+      } else {
+        showAnimatedSnackBar(context, 'Error: ${response.statusCode}');
+        setState(() {
+          isPaymentLoading = false;
+        });
+      }
+    } on DioError catch (e) {
+      log('Dio error: $e');
+      showAnimatedSnackBar(context, 'An error occurred, please try again.');
+      setState(() {
+        isPaymentLoading = false;
+      });
     }
   }
 
@@ -1408,8 +1459,51 @@ Row(
       } else {}
     } on Exception catch (_) {}
   }
+
+// This function is used to get whole data regarding the initial state of this screen
+  _init() async {
+    _provider = context.read<DataProvider>();
+    lang = Hive.box('LocalLan').get('lang');
+    PaymentServiceControllers.couponController.clear();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      final data = await getCoupenCodeList(context);
+      if (data) {
+        GetCoupenModel? coupenCodeModel = _provider.coupenCodeModel;
+        if (coupenCodeModel != null) {
+          list = coupenCodeModel.coupons ?? [];
+        }
+
+        print('coup:::${list}');
+      }
+    });
+    if (widget.orderType != PlaceOrderType.renew) return;
+    Userdetails? userdetails = _provider.viewProfileModel?.userdetails;
+    int? countryId = userdetails?.countryId;
+    String regionName = userdetails?.region ?? '';
+    String stateName = userdetails?.state ?? '';
+    if (countryId == null) return;
+    await getRegionData(context, countryId);
+    List<Regions>? regions = _provider.regionInfoModel?.regions ?? [];
+    if (regions.isEmpty) return;
+    int? userRegionId = regions
+        .firstWhere((element) => element.cityName == regionName,
+            orElse: () => Regions())
+        .id;
+    await getStateData(context, userRegionId);
+    List<States> states = _provider.stateinfomodel?.states ?? [];
+    if (states.isEmpty) return;
+    int? userStateId = states
+        .firstWhere((element) => element.stateName == stateName,
+            orElse: () => States())
+        .id;
+    _provider.viewProfileModel?.userdetails?.regionId = userRegionId;
+    _provider.viewProfileModel?.userdetails?.stateId = userStateId;
+    log('local -- ${_provider.viewProfileModel?.userdetails?.regionId}');
+  }
 }
 
 enum IsCodeAvailable { none, searching, available, notAvailable }
+
+enum PlaceOrderType { renew, newOrder, chooseMoreServices }
 
 // enum PackageStatus { none, first, second }

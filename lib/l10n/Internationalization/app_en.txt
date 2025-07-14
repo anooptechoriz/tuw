@@ -49,6 +49,7 @@
     "p_first_name_h":"Enter First Name",
     "p_last_name":"Last Name",
     "p_last_name_h":"Enter Last Name",
+    "p_email_h":"Email",
     "p_civil":"Civil Card No",
     "p_civil_h":"Enter Card No",
     "p_dob":"Date of Birth",
@@ -272,6 +273,6 @@
     "re_tell_us":"Tell us what they did.",
     "re_report_success":"Reported Customer Successfully",
 
-
+"waiting_for_admin_apporval":"Success, waiting for admin approval",
 
 }

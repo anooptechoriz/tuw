@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
@@ -14,20 +15,28 @@ import 'package:social_media_services/providers/otp_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:social_media_services/utils/animatedSnackBar.dart';
 
-getOtp(BuildContext context, countryCode, phoneNo, resend) async {
+getOtp(
+    {required BuildContext context,
+    countryCode,
+    phoneNo,
+    resend,
+    String? appSignature}) async {
   final String id = Hive.box("LocalLan").get('lang_id');
   try {
     final provider = Provider.of<DataProvider>(context, listen: false);
     final otpProvider = Provider.of<OTPProvider>(context, listen: false);
-    final url = Uri.parse(
-        "$apiUser/request_otp?countrycode=$countryCode&phone=$phoneNo&language_id=$id");
-    print(url);
-    var response =
-        await http.post(url, headers: {"device-id": provider.deviceId ?? ''});
-   
+    StringBuffer urlsBuffer = StringBuffer(
+        '$apiUser/request_otp?countrycode=$countryCode&phone=$phoneNo&language_id=$id');
+    if (appSignature != null && Platform.isAndroid) {
+      urlsBuffer.write('&signature_key=$appSignature');
+    }
+    final url = Uri.parse("$urlsBuffer");
+    print('getOtp---------$url');
+    var response = await http.post(url, headers: {
+      "device-id": provider.deviceId ?? '',
+    });
     if (response.statusCode != 200) {
-      log("Something Went Wrong9");
-
+      log("Something Went Wrong - - ");
       return;
     }
 

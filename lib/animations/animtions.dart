@@ -43,9 +43,9 @@ class FadeCustomAnimation extends StatelessWidget {
 class FadeSlideCustomAnimation extends StatelessWidget {
   final double delay;
   final Widget? child;
-  bool isRight;
+ final bool isRight;
 
-  FadeSlideCustomAnimation({this.delay = 1, this.child, this.isRight = false});
+const  FadeSlideCustomAnimation({this.delay = 1, this.child, this.isRight = false});
 
   @override
   Widget build(BuildContext context) {

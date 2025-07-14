@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -11,24 +10,22 @@ import 'package:social_media_services/components/color_manager.dart';
 import 'package:social_media_services/providers/data_provider.dart';
 import 'package:social_media_services/screens/serviceman%20settings%20profile/serviceman_profile_edit.dart';
 import 'package:http/http.dart' as http;
-
-// import 'package:path/path.dart';
 import 'package:async/async.dart';
 import 'package:social_media_services/API/viewProfile.dart';
 
 class ProfileImage extends StatefulWidget {
-  double profileSize = 0;
-  double iconSize = 0;
-  double iconRadius = 0;
-  bool isNavigationActive = false;
+ final double profileSize ;
+ final double iconSize  ;
+ final double iconRadius  ;
+ final bool isNavigationActive  ;
   // String? image;
-  ProfileImage(
+const  ProfileImage(
       {Key? key,
-      required this.profileSize,
-      required this.iconSize,
-      required this.isNavigationActive,
+        this.profileSize = 0,
+        this.iconSize = 0,
+        this.isNavigationActive = false,
       // this.image,
-      required this.iconRadius})
+        this.iconRadius = 0})
       : super(key: key);
 
   @override
@@ -71,7 +68,7 @@ class _ProfileImageState extends State<ProfileImage> {
                     ? null
                     : CachedNetworkImageProvider(
                         "$profileImageApi/${provider.viewProfileModel?.userdetails?.profilePic}",
-                        errorListener: () {},
+                        errorListener: (){},
                       ),
             child: provider.viewProfileModel?.userdetails?.profilePic == null
                 ? Image.asset(
@@ -166,18 +163,18 @@ class _ProfileImageState extends State<ProfileImage> {
 }
 
 class ProfileImage3 extends StatefulWidget {
-  double profileSize = 0;
-  double iconSize = 0;
-  double iconRadius = 0;
-  bool isNavigationActive = false;
+final  double profileSize  ;
+final  double iconSize  ;
+final  double iconRadius  ;
+final  bool isNavigationActive  ;
   // String? image;
   ProfileImage3(
       {Key? key,
-      required this.profileSize,
-      required this.iconSize,
-      required this.isNavigationActive,
+        this.profileSize = 0,
+        this.iconSize = 0,
+        this.isNavigationActive = false,
       // this.image,
-      required this.iconRadius})
+        this.iconRadius = 0})
       : super(key: key);
 
   @override

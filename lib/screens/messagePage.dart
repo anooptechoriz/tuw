@@ -59,7 +59,7 @@ class _MessagePageState extends State<MessagePage> {
       getChatList(
         context,
       );
-      timer = Timer.periodic(const Duration(seconds: 30), (timer) {
+      timer = Timer.periodic(const Duration(seconds: 60), (timer) {
         if (mounted) {
           getChatList(
             context,
@@ -99,8 +99,8 @@ class _MessagePageState extends State<MessagePage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final provider = Provider.of<DataProvider>(context, listen: true);
-    final servicerProvider =
-        Provider.of<ServicerProvider>(context, listen: true);
+    // final servicerProvider =
+    //     Provider.of<ServicerProvider>(context, listen: true);
     final w = MediaQuery.of(context).size.width;
     final mobWth = ResponsiveWidth.isMobile(context);
     final smobWth = ResponsiveWidth.issMobile(context);
@@ -445,8 +445,8 @@ class _MessagePageState extends State<MessagePage> {
         DateTime.utc(date.year, date.month, date.day, dtime.hour, dtime.minute);
     var localTime = utc.toLocal();
 
-    var hour = localTime.hour;
-    var minute = localTime.minute;
+    // var hour = localTime.hour;
+    // var minute = localTime.minute;
     var locale = lang == 'ar'
         ? 'ar'
         : lang == 'hi'

@@ -3,7 +3,7 @@ import 'package:social_media_services/components/styles_manager.dart';
 
 class TextFieldProfileService extends StatelessWidget {
   final String hintText;
-  TextInputType? type;
+ final TextInputType? type;
   final TextEditingController controller;
   TextFieldProfileService({
     Key? key,

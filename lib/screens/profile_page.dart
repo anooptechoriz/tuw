@@ -22,7 +22,6 @@ import 'package:social_media_services/providers/data_provider.dart';
 import 'package:social_media_services/screens/edit_profile_screen.dart';
 import 'package:social_media_services/screens/home_page.dart';
 import 'package:social_media_services/screens/messagePage.dart';
-import 'package:social_media_services/screens/serviceHome.dart';
 import 'package:social_media_services/screens/serviceman%20settings%20profile/serviceman_profile_view.dart';
 import 'package:social_media_services/widgets/backbutton.dart';
 import 'package:social_media_services/widgets/custom_drawer.dart';
@@ -40,12 +39,12 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final int _selectedIndex = 2;
-  final List<Widget> _screens = [
-    const ServiceHomePage(),
-    const MessagePage(
-      isHome: true,
-    )
-  ];
+  // final List<Widget> _screens = [
+  //   const ServiceHomePage(),
+  //   const MessagePage(
+  //     isHome: true,
+  //   )
+  // ];
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   String lang = '';
   Future<bool> handleBackButton() async {

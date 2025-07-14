@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
@@ -43,9 +45,9 @@ import 'choose_more_services_page.dart';
 
 class ProfileServicePage extends StatefulWidget {
   final Userdetails? userAddress;
-  bool? isservicepage;
-  var index;
-  ProfileServicePage(
+  final bool? isservicepage;
+  final index;
+  const ProfileServicePage(
       {Key? key, this.userAddress, this.isservicepage, this.index})
       : super(key: key);
 
@@ -58,7 +60,7 @@ class _ProfileServicePageState extends State<ProfileServicePage> {
   String? defvalue;
   String? selectedValue;
   String? defaultReg;
-  int? Regid;
+  int? regid;
   int? countryid;
   String? defRegion;
   bool isTickSelected = false;
@@ -68,14 +70,15 @@ class _ProfileServicePageState extends State<ProfileServicePage> {
   final int _selectedIndex = 2;
   final List<Widget> _screens = [const ServiceHomePage(), const MessagePage()];
   String lang = '';
-  List<Countries> r2 = [];
+  // List<Countries> r2 = [];
+  List<Countries> countries = [];
   FocusNode nfocus = FocusNode();
   List<Countries> r = [];
   List<Regions> reg = [];
   Future<bool> handleBackButton() async {
     if (_scaffoldKey.currentState!.isEndDrawerOpen) {
       // If the drawer is open, close it
-      _scaffoldKey.currentState!.closeEndDrawer();
+      _scaffoldKey.currentState?.closeEndDrawer();
       return false; // Do not exit the app
     } else {
       widget.isservicepage == true
@@ -106,30 +109,52 @@ class _ProfileServicePageState extends State<ProfileServicePage> {
       final provider = Provider.of<DataProvider>(context, listen: false);
       viewProfile(context);
       fillFields(provider);
-      print(
-          "city=============================${provider.viewProfileModel?.userdetails?.city}");
+      final fieldData = provider.viewProfileModel?.userdetails;
+
+      print("city=============================${fieldData?.state}");
       print(
           "state=============================${provider.viewProfileModel?.userdetails?.statename}");
+ 
 
-      int? n = provider.countriesModel?.countries?.length;
-      int i = 0;
+      // countryid = 165;
+     String? stateID = fieldData?.state;
+     String? regionID = fieldData?.region;
+  
+ log('provider.viewProfileModel?.userdetails?.stateId --> ${provider.viewProfileModel?.userdetails?.stateId}');
+ log('provider.viewProfileModel?.userdetails?.regionId --> ${provider.viewProfileModel?.userdetails?.regionId}');
+      // int? n = provider.countriesModel?.countries?.length;
+      // int i = 0;
 
-      while (i < n!.toInt()) {
-        r2.add(provider.countriesModel!.countries![i]);
-        i++;
-      }
+      // while (i < n!.toInt()) {
+      //   r2.add(provider.countriesModel!.countries![i]);
+      //   i++;
+      // }
+      countries = provider.countriesModel?.countries ?? [];
 
       provider.clearRegions();
       provider.clearStates();
-
+ log('provider.viewProfileModel?.userdetails?.stateId 2--> ${provider.viewProfileModel?.userdetails?.stateId}');
+ log('provider.viewProfileModel?.userdetails?.regionId 2--> ${provider.viewProfileModel?.userdetails?.regionId}');
       await getRegionData(
           context, provider.viewProfileModel?.userdetails?.countryId);
       await getStateData(
           context, provider.viewProfileModel?.userdetails?.region);
-
+ log('provider.viewProfileModel?.userdetails?.stateId 3--> ${provider.viewProfileModel?.userdetails?.stateId}');
+ log('provider.viewProfileModel?.userdetails?.regionId 3--> ${provider.viewProfileModel?.userdetails?.regionId}');
       setState(() {});
 
       getCustomerParent(context);
+          if (stateID != null) {
+        provider.viewProfileModel?.userdetails?.stateId =
+            int.parse(fieldData?.state ?? '0');
+      }
+      if (regionID != null) {
+        provider.viewProfileModel?.userdetails?.regionId =
+            int.parse(fieldData?.region ?? '0');
+      }
+
+ log('provider.viewProfileModel?.userdetails?.stateId 4--> ${provider.viewProfileModel?.userdetails?.stateId}');
+ log('provider.viewProfileModel?.userdetails?.regionId 4--> ${provider.viewProfileModel?.userdetails?.regionId}');
     });
   }
 
@@ -145,7 +170,7 @@ class _ProfileServicePageState extends State<ProfileServicePage> {
     final h = MediaQuery.of(context).size.height;
     final mob = Responsive.isMobile(context);
     final provider = Provider.of<DataProvider>(context, listen: true);
-    final homeData = provider.homeModel?.services;
+    // final homeData = provider.homeModel?.services;
     final mobWth = ResponsiveWidth.isMobile(context);
     final smobWth = ResponsiveWidth.issMobile(context);
     return WillPopScope(
@@ -226,35 +251,42 @@ class _ProfileServicePageState extends State<ProfileServicePage> {
                               ),
                             ));
                       },
-                      child:Stack(
-                      children: [InkWell(
-                        child: SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: SvgPicture.asset(ImageAssets.chatIconSvg)),
-         
-             ),  Positioned(
-        right: 0,top: 0,
-        child: new Container(
-          padding: EdgeInsets.all(1),
-          decoration: new BoxDecoration(
-            color: Colors.red,
-            borderRadius: BorderRadius.circular(6),
-          ),
-          constraints: BoxConstraints(
-            minWidth: 15,
-            minHeight: 15,
-          ),
-          child: Text(provider.chatListDetails!.chatMessage!.data!.isNotEmpty? 
-              provider.chatListDetails!.chatMessage!.data![0].unreadCount.toString()
-             :'0', style: new TextStyle(
-              color: Colors.white,
-              fontSize: 11,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ) ]),
+                      child: Stack(children: [
+                        InkWell(
+                          child: SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: SvgPicture.asset(ImageAssets.chatIconSvg)),
+                        ),
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: new Container(
+                            padding: EdgeInsets.all(1),
+                            decoration: new BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            constraints: BoxConstraints(
+                              minWidth: 15,
+                              minHeight: 15,
+                            ),
+                            child: Text(
+                              provider.chatListDetails!.chatMessage!.data!
+                                      .isNotEmpty
+                                  ? provider.chatListDetails!.chatMessage!
+                                      .data![0].unreadCount
+                                      .toString()
+                                  : '0',
+                              style: new TextStyle(
+                                color: Colors.white,
+                                fontSize: 11,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        )
+                      ]),
                     ),
                   ),
                 ],
@@ -537,6 +569,7 @@ class _ProfileServicePageState extends State<ProfileServicePage> {
                                                   DropdownButtonHideUnderline(
                                                 child: DropdownButton2<
                                                         Countries>(
+                                                    searchInnerWidgetHeight: 1,
                                                     isExpanded: true,
                                                     icon: const Icon(
                                                       Icons.keyboard_arrow_down,
@@ -545,55 +578,70 @@ class _ProfileServicePageState extends State<ProfileServicePage> {
                                                     ),
                                                     hint: Text(str.ae_country_h,
                                                         style: getRegularStyle(
-                                                            color: const Color.fromARGB(
-                                                                255, 173, 173, 173),
+                                                            color:
+                                                                const Color.fromARGB(
+                                                                    255,
+                                                                    173,
+                                                                    173,
+                                                                    173),
                                                             fontSize: 15)),
-                                                    items: r2
+                                                    items: countries
                                                         .map(
-                                                            (item) => DropdownMenuItem<
-                                                                    Countries>(
-                                                                  value: item,
-                                                                  child: Row(
-                                                                    children: [
-                                                                      CachedNetworkImage(
-                                                                          errorWidget: (context, url, error) =>
-                                                                              Container(
-                                                                                width: 25,
-                                                                                height: 20,
-                                                                                color: ColorManager.whiteColor,
+                                                          (item) =>
+                                                              DropdownMenuItem<
+                                                                  Countries>(
+                                                            value: item,
+                                                            child: Row(
+                                                              children: [
+                                                                CachedNetworkImage(
+                                                                    errorWidget: (context,
+                                                                            url,
+                                                                            error) =>
+                                                                        Container(
+                                                                          width:
+                                                                              25,
+                                                                          height:
+                                                                              20,
+                                                                          color:
+                                                                              ColorManager.whiteColor,
+                                                                        ),
+                                                                    imageBuilder:
+                                                                        (context,
+                                                                                imageProvider) =>
+                                                                            Container(
+                                                                              width: 25,
+                                                                              height: 20,
+                                                                              decoration: BoxDecoration(
+                                                                                // shape: BoxShape.circle,
+                                                                                image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
                                                                               ),
-                                                                          imageBuilder: (context, imageProvider) =>
-                                                                              Container(
-                                                                                width: 25,
-                                                                                height: 20,
-                                                                                decoration: BoxDecoration(
-                                                                                  // shape: BoxShape.circle,
-                                                                                  image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
-                                                                                ),
-                                                                              ),
-                                                                          // width: 90,
-                                                                          progressIndicatorBuilder: (context,
-                                                                              url,
-                                                                              progress) {
-                                                                            return Container(
-                                                                              color: ColorManager.black,
-                                                                            );
-                                                                          },
-                                                                          imageUrl:
-                                                                              '$endPoint${item.countryflag}'),
-                                                                      const SizedBox(
-                                                                        width:
-                                                                            4,
-                                                                      ),
-                                                                      Text(
-                                                                          item.countryName ??
-                                                                              '',
-                                                                          style: getRegularStyle(
-                                                                              color: ColorManager.black,
-                                                                              fontSize: 15)),
-                                                                    ],
-                                                                  ),
-                                                                ))
+                                                                            ),
+                                                                    // width: 90,
+                                                                    progressIndicatorBuilder:
+                                                                        (context,
+                                                                            url,
+                                                                            progress) {
+                                                                      return Container(
+                                                                        color: ColorManager
+                                                                            .black,
+                                                                      );
+                                                                    },
+                                                                    imageUrl:
+                                                                        '$endPoint${item.countryflag}'),
+                                                                const SizedBox(
+                                                                    width: 4),
+                                                                Text(
+                                                                    item.countryName ??
+                                                                        '',
+                                                                    style: getRegularStyle(
+                                                                        color: ColorManager
+                                                                            .black,
+                                                                        fontSize:
+                                                                            15)),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        )
                                                         .toList(),
                                                     // value: selectedValue,
                                                     onChanged: (value) async {
@@ -604,10 +652,10 @@ class _ProfileServicePageState extends State<ProfileServicePage> {
                                                       });
                                                       defaultReg = null;
                                                       await getRegionData(
-                                                        context,
-                                                        value?.countryId,
-                                                      );
+                                                          context,
+                                                          value?.countryId);
                                                       provider.clearStates();
+
                                                       defRegion = null;
 
                                                       setState(() {});
@@ -622,8 +670,9 @@ class _ProfileServicePageState extends State<ProfileServicePage> {
                                                         const EdgeInsets.fromLTRB(
                                                             12, 0, 8, 0),
                                                     // dropdownWidth: size.width,
-                                                    itemPadding: const EdgeInsets.fromLTRB(
-                                                        12, 0, 12, 0),
+                                                    itemPadding:
+                                                        const EdgeInsets.fromLTRB(
+                                                            12, 0, 12, 0),
                                                     searchController:
                                                         AddressEditControllers
                                                             .searchController,
@@ -687,7 +736,7 @@ class _ProfileServicePageState extends State<ProfileServicePage> {
                                                     searchMatchFn:
                                                         (item, searchValue) {
                                                       return (item
-                                                          .value.countryName
+                                                          .value!.countryName
                                                           .toString()
                                                           .toLowerCase()
                                                           .contains(
@@ -774,6 +823,7 @@ class _ProfileServicePageState extends State<ProfileServicePage> {
                                                               style: getRegularStyle(
                                                                   color: const Color.fromARGB(255, 173, 173, 173),
                                                                   fontSize: 15)),
+                                                      itemHeight: 60,
                                                       items: provider
                                                           .regionInfoModel
                                                           ?.regions!
@@ -781,14 +831,22 @@ class _ProfileServicePageState extends State<ProfileServicePage> {
                                                               DropdownMenuItem<
                                                                   Regions>(
                                                                 value: item,
-                                                                child: Text(
-                                                                    item.cityName ??
-                                                                        '',
-                                                                    style: getRegularStyle(
-                                                                        color: ColorManager
-                                                                            .black,
-                                                                        fontSize:
-                                                                            15)),
+                                                                child:
+                                                                    Container(
+                                                                  child: Text(
+                                                                      item.cityName ??
+                                                                          '',
+                                                                      maxLines:
+                                                                          3,
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      style: getRegularStyle(
+                                                                          color: ColorManager
+                                                                              .black,
+                                                                          fontSize:
+                                                                              15)),
+                                                                ),
                                                               ))
                                                           .toList(),
                                                       // value: defaultReg,
@@ -796,34 +854,46 @@ class _ProfileServicePageState extends State<ProfileServicePage> {
                                                         setState(() {
                                                           defaultReg =
                                                               value?.cityName;
-                                                          Regid = value?.id;
+                                                          regid = value?.id;
                                                         });
+                                                        provider
+                                                            .viewProfileModel
+                                                            ?.userdetails
+                                                            ?.regionId = regid;
+                                                        provider
+                                                                .viewProfileModel
+                                                                ?.userdetails
+                                                                ?.region =
+                                                            defaultReg;
                                                         ProfileServiceControllers
                                                                 .regionController
                                                                 .text =
                                                             defaultReg ?? '';
+                                                        provider
+                                                                .viewProfileModel
+                                                                ?.userdetails
+                                                                ?.regionId =
+                                                            value?.id;
                                                         // s(selectedValue);
                                                         provider.clearStates();
-
                                                         defRegion = null;
-
                                                         await getStateData(
-                                                            context, Regid);
+                                                            context, regid);
                                                         setState(() {});
                                                       },
-                                                      buttonHeight: 50,
-                                                      dropdownMaxHeight: h * .6,
-                                                      // buttonWidth: 140,
-                                                      itemHeight: 40,
                                                       buttonPadding:
                                                           const EdgeInsets
                                                                   .fromLTRB(
-                                                              12, 0, 8, 0),
+                                                              8, 0, 8, 0),
+                                                      // buttonHeight: 50 * h,
+                                                      // dropdownMaxHeight: h * .6,
+                                                      // buttonWidth: 140,
+                                                      // itemHeight: 50,
                                                       // dropdownWidth: size.width,
-                                                      itemPadding:
-                                                          const EdgeInsets
-                                                                  .fromLTRB(
-                                                              12, 0, 12, 0),
+                                                      // itemPadding:
+                                                      //     const EdgeInsets
+                                                      //             .fromLTRB(
+                                                      //         12, 0, 12, 0),
 
                                                       customButton:
                                                           defaultReg == null
@@ -838,8 +908,11 @@ class _ProfileServicePageState extends State<ProfileServicePage> {
                                                                             15,
                                                                             10,
                                                                             15),
-                                                                        child: Text(defaultReg ??
-                                                                            ''),
+                                                                        child: Text(
+                                                                            defaultReg ??
+                                                                                '',
+                                                                            overflow:
+                                                                                TextOverflow.ellipsis),
                                                                       ),
                                                                     ),
                                                                   ],
@@ -858,6 +931,7 @@ class _ProfileServicePageState extends State<ProfileServicePage> {
                                               ),
                                             ],
                                           ),
+                                          // *state
                                           Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
@@ -939,6 +1013,11 @@ class _ProfileServicePageState extends State<ProfileServicePage> {
                                                                   child: Text(
                                                                       item.stateName ??
                                                                           '',
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      maxLines:
+                                                                          3,
                                                                       style: getRegularStyle(
                                                                           color: ColorManager
                                                                               .black,
@@ -956,17 +1035,33 @@ class _ProfileServicePageState extends State<ProfileServicePage> {
                                                                 value?.stateName
                                                                     as String;
                                                           });
+                                                          provider
+                                                                  .viewProfileModel
+                                                                  ?.userdetails
+                                                                  ?.stateId =
+                                                              value?.cityId;
+                                                          provider
+                                                                  .viewProfileModel
+                                                                  ?.userdetails
+                                                                  ?.statename =
+                                                              value?.stateName;
+
                                                           ProfileServiceControllers
                                                                   .stateController
                                                                   .text =
                                                               defRegion ?? '';
+                                                          provider
+                                                                  .viewProfileModel
+                                                                  ?.userdetails
+                                                                  ?.stateId =
+                                                              value?.id;
                                                           // s(selectedValue);
                                                         },
                                                         buttonHeight: 50,
-                                                        dropdownMaxHeight:
-                                                            h * .6,
+                                                        // dropdownMaxHeight:
+                                                        //     h * .6,
                                                         // buttonWidth: 140,
-                                                        itemHeight: 40,
+                                                        itemHeight: 70,
                                                         buttonPadding:
                                                             const EdgeInsets
                                                                     .fromLTRB(
@@ -1128,7 +1223,7 @@ class _ProfileServicePageState extends State<ProfileServicePage> {
     final provider = Provider.of<DataProvider>(context, listen: false);
     final homeData = provider.homeModel?.services;
     final str = AppLocalizations.of(context)!;
-    print(ProfileServiceControllers.regionController.text);
+    print('??????????  ${provider.viewProfileModel?.userdetails?.stateId}');
     // FocusManager.instance.primaryFocus?.unfocus();
     if (ProfileServiceControllers.firstNameController.text.isEmpty) {
       showAnimatedSnackBar(context, str.e_snack_name);
@@ -1163,7 +1258,7 @@ class _ProfileServicePageState extends State<ProfileServicePage> {
     }
   }
 
-  fillFields(DataProvider provider) {
+  fillFields(DataProvider provider) async {
     final fieldData = provider.viewProfileModel?.userdetails;
     ProfileServiceControllers.firstNameController.text =
         fieldData?.firstname ?? '';
@@ -1179,7 +1274,7 @@ class _ProfileServicePageState extends State<ProfileServicePage> {
     ProfileServiceControllers.stateController.text = fieldData?.statename ?? '';
 
     ProfileServiceControllers.regionController.text = fieldData?.city ?? '';
-    countryid = 165;
+
     value = fieldData?.gender == 'female' ? false : true;
     defaultReg = fieldData?.city;
     defRegion = fieldData?.statename;

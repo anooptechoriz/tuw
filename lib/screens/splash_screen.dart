@@ -42,7 +42,7 @@ class _SplashState extends State<Splash> {
         body: Center(
             child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [IntroductionLogo()],
+          children:  [IntroductionLogo()],
         )));
   }
 }

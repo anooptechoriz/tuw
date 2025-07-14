@@ -8,8 +8,8 @@ import 'package:social_media_services/model/favorite_serviceMan.dart';
 import 'package:social_media_services/responsive/responsive.dart';
 
 class FavoriteServiceListTile extends StatefulWidget {
-  Favorites? serviceman;
-  FavoriteServiceListTile({super.key, required this.serviceman});
+ final Favorites? serviceman;
+ const FavoriteServiceListTile({super.key, required this.serviceman});
 
   @override
   State<FavoriteServiceListTile> createState() =>

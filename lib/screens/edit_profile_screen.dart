@@ -39,8 +39,8 @@ import 'package:http/http.dart' as http;
 import 'package:social_media_services/widgets/backbutton.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  bool isregister;
-  EditProfileScreen({Key? key, this.isregister = true}) : super(key: key);
+  final bool isregister;
+  const EditProfileScreen({Key? key, this.isregister = true}) : super(key: key);
 
   @override
   State<EditProfileScreen> createState() => _ProfileDetailsPageState();
@@ -87,17 +87,24 @@ class _ProfileDetailsPageState extends State<EditProfileScreen> {
       // print(timeStamp);
       final provider = Provider.of<DataProvider>(context, listen: false);
       final otpProvider = Provider.of<OTPProvider>(context, listen: false);
-      int? n = provider.countriesModel?.countries?.length;
+      // int? n = provider.countriesModel?.countries?.length;
+      List<Countries> countries = provider.countriesModel?.countries ?? [];
       print(
           "city=============================${provider.viewProfileModel?.userdetails?.countryId}");
       print(
           "state=============================${provider.viewProfileModel?.userdetails?.statename}");
 
-      int i = 0;
-      while (i < n!.toInt()) {
-        r3.add(provider.countriesModel!.countries![i].countryName!);
-        i++;
+      // int i = 0;
+      for (Countries item in countries) {
+        String? countryName = item.countryName;
+        if (countryName != null) {
+          r3.add(countryName);
+        }
       }
+      // while (i < n!.toInt()) {
+      //   r3.add(provider.countriesModel!.countries![i].countryName!);
+      //   i++;
+      // }
       widget.isregister ? emptyFields() : fillFields(provider);
       viewProfile(context);
       print(widget.isregister);
@@ -145,7 +152,9 @@ class _ProfileDetailsPageState extends State<EditProfileScreen> {
     final mobWth = ResponsiveWidth.isMobile(context);
     final smobWth = ResponsiveWidth.issMobile(context);
     final provider = Provider.of<DataProvider>(context, listen: true);
-
+List<States> states = provider.stateinfomodel?.states??[];
+states.add(States(cityId: 0 , createdAt: '' , id: 0 ,stateName: 'atT' ,  updatedAt: ''));
+log('states -> ${states.map((e) => e.stateName)}');
     return Scaffold(
       drawerEnableOpenDragGesture: false,
       endDrawer: SizedBox(
@@ -411,6 +420,44 @@ class _ProfileDetailsPageState extends State<EditProfileScreen> {
                                     ),
                                   ),
                                 ),
+
+
+ Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                  child: TitleWidget(name: str.p_email_h),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      boxShadow: [
+                                        BoxShadow(
+                                          blurRadius: 10.0,
+                                          color: Colors.grey.shade300,
+                                          // offset: const Offset(5, 8.5),
+                                        ),
+                                      ],
+                                    ),
+                                    child: TextField(
+                                      // focusNode: nfocus,
+                                      style: const TextStyle(),
+                                      controller: EditProfileControllers
+                                          .emailController,
+                                      decoration: InputDecoration(
+                                          hintText: str.p_last_name_h,
+                                          hintStyle: getRegularStyle(
+                                              color: const Color.fromARGB(
+                                                  255, 173, 173, 173),
+                                              fontSize:
+                                                  Responsive.isMobile(context)
+                                                      ? 15
+                                                      : 10)),
+                                    ),
+                                  ),
+                                ),
+
                                 Row(
                                   children: [
                                     Column(
@@ -554,8 +601,10 @@ class _ProfileDetailsPageState extends State<EditProfileScreen> {
                                             0, 10, 0, 10),
                                         child: DropdownButtonHideUnderline(
                                           child: DropdownButton2(
+                                              searchInnerWidgetHeight: 56, // Add this line
                                               isExpanded: true,
                                               focusNode: nfocus,
+                                              // customItemsHeights: [],
                                               icon: const Icon(
                                                 Icons.keyboard_arrow_down,
                                                 size: 35,
@@ -811,7 +860,6 @@ class _ProfileDetailsPageState extends State<EditProfileScreen> {
                                                 //         horizontal: 10,
                                                 //         vertical: 8,
                                                 //       ),
-                                                //       // TODO: localisation
                                                 //       hintText:
                                                 //           str.s_search_country,
                                                 //       hintStyle:
@@ -961,8 +1009,7 @@ class _ProfileDetailsPageState extends State<EditProfileScreen> {
                                                           style: getRegularStyle(
                                                               color: const Color.fromARGB(255, 173, 173, 173),
                                                               fontSize: 15)),
-                                                  items: provider
-                                                      .stateinfomodel?.states!
+                                                  items: states
                                                       .map((item) =>
                                                           DropdownMenuItem<
                                                               States>(
@@ -988,6 +1035,7 @@ class _ProfileDetailsPageState extends State<EditProfileScreen> {
                                                       stateid =
                                                           value?.id.toString();
                                                     });
+                                                    
                                                     EditProfileControllers
                                                         .stateController
                                                         .text = defState ?? '';
@@ -1028,7 +1076,6 @@ class _ProfileDetailsPageState extends State<EditProfileScreen> {
                                                   //         horizontal: 10,
                                                   //         vertical: 8,
                                                   //       ),
-                                                  //       // TODO: localisation
                                                   //       hintText:
                                                   //           str.s_search_country,
                                                   //       hintStyle:
@@ -1235,7 +1282,8 @@ class _ProfileDetailsPageState extends State<EditProfileScreen> {
     final firstname = EditProfileControllers.firstNameController.text;
     final lastname = EditProfileControllers.lastNameController.text;
     final dob = EditProfileControllers.dateController.text;
-    final country = EditProfileControllers.countryController.text;
+    final email = EditProfileControllers.emailController.text;
+    // final country = EditProfileControllers.countryController.text;
     if (firstname.isEmpty) {
       showAnimatedSnackBar(context, str.e_snack_name);
     }
@@ -1252,14 +1300,14 @@ class _ProfileDetailsPageState extends State<EditProfileScreen> {
       setState(() {
         loading = true;
       });
-      await updateProfile(firstname, lastname, dob);
+      await updateProfile(firstname:  firstname ,lastname:  lastname,dob:  dob, email: email);
       setState(() {
         loading = false;
       });
     }
   }
 
-  updateProfile(firstname, lastname, dob) async {
+  updateProfile({required String firstname,required String lastname,required String dob , required String email}) async {
     log("regid===================${stateid.toString()}");
     final apiToken = Hive.box("token").get('api_token');
     final provider = Provider.of<DataProvider>(context, listen: false);
@@ -1275,11 +1323,12 @@ class _ProfileDetailsPageState extends State<EditProfileScreen> {
     try {
       var response = await http.post(
           Uri.parse(
-              "$endPoint/api/update/userprofile?firstname=$firstName&gender=$gender&dob=$dob&about=$about&region=$region&country_id=${countryId.toString()}&state=$state&lastname=$lastname"),
+              "$endPoint/api/update/userprofile?firstname=$firstName&gender=$gender&dob=$dob&about=$about&region=$region&country_id=${countryId.toString()}&state=$state&lastname=$lastname&email=$email"),
           headers: {
             "device-id": provider.deviceId ?? '',
             "api-token": apiToken
           });
+          log('updateProfile -- > ${response.request}');
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
         print(jsonResponse);
@@ -1358,8 +1407,11 @@ class _ProfileDetailsPageState extends State<EditProfileScreen> {
         provider.viewProfileModel?.userdetails?.city ?? '';
     EditProfileControllers.stateController.text =
         provider.viewProfileModel?.userdetails?.statename ?? '';
+        
     EditProfileControllers.aboutController.text =
         provider.viewProfileModel?.userdetails?.about ?? '';
+    EditProfileControllers.emailController.text =
+        provider.viewProfileModel?.userdetails?.email ?? '';
     selectedValue = provider.viewProfileModel?.userdetails?.countryName;
     countryid = provider.viewProfileModel?.userdetails?.countryId;
     value = userDetails?.gender == 'female' ? false : true;
@@ -1368,7 +1420,7 @@ class _ProfileDetailsPageState extends State<EditProfileScreen> {
     regid = provider.viewProfileModel?.userdetails?.region;
     stateid = provider.viewProfileModel?.userdetails?.state;
 
-    print(provider.viewProfileModel?.userdetails?.gender);
+    log('provider.viewProfileModel?.userdetails?.gender -> ${provider.viewProfileModel?.userdetails?.email}');
   }
 
   emptyFields() {

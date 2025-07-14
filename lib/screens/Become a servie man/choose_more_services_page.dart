@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -18,6 +20,7 @@ import 'package:social_media_services/model/get_home.dart';
 import 'package:social_media_services/providers/data_provider.dart';
 import 'package:social_media_services/responsive/responsive.dart';
 import 'package:social_media_services/responsive/responsive_width.dart';
+import 'package:social_media_services/screens/Become%20a%20servie%20man/widgets/service_group_doc_widget.dart';
 import 'package:social_media_services/screens/messagePage.dart';
 import 'package:social_media_services/screens/Become%20a%20servie%20man/payment_service_page.dart';
 import 'package:social_media_services/screens/serviceHome.dart';
@@ -31,8 +34,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:social_media_services/widgets/top_logo.dart';
 
 class ChooseMoreServicePage extends StatefulWidget {
-  Services? services;
-  ChooseMoreServicePage({Key? key, this.services}) : super(key: key);
+  final Services? services;
+  const ChooseMoreServicePage({Key? key, this.services}) : super(key: key);
 
   @override
   State<ChooseMoreServicePage> createState() => _ChooseMoreServicePageState();
@@ -51,8 +54,7 @@ class _ChooseMoreServicePageState extends State<ChooseMoreServicePage> {
   String lang = '';
   List<Services> sGroup = [];
   List<Childservices> childGroup = [];
-  final ImagePicker _picker = ImagePicker();
-
+ 
   @override
   void initState() {
     super.initState();
@@ -82,6 +84,7 @@ class _ChooseMoreServicePageState extends State<ChooseMoreServicePage> {
 
       setState(() {});
       // getCustomerChild(context);
+         provider.customerChildSer?.documents?.clear();
     });
   }
 
@@ -90,11 +93,9 @@ class _ChooseMoreServicePageState extends State<ChooseMoreServicePage> {
     final str = AppLocalizations.of(context)!;
     final size = MediaQuery.of(context).size;
     final provider = Provider.of<DataProvider>(context, listen: true);
-    final mob = Responsive.isMobile(context);
     final w = MediaQuery.of(context).size.width;
     final mobWth = ResponsiveWidth.isMobile(context);
     final smobWth = ResponsiveWidth.issMobile(context);
-    var isNotEmpty;
     return Scaffold(
       drawerEnableOpenDragGesture: false,
       endDrawer: SizedBox(
@@ -145,35 +146,42 @@ class _ChooseMoreServicePageState extends State<ChooseMoreServicePage> {
                 ),
                 GButton(
                   icon: FontAwesomeIcons.message,
-                  leading: Stack(
-                      children: [InkWell(
-                        child: SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: SvgPicture.asset(ImageAssets.chatIconSvg)),
-         
-             ),  Positioned(
-        right: 0,top: 0,
-        child: new Container(
-          padding: EdgeInsets.all(1),
-          decoration: new BoxDecoration(
-            color: Colors.red,
-            borderRadius: BorderRadius.circular(6),
-          ),
-          constraints: BoxConstraints(
-            minWidth: 15,
-            minHeight: 15,
-          ),
-          child: Text(provider.chatListDetails!.chatMessage!.data!.isNotEmpty? 
-              provider.chatListDetails!.chatMessage!.data![0].unreadCount.toString()
-             :'0', style: new TextStyle(
-              color: Colors.white,
-              fontSize: 11,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ) ]),
+                  leading: Stack(children: [
+                    InkWell(
+                      child: SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: SvgPicture.asset(ImageAssets.chatIconSvg)),
+                    ),
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      child: new Container(
+                        padding: EdgeInsets.all(1),
+                        decoration: new BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        constraints: BoxConstraints(
+                          minWidth: 15,
+                          minHeight: 15,
+                        ),
+                        child: Text(
+                          provider.chatListDetails!.chatMessage!.data!
+                                  .isNotEmpty
+                              ? provider.chatListDetails!.chatMessage!.data![0]
+                                  .unreadCount
+                                  .toString()
+                              : '0',
+                          style: new TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
+                  ]),
                 ),
               ],
               haptic: true,
@@ -464,164 +472,163 @@ class _ChooseMoreServicePageState extends State<ChooseMoreServicePage> {
                               : Container(),
 
 // * Browse feature
+                          ServiceGroupDocSection(),
 
-                          provider.customerChildSer != null
-                              ? provider.customerChildSer!.documents!.isNotEmpty
-                                  ? Column(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 20, 0, 0),
-                                          child: Row(
-                                            children: [
-                                              TitleWidget(
-                                                  name: provider
-                                                          .customerChildSer
-                                                          ?.documents![0]
-                                                          .document ??
-                                                      ''),
-                                              const Icon(
-                                                Icons.star_outlined,
-                                                size: 10,
-                                                color: ColorManager.errorRed,
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 10, 0, 0),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  blurRadius: 10.0,
-                                                  color: Colors.grey.shade300,
-                                                  // offset: const Offset(5, 8.5),
-                                                ),
-                                              ],
-                                            ),
-                                            child: Container(
-                                              width: size.width,
-                                              height: 60,
-                                              decoration: BoxDecoration(
-                                                  color:
-                                                      ColorManager.whiteColor,
-                                                  borderRadius:
-                                                      BorderRadius.circular(8)),
-                                              child: Row(
-                                                children: [
-                                                  Padding(
-                                                    padding: const EdgeInsets
-                                                            .fromLTRB(
-                                                        10, 13, 0, 13),
-                                                    child: SizedBox(
-                                                      width: 50,
-                                                      child: ElevatedButton(
-                                                          style: ElevatedButton
-                                                              .styleFrom(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .fromLTRB(
-                                                                          13,
-                                                                          0,
-                                                                          13,
-                                                                          0)),
-                                                          onPressed: () async {
-                                                            FilePickerResult?
-                                                                result =
-                                                                await FilePicker
-                                                                    .platform
-                                                                    .pickFiles(
-                                                              type: FileType
-                                                                  .custom,
-                                                              allowedExtensions: [
-                                                                'pdf',
-                                                                'doc',
-                                                                'jpg',
-                                                                'png'
-                                                              ],
-                                                            );
+                          // provider.customerChildSer != null
+                          //     ? provider.customerChildSer!.documents!.isNotEmpty
+                          //         ? Column(?
+                          //             children: [
+                          //               Padding(
+                          //                 padding: const EdgeInsets.fromLTRB(
+                          //                     0, 20, 0, 0),
+                          //                 child: Row(
+                          //                   children: [
+                          //                     TitleWidget(
+                          //                         name: provider
+                          //                                 .customerChildSer
+                          //                                 ?.documents![0]
+                          //                                 .document ??
+                          //                             ''),
+                          //                     const Icon(
+                          //                       Icons.star_outlined,
+                          //                       size: 10,
+                          //                       color: ColorManager.errorRed,
+                          //                     )
+                          //                   ],
+                          //                 ),
+                          //               ),
+                          //               Padding(
+                          //                 padding: const EdgeInsets.fromLTRB(
+                          //                     0, 10, 0, 0),
+                          //                 child: Container(
+                          //                   decoration: BoxDecoration(
+                          //                     boxShadow: [
+                          //                       BoxShadow(
+                          //                         blurRadius: 10.0,
+                          //                         color: Colors.grey.shade300,
+                          //                         // offset: const Offset(5, 8.5),
+                          //                       ),
+                          //                     ],
+                          //                   ),
+                          //                   child: Container(
+                          //                     width: size.width,
+                          //                     height: 60,
+                          //                     decoration: BoxDecoration(
+                          //                         color:
+                          //                             ColorManager.whiteColor,
+                          //                         borderRadius:
+                          //                             BorderRadius.circular(8)),
+                          //                     child: Row(
+                          //                       children: [
+                          //                         Padding(
+                          //                           padding: const EdgeInsets
+                          //                                   .fromLTRB(
+                          //                               10, 13, 0, 13),
+                          //                           child: SizedBox(
+                          //                             width: 50,
+                          //                             child: ElevatedButton(
+                          //                                 style: ElevatedButton
+                          //                                     .styleFrom(
+                          //                                         padding:
+                          //                                             const EdgeInsets
+                          //                                                     .fromLTRB(
+                          //                                                 13,
+                          //                                                 0,
+                          //                                                 13,
+                          //                                                 0)),
+                          //                                 onPressed: () async {
+                          //                                   FilePickerResult?
+                          //                                       result =
+                          //                                       await FilePicker
+                          //                                           .platform
+                          //                                           .pickFiles(
+                          //                                     type: FileType
+                          //                                         .custom,
+                          //                                     allowedExtensions: [
+                          //                                       'pdf',
+                          //                                       'doc',
+                          //                                       'jpg',
+                          //                                       'png'
+                          //                                     ],
+                          //                                   );
 
-                                                            if (result !=
-                                                                null) {
-                                                              PlatformFile
-                                                                  file = result
-                                                                      .files
-                                                                      .first;
-                                                              setState(() {
-                                                                fileName =
-                                                                    file.name;
-                                                              });
-                                                              final path =
-                                                                  file.path;
+                          //                                   if (result !=
+                          //                                       null) {
+                          //                                     PlatformFile
+                          //                                         file = result
+                          //                                             .files
+                          //                                             .first;
+                          //                                     setState(() {
+                          //                                       fileName =
+                          //                                           file.name;
+                          //                                     });
+                          //                                     final path =
+                          //                                         file.path;
 
-                                                              final filePath =
-                                                                  XFile(path!);
-                                                              provider.pickedFile =
-                                                                  filePath;
-                                                            } else {}
-                                                          },
-                                                          child: Icon(Icons
-                                                              .file_present_rounded)),
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding: const EdgeInsets
-                                                            .fromLTRB(
-                                                        10, 13, 10, 13),
-                                                    child: SizedBox(
-                                                      width: 50,
-                                                      child: ElevatedButton(
-                                                          style: ElevatedButton
-                                                              .styleFrom(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .fromLTRB(
-                                                                          13,
-                                                                          0,
-                                                                          13,
-                                                                          0)),
-                                                          onPressed: () async {
-                                                            provider.pickedFile =
-                                                                await _picker
-                                                                    .pickImage(
-                                                              source:
-                                                                  ImageSource
-                                                                      .camera,maxHeight: 200, maxWidth: 200,
+                          //                                     final filePath =
+                          //                                         XFile(path!);
+                          //                                     provider.pickedFile =
+                          //                                         filePath;
+                          //                                   } else {}
+                          //                                 },
+                          //                                 child: Icon(Icons
+                          //                                     .file_present_rounded)),
+                          //                           ),
+                          //                         ),
+                          //                         Padding(
+                          //                           padding: const EdgeInsets
+                          //                                   .fromLTRB(
+                          //                               10, 13, 10, 13),
+                          //                           child: SizedBox(
+                          //                             width: 50,
+                          //                             child: ElevatedButton(
+                          //                                 style: ElevatedButton
+                          //                                     .styleFrom(
+                          //                                         padding:
+                          //                                             const EdgeInsets
+                          //                                                     .fromLTRB(
+                          //                                                 13,
+                          //                                                 0,
+                          //                                                 13,
+                          //                                                 0)),
+                          //                                 onPressed: () async {
+                          //                                   provider.pickedFile =
+                          //                                       await _picker
+                          //                                           .pickImage(
+                          //                                     source:
+                          //                                         ImageSource
+                          //                                             .camera,maxHeight: 200, maxWidth: 200,
 
-                                                              // maxWidth: maxWidth,
-                                                              // maxHeight: maxHeight,
-                                                              // imageQuality: quality,
-                                                            );
-                                                            setState(() {
-                                                              fileName = provider
-                                                                  .pickedFile
-                                                                  ?.name;
-                                                            });
-                                                          },
-                                                          child: Icon(Icons
-                                                              .camera_alt)),
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                      child:
-                                                          Text(fileName ?? ''))
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  : Container()
-                              : Container(),
+                          //                                     // maxWidth: maxWidth,
+                          //                                     // maxHeight: maxHeight,
+                          //                                     // imageQuality: quality,
+                          //                                   );
+                          //                                   setState(() {
+                          //                                     fileName = provider
+                          //                                         .pickedFile
+                          //                                         ?.name;
+                          //                                   });
+                          //                                 },
+                          //                                 child: Icon(Icons
+                          //                                     .camera_alt)),
+                          //                           ),
+                          //                         ),
+                          //                         Expanded(
+                          //                             child:
+                          //                                 Text(fileName ?? ''))
+                          //                       ],
+                          //                     ),
+                          //                   ),
+                          //                 ),
+                          //               ),
+                          //             ],
+                          //           )
+                          //         : Container()
+                          //     : Container(),
 
                           // * Terms and condition
 
-                          const SizedBox(
-                            height: 20,
-                          ),
+                          const SizedBox(height: 20),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -685,11 +692,12 @@ class _ChooseMoreServicePageState extends State<ChooseMoreServicePage> {
   }
 
   // * Fuctions
-// TODO Localistion add
   continueToPay() {
     final provider = Provider.of<DataProvider>(context, listen: false);
+    ChildServiceModel? itemModel = provider.customerChildSer;
+    List<Document> documents = itemModel?.documents ?? [];
+    bool isDocFileEmpty = documents.any((element) => element.file == null);
     final str = AppLocalizations.of(context)!;
-
     if (!isTickSelected) {
       AnimatedSnackBar.material(str.c_snack,
               type: AnimatedSnackBarType.warning,
@@ -700,18 +708,19 @@ class _ChooseMoreServicePageState extends State<ChooseMoreServicePage> {
       );
     } else if (selectedValue == null) {
       showAnimatedSnackBar(context, str.snack_choose_group);
-    } else if (provider.customerChildSer?.documents?.isNotEmpty == true &&
-        fileName == null) {
+    } else if (documents.isNotEmpty && isDocFileEmpty) {
       showAnimatedSnackBar(context, str.snack_upload_file);
     } else if (provider.customerChildSer?.childservices?.isNotEmpty == true &&
-        fileName == null) {
+        isDocFileEmpty) {
       showAnimatedSnackBar(context, str.snack_upload);
     } else if (provider.customerChildSer?.packages?.isEmpty == true) {
       showAnimatedSnackBar(context, str.snack_package);
     } else {
-      Navigator.push(context, MaterialPageRoute(builder: (ctx) {
-        return const PaymentServicePage();
-      }));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (ctx) =>
+                  PaymentServicePage(orderType: PlaceOrderType.newOrder)));
     }
   }
 

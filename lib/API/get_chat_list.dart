@@ -22,8 +22,8 @@ getChatList(BuildContext context) async {
     var response = await http.post(
         Uri.parse('$api/chat-list?page=1&language_id=$lanId'),
         headers: {"device-id": provider.deviceId ?? '', "api-token": apiToken});
-    log("getChatList-------${response.body}");
 
+    log("getChatList-------${response.body}---${response.request}");
     var jsonResponse = jsonDecode(response.body);
     if (response.statusCode == 200) {
       print('chatlistresponse:${response.body}');
@@ -40,7 +40,7 @@ getChatList(BuildContext context) async {
     }
   } on Exception catch (e) {
     print('errr:${e}');
-    log("Something Went Wrong1");
+    log("Something Went Wrong");
     print(e.toString().contains("Failed host lookup"));
   }
 }

@@ -1,15 +1,10 @@
-import 'dart:developer';
-
 import 'package:animated_snack_bar/animated_snack_bar.dart';
-
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hive/hive.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:social_media_services/API/becomeServiceMan/customerParent.dart';
 import 'package:social_media_services/components/assets_manager.dart';
@@ -18,8 +13,8 @@ import 'package:social_media_services/components/styles_manager.dart';
 import 'package:social_media_services/model/get_child_service.dart';
 import 'package:social_media_services/model/get_home.dart';
 import 'package:social_media_services/providers/data_provider.dart';
-import 'package:social_media_services/responsive/responsive.dart';
 import 'package:social_media_services/responsive/responsive_width.dart';
+import 'package:social_media_services/screens/Become%20a%20servie%20man/widgets/service_group_doc_widget.dart';
 import 'package:social_media_services/screens/messagePage.dart';
 import 'package:social_media_services/screens/Become%20a%20servie%20man/payment_service_page.dart';
 import 'package:social_media_services/screens/serviceHome.dart';
@@ -33,8 +28,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:social_media_services/widgets/top_logo.dart';
 
 class ChooseServicePage extends StatefulWidget {
-  GlobalKey<ScaffoldState>? scaffoldKey;
-  ChooseServicePage({Key? key, this.scaffoldKey}) : super(key: key);
+  final GlobalKey<ScaffoldState>? scaffoldKey;
+  const ChooseServicePage({Key? key, this.scaffoldKey}) : super(key: key);
 
   @override
   State<ChooseServicePage> createState() => _ChooseServicePageState();
@@ -47,33 +42,35 @@ class _ChooseServicePageState extends State<ChooseServicePage> {
   bool isTickSelected = false;
   bool isChild = false;
 
-  String? fileName;
+  // String? fileName;
   int _selectedIndex = 2;
   final List<Widget> _screens = [const ServiceHomePage(), const MessagePage()];
   String lang = '';
   List<Services> sGroup = [];
   List<Childservices> childGroup = [];
-  final ImagePicker _picker = ImagePicker();
+  late DataProvider _provider;
 
   @override
   void initState() {
     super.initState();
-    lang = Hive.box('LocalLan').get(
-      'lang',
-    );
+    _provider = context.read<DataProvider>();
+    ChildServiceModel? itemModel = _provider.customerChildSer;
+    List<Document> documents = itemModel?.documents ?? [];
+    documents.map((e) => e.file = e.fileName = null).toList();
+    lang = Hive.box('LocalLan').get('lang');
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final provider = Provider.of<DataProvider>(context, listen: false);
-      int? n = provider.customerParentSer?.services?.length;
-      int i = 0;
-      while (i < n!.toInt()) {
-        sGroup.add(provider.customerParentSer!.services![i]);
-        i++;
+      List<Services> services = provider.customerParentSer?.services ?? [];
+      for (Services item in services) {
+        sGroup.add(item);
       }
-      provider.customerChildSer?.documents?.clear();
+      provider.clearDocs();
+      setState(() {});
       // print(sGroup[0]);
 
-      setState(() {});
+      // List<Document> documents = itemModel?.documents ?? [];
+
       // getCustomerChild(context);
     });
   }
@@ -83,12 +80,10 @@ class _ChooseServicePageState extends State<ChooseServicePage> {
     final str = AppLocalizations.of(context)!;
     final size = MediaQuery.of(context).size;
     final provider = Provider.of<DataProvider>(context, listen: true);
-    final mob = Responsive.isMobile(context);
     final w = MediaQuery.of(context).size.width;
     final mobWth = ResponsiveWidth.isMobile(context);
     final smobWth = ResponsiveWidth.issMobile(context);
 
-    var isNotEmpty;
     return Scaffold(
       drawerEnableOpenDragGesture: false,
       endDrawer: SizedBox(
@@ -139,35 +134,42 @@ class _ChooseServicePageState extends State<ChooseServicePage> {
                 ),
                 GButton(
                   icon: FontAwesomeIcons.message,
-                  leading: Stack(
-                      children: [InkWell(
-                        child: SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: SvgPicture.asset(ImageAssets.chatIconSvg)),
-         
-             ),  Positioned(
-        right: 0,top: 0,
-        child: new Container(
-          padding: EdgeInsets.all(1),
-          decoration: new BoxDecoration(
-            color: Colors.red,
-            borderRadius: BorderRadius.circular(6),
-          ),
-          constraints: BoxConstraints(
-            minWidth: 15,
-            minHeight: 15,
-          ),
-          child:Text(provider.chatListDetails!.chatMessage!.data!.isNotEmpty? 
-              provider.chatListDetails!.chatMessage!.data![0].unreadCount.toString()
-             :'0', style: new TextStyle(
-              color: Colors.white,
-              fontSize: 11,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ) ]),
+                  leading: Stack(children: [
+                    InkWell(
+                      child: SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: SvgPicture.asset(ImageAssets.chatIconSvg)),
+                    ),
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      child: new Container(
+                        padding: EdgeInsets.all(1),
+                        decoration: new BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        constraints: BoxConstraints(
+                          minWidth: 15,
+                          minHeight: 15,
+                        ),
+                        child: Text(
+                          provider.chatListDetails!.chatMessage!.data!
+                                  .isNotEmpty
+                              ? provider.chatListDetails!.chatMessage!.data![0]
+                                  .unreadCount
+                                  .toString()
+                              : '0',
+                          style: new TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
+                  ]),
                 ),
               ],
               haptic: true,
@@ -211,9 +213,7 @@ class _ChooseServicePageState extends State<ChooseServicePage> {
                       BackButton2(),
                       Spacer(),
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TopLogo(),
-                      )
+                          padding: const EdgeInsets.all(8.0), child: TopLogo())
                     ],
                   ),
                   SingleChildScrollView(
@@ -395,7 +395,7 @@ class _ChooseServicePageState extends State<ChooseServicePage> {
                                                               value: item,
                                                               child: Text(
                                                                   item.serviceName ??
-                                                                      'null',
+                                                                      '',
                                                                   style: getRegularStyle(
                                                                       color: ColorManager
                                                                           .black,
@@ -434,7 +434,7 @@ class _ChooseServicePageState extends State<ChooseServicePage> {
                                                                 child: Text(
                                                                     childSelectedValue
                                                                             ?.serviceName ??
-                                                                        'null'),
+                                                                        ''),
                                                               ),
                                                     buttonHeight: 40,
                                                     // buttonWidth: 140,
@@ -461,157 +461,7 @@ class _ChooseServicePageState extends State<ChooseServicePage> {
 
 // * Browse feature
 
-                          provider.customerChildSer != null
-                              ? provider.customerChildSer!.documents!.isNotEmpty
-                                  ? Column(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 20, 0, 0),
-                                          child: Row(
-                                            children: [
-                                              TitleWidget(
-                                                  name: provider
-                                                          .customerChildSer
-                                                          ?.documents?[0]
-                                                          .document ??
-                                                      ''),
-                                              const Icon(
-                                                Icons.star_outlined,
-                                                size: 10,
-                                                color: ColorManager.errorRed,
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 10, 0, 0),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  blurRadius: 10.0,
-                                                  color: Colors.grey.shade300,
-                                                  // offset: const Offset(5, 8.5),
-                                                ),
-                                              ],
-                                            ),
-                                            child: Container(
-                                              width: size.width,
-                                              height: 65,
-                                              decoration: BoxDecoration(
-                                                  color:
-                                                      ColorManager.whiteColor,
-                                                  borderRadius:
-                                                      BorderRadius.circular(8)),
-                                              child: Row(
-                                                children: [
-                                                  Padding(
-                                                    padding: const EdgeInsets
-                                                            .fromLTRB(
-                                                        10, 13, 0, 13),
-                                                    child: SizedBox(
-                                                      width: 50,
-                                                      child: ElevatedButton(
-                                                          style: ElevatedButton
-                                                              .styleFrom(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .fromLTRB(
-                                                                          13,
-                                                                          0,
-                                                                          13,
-                                                                          0)),
-                                                          onPressed: () async {
-                                                            FilePickerResult?
-                                                                result =
-                                                                await FilePicker
-                                                                    .platform
-                                                                    .pickFiles(
-                                                              type: FileType
-                                                                  .custom,
-                                                              allowedExtensions: [
-                                                                'pdf',
-                                                                'doc',
-                                                                'jpg',
-                                                                'png'
-                                                              ],
-                                                            );
-
-                                                            if (result !=
-                                                                null) {
-                                                              PlatformFile
-                                                                  file = result
-                                                                      .files
-                                                                      .first;
-                                                              setState(() {
-                                                                fileName =
-                                                                    file.name;
-                                                              });
-                                                              final path =
-                                                                  file.path;
-
-                                                              final filePath =
-                                                                  XFile(path!);
-                                                              provider.pickedFile =
-                                                                  filePath;
-                                                            } else {}
-                                                          },
-                                                          child: Icon(Icons
-                                                              .file_present_rounded)),
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding: const EdgeInsets
-                                                            .fromLTRB(
-                                                        10, 13, 10, 13),
-                                                    child: SizedBox(
-                                                      width: 50,
-                                                      child: ElevatedButton(
-                                                          style: ElevatedButton
-                                                              .styleFrom(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .fromLTRB(
-                                                                          13,
-                                                                          0,
-                                                                          13,
-                                                                          0)),
-                                                          onPressed: () async {
-                                                            provider.pickedFile =
-                                                                await _picker
-                                                                    .pickImage(
-                                                              source:
-                                                                  ImageSource
-                                                                      .camera,maxHeight: 200, maxWidth: 200,
-
-                                                              // maxWidth: maxWidth,
-                                                              // maxHeight: maxHeight,
-                                                              // imageQuality: quality,
-                                                            );
-                                                            setState(() {
-                                                              fileName = provider
-                                                                  .pickedFile
-                                                                  ?.name;
-                                                            });
-                                                          },
-                                                          child: Icon(Icons
-                                                              .camera_alt)),
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                      child:
-                                                          Text(fileName ?? ''))
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  : Container()
-                              : Container(),
+                          const ServiceGroupDocSection(),
 
                           // * Terms and condition
 
@@ -681,12 +531,12 @@ class _ChooseServicePageState extends State<ChooseServicePage> {
   }
 
   // * Fuctions
-// TODO Localistion add
   continueToPay() {
     final provider = Provider.of<DataProvider>(context, listen: false);
-
+    ChildServiceModel? itemModel = provider.customerChildSer;
+    List<Document> documents = itemModel?.documents ?? [];
+    bool isDocFileEmpty = documents.any((element) => element.file == null);
     final str = AppLocalizations.of(context)!;
-    log("===========================$fileName");
     if (!isTickSelected) {
       AnimatedSnackBar.material(str.c_snack,
               type: AnimatedSnackBarType.warning,
@@ -697,18 +547,19 @@ class _ChooseServicePageState extends State<ChooseServicePage> {
       );
     } else if (selectedValue == null) {
       showAnimatedSnackBar(context, str.snack_choose_group);
-    } else if (provider.customerChildSer?.documents?.isNotEmpty == true &&
-        fileName == null) {
+    } else if (documents.isNotEmpty && isDocFileEmpty) {
       showAnimatedSnackBar(context, str.snack_upload_file);
     } else if (provider.customerChildSer?.childservices?.isNotEmpty == true &&
-        fileName == null) {
+        isDocFileEmpty) {
       showAnimatedSnackBar(context, str.snack_upload);
     } else if (provider.customerChildSer?.packages?.isEmpty == true) {
       showAnimatedSnackBar(context, str.snack_package);
     } else {
-      Navigator.push(context, MaterialPageRoute(builder: (ctx) {
-        return const PaymentServicePage();
-      }));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (ctx) => PaymentServicePage(
+                  orderType: PlaceOrderType.chooseMoreServices)));
     }
   }
 

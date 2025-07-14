@@ -9,8 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hive/hive.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:maps_launcher/maps_launcher.dart';
+ import 'package:maps_launcher/maps_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:social_media_services/API/address/getUserAddress.dart';
 import 'package:social_media_services/API/endpoint.dart';
@@ -24,8 +23,7 @@ import 'package:social_media_services/responsive/responsive_width.dart';
 import 'package:social_media_services/screens/messagePage.dart';
 import 'package:social_media_services/screens/serviceHome.dart';
 import 'package:social_media_services/widgets/AddressBox/user_address_box.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:social_media_services/widgets/custom_drawer.dart';
+ import 'package:social_media_services/widgets/custom_drawer.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UserAddressCard extends StatefulWidget {
@@ -44,7 +42,7 @@ class _UserAddressCardState extends State<UserAddressCard> {
     )
   ];
   String lang = '';
-  final ImagePicker _picker = ImagePicker();
+  // final ImagePicker _picker = ImagePicker();
 
   bool isLoading = false;
 
@@ -60,16 +58,16 @@ class _UserAddressCardState extends State<UserAddressCard> {
     });
   }
 
-  void _openGoogleMaps(double latitude, double longitude) async {
-    final url =
-        'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
-    // if (await launchUrl(Uri.parse(url))) {
-    await launchUrl(Uri.parse(url));
-    log(url);
-    // } else {
-    // throw 'Could not launch $url';
-    // }
-  }
+  // void _openGoogleMaps(double latitude, double longitude) async {
+  //   final url =
+  //       'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+  //   // if (await launchUrl(Uri.parse(url))) {
+  //   await launchUrl(Uri.parse(url));
+  //   log(url);
+  //   // } else {
+  //   // throw 'Could not launch $url';
+  //   // }
+  // }
 
   void openGoogleMaps(double latitude, double longitude) {
     MapsLauncher.launchCoordinates(latitude, longitude);

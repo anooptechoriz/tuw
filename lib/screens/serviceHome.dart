@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -12,6 +10,7 @@ import 'package:social_media_services/components/color_manager.dart';
 import 'package:social_media_services/components/routes_manager.dart';
 import 'package:social_media_services/components/styles_manager.dart';
 import 'package:social_media_services/loading%20screens/loading_page.dart';
+import 'package:social_media_services/model/get_home.dart';
 import 'package:social_media_services/providers/data_provider.dart';
 import 'package:social_media_services/providers/servicer_provider.dart';
 import 'package:social_media_services/responsive/responsive.dart';
@@ -27,7 +26,7 @@ class ServiceHomePage extends StatefulWidget {
 }
 
 class _ServiceHomePageState extends State<ServiceHomePage> {
-  int _backButtonPressCount = 0;
+  // int _backButtonPressCount = 0;
   int selectedCarouselIndex = 0;
   PageController? _pageController;
   Timer? _timer;
@@ -64,64 +63,64 @@ class _ServiceHomePageState extends State<ServiceHomePage> {
     });
   }
 
-  Future<bool> _onWillPop() async {
-    print(_backButtonPressCount);
-    if (_backButtonPressCount == 1) {
-      // First back press
-      _showTooltip("Press back again to exit");
-      _backButtonPressCount++;
-      Timer(Duration(seconds: 3), () {
-        _backButtonPressCount = 0; // Reset the back press count after 2 seconds
-      });
-      return true; // Prevent the app from closing
-    } else if (_backButtonPressCount == 0) {
-      // Initial back press
-      _showTooltip("Press back again to exit");
-      _backButtonPressCount++;
-      Timer(Duration(seconds: 3), () {
-        _backButtonPressCount = 0; // Reset the back press count after 2 seconds
-      });
-      return false; // Prevent the app from closing
-    } else {
-      // Second back press within 2 seconds, allow the app to exit
-      return true;
-    }
-  }
+  // Future<bool> _onWillPop() async {
+  //   print(_backButtonPressCount);
+  //   if (_backButtonPressCount == 1) {
+  //     // First back press
+  //     _showTooltip("Press back again to exit");
+  //     _backButtonPressCount++;
+  //     Timer(Duration(seconds: 3), () {
+  //       _backButtonPressCount = 0; // Reset the back press count after 2 seconds
+  //     });
+  //     return true; // Prevent the app from closing
+  //   } else if (_backButtonPressCount == 0) {
+  //     // Initial back press
+  //     _showTooltip("Press back again to exit");
+  //     _backButtonPressCount++;
+  //     Timer(Duration(seconds: 3), () {
+  //       _backButtonPressCount = 0; // Reset the back press count after 2 seconds
+  //     });
+  //     return false; // Prevent the app from closing
+  //   } else {
+  //     // Second back press within 2 seconds, allow the app to exit
+  //     return true;
+  //   }
+  // }
 
-  void _showTooltip(String message) {
-    final overlay = Overlay.of(context);
-    final renderBox = context.findRenderObject() as RenderBox;
-    final position = renderBox.localToGlobal(Offset.zero);
+  // void _showTooltip(String message) {
+  //   final overlay = Overlay.of(context);
+  //   final renderBox = context.findRenderObject() as RenderBox;
+  //   final position = renderBox.localToGlobal(Offset.zero);
 
-    final overlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        top: position.dy + renderBox.size.height,
-        left: position.dx + (renderBox.size.width - 200.0) / 2,
-        child: Material(
-          color: Colors.transparent,
-          child: Tooltip(
-            message: message,
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.grey[800],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                message,
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
+  //   final overlayEntry = OverlayEntry(
+  //     builder: (context) => Positioned(
+  //       top: position.dy + renderBox.size.height,
+  //       left: position.dx + (renderBox.size.width - 200.0) / 2,
+  //       child: Material(
+  //         color: Colors.transparent,
+  //         child: Tooltip(
+  //           message: message,
+  //           child: Container(
+  //             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+  //             decoration: BoxDecoration(
+  //               color: Colors.grey[800],
+  //               borderRadius: BorderRadius.circular(8),
+  //             ),
+  //             child: Text(
+  //               message,
+  //               style: TextStyle(color: Colors.white),
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
 
-    overlay.insert(overlayEntry);
-    Timer(Duration(seconds: 2), () {
-      overlayEntry.remove();
-    });
-  }
+  //   overlay.insert(overlayEntry);
+  //   Timer(Duration(seconds: 2), () {
+  //     overlayEntry.remove();
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +131,7 @@ class _ServiceHomePageState extends State<ServiceHomePage> {
     final servicerProvider =
         Provider.of<ServicerProvider>(context, listen: false);
     final homeData = provider.homeModel?.services ?? [];
-
+    List<Homebanner> homebanner = provider.homeModel?.homebanner ?? [];
     return BackButtonHandler(
       child: Scaffold(
         body: SafeArea(
@@ -198,6 +197,7 @@ class _ServiceHomePageState extends State<ServiceHomePage> {
                               scrollDirection: Axis.horizontal,
                               controller: _pageController,
                               itemBuilder: (context, index) {
+                                Homebanner item = homebanner[index];
                                 return Padding(
                                   padding:
                                       const EdgeInsets.fromLTRB(0, 0, 0, 0),
@@ -208,9 +208,7 @@ class _ServiceHomePageState extends State<ServiceHomePage> {
                                       color: ColorManager.whiteColor,
                                       child: GestureDetector(
                                         onTap: () async {
-                                          String targetUrl = provider.homeModel
-                                                  ?.homebanner?[index].target ??
-                                              '';
+                                          String targetUrl = item.target ?? '';
 
                                           if (!targetUrl
                                                   .startsWith('http://') &&
@@ -237,8 +235,7 @@ class _ServiceHomePageState extends State<ServiceHomePage> {
                                           }
                                         },
                                         child: CachedNetworkImage(
-                                          imageUrl:
-                                              "$endPoint${provider.homeModel?.homebanner?[index].image}",
+                                          imageUrl: "$endPoint${item.image}",
                                           width: w,
                                           fit: BoxFit.fitWidth,
                                         ),
@@ -247,9 +244,15 @@ class _ServiceHomePageState extends State<ServiceHomePage> {
                                   ),
                                 );
                               },
-                              itemCount:
-                                  provider.homeModel?.homebanner?.length ?? 0,
+                              itemCount: homebanner.length,
                               onPageChanged: (index) {
+                                // may needed in future ----------------------------->> shithin
+                                if (index == 0) {
+                                  Homebanner firstBanner =
+                                      homebanner.removeAt(0);
+                                  homebanner.add(firstBanner);
+                                }
+
                                 setState(() {
                                   selectedCarouselIndex = index;
                                 });
@@ -307,7 +310,11 @@ class _ServiceHomePageState extends State<ServiceHomePage> {
                           itemCount: homeData.length,
                           itemBuilder: (BuildContext ctx, index) {
                             return InkWell(
-                              onTap: () {
+                              onTap: () async {
+                                // DataProvider provider =
+                                //     context.read<DataProvider>();
+                                // await provider
+                                //     .sendNotification(); //----------------------shithin--send push notification using google api
                                 Hive.box('service').put('service',
                                     homeData[index].service.toString());
                                 Navigator.push(context,
@@ -316,7 +323,6 @@ class _ServiceHomePageState extends State<ServiceHomePage> {
                                 servicerProvider.serviceId = id;
                                 getSubService(
                                     context, id, false, homeData[index]);
-                                log("$endPoint${homeData[index].image}");
                               },
                               child: Container(
                                 alignment: Alignment.center,

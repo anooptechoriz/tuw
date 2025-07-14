@@ -1,3 +1,5 @@
+import 'package:image_picker/image_picker.dart';
+
 class ChildServiceModel {
   bool? result;
   String? message;
@@ -113,6 +115,8 @@ class Document {
   String? createdAt;
   String? updatedAt;
   String? deletedAt;
+  String? fileName;
+  XFile? file;
 
   Document(
       {this.id,
@@ -120,7 +124,10 @@ class Document {
       this.document,
       this.createdAt,
       this.updatedAt,
-      this.deletedAt});
+      this.deletedAt,
+      this.fileName,
+      this.file,
+      });
 
   Document.fromJson(Map<String, dynamic> json) {
     id = json['id'];

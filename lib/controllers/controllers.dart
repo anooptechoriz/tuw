@@ -9,6 +9,7 @@ class EditProfileControllers {
   static TextEditingController stateController = TextEditingController();
   static TextEditingController aboutController = TextEditingController();
   static TextEditingController genderController = TextEditingController();
+  static TextEditingController emailController= TextEditingController();
 }
 
 class PhoneNumberControllers {

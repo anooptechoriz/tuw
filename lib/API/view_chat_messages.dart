@@ -13,34 +13,39 @@ import 'package:social_media_services/providers/data_provider.dart';
 import 'package:social_media_services/utils/animatedSnackBar.dart';
 import 'package:social_media_services/utils/initPlatformState.dart';
 
-viewChatMessages(BuildContext context, id, {page = 1}) async {
+Future<void> viewChatMessages(BuildContext context, dynamic id,
+    {int page = 1}) async {
   log("view message api calling");
   print(page);
   final provider = Provider.of<DataProvider>(context, listen: false);
-  // provider.subServicesModel = null;
   final apiToken = Hive.box("token").get('api_token');
   if (apiToken == null) return;
   try {
+    int lastPage = provider.viewChatMessageModel?.chatMessage?.lastPage ?? 1;
+    log('lastPage--$lastPage------$page');
+    if (lastPage < page) return;
     var response = await http.post(
         Uri.parse('$viewChatMessagesApi$id&page=$page'),
         headers: {"device-id": provider.deviceId ?? '', "api-token": apiToken});
+    log('viewChatMessages-->> ${response.body}-----_${response.request}');
     if (response.statusCode == 200) {
       var jsonResponse = jsonDecode(response.body);
       bool isLogOut =
           jsonResponse["message"].toString().contains("Please login again");
       if (isLogOut) {
         showAnimatedSnackBar(context, "Please login again");
-
         initPlatformState(context);
       } else {
         final viewChatMessageData = ViewChatMessageModel.fromJson(jsonResponse);
-        provider.viewChatMessageModelData(viewChatMessageData);
+        if (page == 1) {
+          provider.viewChatMessageModelData(viewChatMessageData);
+        } else {
+          provider
+              .appendChatMessages(viewChatMessageData.chatMessage?.data ?? []);
+        }
       }
     } else {
-    
-      // print(response.statusCode);
-      // print(response.body);
-      // print('Something went wrong');
+      // Handle error
     }
   } on Exception catch (e) {
     log("Something Went Wrong18");

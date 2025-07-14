@@ -6,8 +6,8 @@ import 'package:social_media_services/components/styles_manager.dart';
 class ProfileTitleWidget extends StatelessWidget {
   final String name;
   final IconData icon;
-  String? svg;
-  ProfileTitleWidget(
+ final String? svg;
+ const ProfileTitleWidget(
       {Key? key, required this.name, required this.icon, this.svg})
       : super(key: key);
 

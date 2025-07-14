@@ -15,12 +15,12 @@ class _SearchNearServiceState extends State<SearchNearService> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final List<String> items = [
-      'Item1',
-      'Item2',
-      'Item3',
-      'Item4',
-    ];
+    // final List<String> items = [
+    //   'Item1',
+    //   'Item2',
+    //   'Item3',
+    //   'Item4',
+    // ];
     return Scaffold(
       drawerEnableOpenDragGesture: false,
       endDrawer: SizedBox(

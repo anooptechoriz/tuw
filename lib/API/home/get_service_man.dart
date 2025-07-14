@@ -63,24 +63,23 @@ getServiceMan(BuildContext context, id, homeservice) async {
   }
   try {
     log('user details -------- ${userDetails?.latitude}');
-    if (userDetails?.latitude == null) {
-      Position position = await determinePosition();
-      log('position-------_${position.latitude}------${position.longitude}');
-      userDetails?.latitude = position.latitude.toString();
-      userDetails?.longitude = position.longitude.toString();
-    }
+    // if (userDetails?.latitude == null) {
+    Position position = await determinePosition();
+    log('position-------_${position.latitude}------${position.longitude}');
+    userDetails?.latitude = position.latitude.toString();
+    userDetails?.longitude = position.longitude.toString();
+    // }
     var response = await http.post(
         Uri.parse(
-            '$servicemanList?service_id=$id&page=1&latitude=${userDetails?.latitude ?? provider.explorerLat}&longitude=${userDetails?.longitude ?? provider.explorerLong}&language_id=${lanId}'),
+            '$servicemanList?service_id=$id&page=1&latitude=${position.latitude}&longitude=${position.longitude}&language_id=${lanId}'),
         headers: {"device-id": provider.deviceId ?? '', "api-token": apiToken});
     if (response.statusCode == 200) {
       var jsonResponse = jsonDecode(response.body);
-      log('getServiceMan------------>> ${response.body}------_${response.request}');
+      log('getServiceMan------------>> ${response.body}------${response.request}');
       print("Navigation active");
       navToServiceMan(context, id, homeservice);
       if (jsonResponse['result'] == false) {
         await Hive.box("token").clear();
-
         return;
       }
 

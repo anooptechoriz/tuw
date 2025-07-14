@@ -18,21 +18,20 @@ import 'package:social_media_services/widgets/backbutton.dart';
 import 'package:thawani_payment/class/status.dart';
 import 'package:thawani_payment/thawani_payment.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import '../../../widgets/custom_drawer.dart';
 
 class PayPage extends StatefulWidget {
   final String serviceFee;
   final String validity;
   final String packageName;
-  var discount;
-  String? offerprice;
+  final discount;
+  final String? offerprice;
   // final String validity;
   final int vat;
-  var taxTotal;
-  var amount;
+  final taxTotal;
+  final amount;
   final String orderId;
-  PayPage({
+  const PayPage({
     super.key,
     required this.amount,
     required this.validity,
@@ -131,35 +130,42 @@ class _PayPageState extends State<PayPage> {
                 ),
                 GButton(
                   icon: FontAwesomeIcons.message,
-                  leading: Stack(
-                      children: [InkWell(
-                        child: SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: SvgPicture.asset(ImageAssets.chatIconSvg)),
-         
-             ),  Positioned(
-        right: 0,top: 0,
-        child: new Container(
-          padding: EdgeInsets.all(1),
-          decoration: new BoxDecoration(
-            color: Colors.red,
-            borderRadius: BorderRadius.circular(6),
-          ),
-          constraints: BoxConstraints(
-            minWidth: 15,
-            minHeight: 15,
-          ),
-          child:Text(provider.chatListDetails!.chatMessage!.data!.isNotEmpty? 
-              provider.chatListDetails!.chatMessage!.data![0].unreadCount.toString()
-             :'0',  style: new TextStyle(
-              color: Colors.white,
-              fontSize: 11,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ) ]),
+                  leading: Stack(children: [
+                    InkWell(
+                      child: SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: SvgPicture.asset(ImageAssets.chatIconSvg)),
+                    ),
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      child: new Container(
+                        padding: EdgeInsets.all(1),
+                        decoration: new BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        constraints: BoxConstraints(
+                          minWidth: 15,
+                          minHeight: 15,
+                        ),
+                        child: Text(
+                          provider.chatListDetails!.chatMessage!.data!
+                                  .isNotEmpty
+                              ? provider.chatListDetails!.chatMessage!.data![0]
+                                  .unreadCount
+                                  .toString()
+                              : '0',
+                          style: new TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
+                  ]),
                 ),
               ],
               haptic: true,
@@ -288,9 +294,7 @@ class _PayPageState extends State<PayPage> {
                                   // style: getRegularStyle(
                                   //     color: ColorManager.grayDark, fontSize: 12)
                                   ),
-                              SizedBox(
-                                height: 10,
-                              )
+                              SizedBox(height: 10)
                               // Spacer(),
                             ],
                           ),
@@ -341,7 +345,7 @@ class _PayPageState extends State<PayPage> {
                     ),
                   ),
                   SizedBox(
-                    height: 20,
+                    height: 20
                   ),
                   isLoading
                       ? Container(
@@ -404,7 +408,7 @@ class _PayPageState extends State<PayPage> {
                             onCancelled: (v) {
                               // getOrderSuccessData(context, v);
                               print(v.data);
-                               getFail(context, v);
+                              getFail(context, v);
                             },
                             onPaid: (v) {
                               print(v.data);
@@ -434,7 +438,11 @@ class _PayPageState extends State<PayPage> {
     // setState(() {x
     //   isLoading = false;
     // });
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>PaymentSuccessPage(discount:widget.discount.toString())));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                PaymentSuccessPage(discount: widget.discount.toString())));
   }
 
   getFail(BuildContext context, StatusClass v) async {
@@ -442,3 +450,82 @@ class _PayPageState extends State<PayPage> {
     Navigator.pushNamed(context, Routes.payFailPage);
   }
 }
+
+
+// class ThawaniPayButton extends StatefulWidget {
+//   final String orderID;
+//   final String packageName;
+//   final int conAmount;
+//   const ThawaniPayButton({super.key, required this.orderID, required this.conAmount, required this.packageName});
+
+//   @override
+//   State<ThawaniPayButton> createState() => _ThawaniPayButtonState();
+// }
+
+// class _ThawaniPayButtonState extends State<ThawaniPayButton> {
+//     bool isLoading = false;
+//   @override
+//   Widget build(BuildContext context) {
+//         final provider = context.read<DataProvider>();
+//       Userdetails? user=
+//   provider
+//         .viewProfileModel
+//         ?.userdetails;
+//     return ElevatedButton(
+//       child: Text('Submit'),
+//             style: ButtonStyle(
+//                               backgroundColor: MaterialStateProperty.all<Color>(
+//                                   ColorManager.primary),
+//                             ),
+// onPressed: (){
+//   Product product = Product(name: widget.packageName, quantity: 1, unitAmount: widget.conAmount);
+// Thawani.pay(context,
+// saveCard: true,
+// testMode: true,
+//     // api: 'rRQ26GcsZzoEhbrP2HZvLYDbn9C9et',
+//                             // pKey: 'HGvTMLDssJghr9tlN9gr4DVYt0qyBy',
+//                             // successUrl: "https://company.com/success",
+//                             // cancelUrl: "https://company.com/cancel",
+//                             successUrl: thawaniPaymentSuccess,
+//                             api: 'LqZ2Ma9doGSkfIJPKssA3lPPKnhfRJ',
+//                             pKey: 'sCyctJWWAtRZ6i3nsEe8fGEsYMa2Si',
+//                             cancelUrl: thawaniPaymentfailed,
+//                             metadata: {
+//                               "Customer Name":
+//                                   "${user?.firstname} ${user?.lastname}",
+//                               "Customer PhoneNumber": "${user?.phone}",
+//                               "Customer Email": "${user?.email}"
+//                             },
+//                             clintID:  widget.orderID,
+
+//                             onError: (e) {
+//                               print(e);
+//                               print("object");
+//                             },
+//                             products: [
+//                             product
+//                             ],
+//                             onCreate: (v) {
+//                               setState(() {
+//                                 isLoading = true;
+//                               });
+//                               print(v);
+//                             },
+//                             onCancelled: (v) {
+//                               // getOrderSuccessData(context, v);
+//                               print(v.toString());
+//                               _getFail(context, v);
+//                             },
+//                             onPaid: (v) {
+//                               print(v.toString());
+//                               getOrderSuccessData(context, v);
+                            
+// },
+// child: const Text("Pay Using Thawani"),
+// );},);}
+
+//   _getFail(BuildContext context, StatusClass v) async {
+    
+//     await getThawaniFailed(context, v);
+//     Navigator.pushNamed(context, Routes.payFailPage);
+//   }}

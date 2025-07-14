@@ -5,8 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:social_media_services/components/color_manager.dart';
 import 'package:social_media_services/config/fcm.dart';
 import 'package:social_media_services/providers/data_provider.dart';
-
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:social_media_services/screens/how.dart';
 import 'package:social_media_services/utils/get_location.dart';
 import 'package:social_media_services/widgets/language_button.dart';
@@ -37,7 +35,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final str = AppLocalizations.of(context)!;
+    // final str = AppLocalizations.of(context)!;
     final provider = Provider.of<DataProvider>(context, listen: false);
     //  else if (provider.viewProfileModel?.userdetails?.latitude == null &&
     //     provider.explorerLat == null)

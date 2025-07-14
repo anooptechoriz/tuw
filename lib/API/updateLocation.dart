@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
@@ -24,8 +21,8 @@ updateLocationFunction(
             '$updateLocationApi$locality&latitude=${latLon[0]}&longitude=${latLon[1]}'),
         headers: {"device-id": provider.deviceId ?? '', "api-token": apiToken});
     if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
-      log(response.body);
+      // var jsonResponse = jsonDecode(response.body);
+      // log(response.body);
       // navToServiceMan(context, id);
       // if (jsonResponse['result'] == false) {
       //   await Hive.box("token").clear();
@@ -40,8 +37,7 @@ updateLocationFunction(
       // print('Something went wrong');
     }
   } on Exception catch (e) {
-    log("Something Went Wrong17");
-    print(e);
+     print(e);
   }
 }
 

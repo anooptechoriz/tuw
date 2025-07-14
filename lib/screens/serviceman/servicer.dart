@@ -42,18 +42,18 @@ import 'package:social_media_services/widgets/top_logo.dart';
 import '../../model/chat_list.dart';
 
 class ServicerPage extends StatefulWidget {
-  bool isUpdate;
-  int? id;
-  bool? isAdvancedSearchEnabled;
-  Services? homeservice;
-  String? defRegion;
-  String? defstate;
-  int? countryid;
-  int? regid;
-  int? stateid;
-  String? selectedValue;
-  String? Servicer;
-  ServicerPage(
+final  bool isUpdate;
+ final int? id;
+ final bool? isAdvancedSearchEnabled;
+final  Services? homeservice;
+final  String? defRegion;
+final  String? defstate;
+final  int? countryid;
+final  int? regid;
+final  int? stateid;
+final  String? selectedValue;
+final  String? servicer;
+const  ServicerPage(
       {super.key,
       this.id,
       this.isAdvancedSearchEnabled = false,
@@ -64,7 +64,9 @@ class ServicerPage extends StatefulWidget {
       this.selectedValue,
       this.countryid,
       this.regid,
-      this.stateid});
+      this.stateid,
+      this.servicer
+      });
 
   @override
   State<ServicerPage> createState() => _ServicerPageState();
@@ -112,7 +114,7 @@ class _ServicerPageState extends State<ServicerPage> {
     isAdvancedSearchEnabled = widget.isAdvancedSearchEnabled ?? false;
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      final str = AppLocalizations.of(context)!;
+      // final str = AppLocalizations.of(context)!;
       final provider = Provider.of<DataProvider>(context, listen: false);
       final servicerProvider =
           Provider.of<ServicerProvider>(context, listen: false);
@@ -970,8 +972,7 @@ class _ServicerPageState extends State<ServicerPage> {
                                                           //         horizontal: 10,
                                                           //         vertical: 8,
                                                           //       ),
-                                                          //       // TODO: localisation
-                                                          //       hintText:
+                                                           //       hintText:
                                                           //           str.s_search_country,
                                                           //       hintStyle:
                                                           //           const TextStyle(
@@ -1315,8 +1316,7 @@ class _ServicerPageState extends State<ServicerPage> {
                                                             //         horizontal: 10,
                                                             //         vertical: 8,
                                                             //       ),
-                                                            //       // TODO: localisation
-                                                            //       hintText:
+                                                             //       hintText:
                                                             //           str.s_search_country,
                                                             //       hintStyle:
                                                             //           const TextStyle(
@@ -1468,56 +1468,61 @@ class _ServicerPageState extends State<ServicerPage> {
                                     ),
 
                               Consumer<DataProvider>(
-                                  builder: (context, provider, _) {
-                                Serviceman? serviceManData =
-                                    provider.serviceManListModel?.serviceman;
-                                List<Data> data = serviceManData?.data ?? [];
-                                if (data.isEmpty) {
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 10),
-                                    child: Text(
-                                      str.no_ser,
-                                      style: getSemiBoldtStyle(
-                                          color: ColorManager.grayLight,
-                                          fontSize: 16),
-                                    ),
-                                  );
-                                }
-                                return ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemBuilder: ((context, index) {
+                                builder: (context, provider, _) {
+                                  Serviceman? serviceman =
+                                      provider.serviceManListModel?.serviceman;
+                                  List<Data> data = serviceman?.data ?? [];
+
+                                  if (data.isEmpty) {
                                     return Padding(
-                                      padding:
-                                          const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                      child: InkWell(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10),
+                                      child: Text(
+                                        str.no_ser,
+                                        style: getSemiBoldtStyle(
+                                            color: ColorManager.grayLight,
+                                            fontSize: 16),
+                                      ),
+                                    );
+                                  }
+                                  return ListView.builder(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemBuilder: ((context, index) {
+                                      log('message--->> ${serviceman?.data?[index].distance}');
+                                      return Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 5, 0, 5),
+                                        child: InkWell(
                                           onTap: () {
                                             data[index].id;
-                                            Navigator.push(context,
-                                                MaterialPageRoute(
-                                                    builder: (ctx) {
-                                              return ProfileLoading(
-                                                serviceman: serviceManData,
-                                                key: _scaffoldKey,
-                                                serviceId:
-                                                    data[index].id.toString(),
-                                              );
-                                            }));
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (ctx) {
+                                                  return ProfileLoading(
+                                                    key: _scaffoldKey,
+                                                    serviceman: serviceman,
+                                                    serviceId: data[index]
+                                                        .id
+                                                        .toString(),
+                                                  );
+                                                },
+                                              ),
+                                            );
                                           },
                                           child: ServicerListTile(
-                                            serviceman: serviceManData,
-                                            index: index,
-                                          )),
-                                    );
-                                  }),
-                                  itemCount: data.length,
-                                );
-                              }),
-
-                              const SizedBox(
-                                height: 5,
-                              )
+                                              serviceman: serviceman??Serviceman(),
+                                              index: index),
+                                        ),
+                                      );
+                                    }),
+                                    itemCount: data.length,
+                                  );
+                                },
+                              ),
+                              const SizedBox(height: 5),
                             ],
                           ),
                         ),

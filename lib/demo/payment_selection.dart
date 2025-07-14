@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:social_media_services/API/becomeServiceMan/payment_success.dart';
 import 'package:social_media_services/API/viewProfile.dart';
 import 'package:social_media_services/components/color_manager.dart';
 import 'package:social_media_services/components/routes_manager.dart';
 import 'package:social_media_services/demo/payment_failed.dart';
-import 'package:social_media_services/providers/data_provider.dart';
 
 class PaymentSelection extends StatefulWidget {
   const PaymentSelection({super.key});
@@ -55,7 +52,7 @@ class _PaymentSelectionState extends State<PaymentSelection> {
   }
 
   getOrderSuccessData() async {
-    final provider = Provider.of<DataProvider>(context, listen: false);
+    // final provider = Provider.of<DataProvider>(context, listen: false);
     setState(() {
       isLoading = true;
     });

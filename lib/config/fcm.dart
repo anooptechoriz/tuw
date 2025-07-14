@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:social_media_services/constants/constant.dart';
 // import 'package:flutter/material.dart';
 
 class FCM {
@@ -44,7 +45,8 @@ class FCM {
   static init() async {
     await requestPermission();
     String? token = await FirebaseMessaging.instance.getToken();
-    debugPrint('FCM token --->> $token');
+    debugPrint('FCM token -!-->> $token');
+    fcmToken = token ?? '';
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   }
 

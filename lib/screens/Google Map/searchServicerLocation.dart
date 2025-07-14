@@ -17,14 +17,14 @@ import 'package:social_media_services/screens/serviceman/servicer.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SearchServicerLocation extends StatefulWidget {
-  String? defRegion;
-  String? defstate;
-  int? countryid;
-  String? selectedvalue;
-  int? regid;
-  int? stateid;
-  TextEditingController? servicer;
-  SearchServicerLocation(
+ final String? defRegion;
+ final String? defstate;
+ final int? countryid;
+ final String? selectedvalue;
+ final int? regid;
+ final int? stateid;
+ final TextEditingController? servicer;
+ const SearchServicerLocation(
       {this.defRegion,
       this.defstate,
       this.countryid,

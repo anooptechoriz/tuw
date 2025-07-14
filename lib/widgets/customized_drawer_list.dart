@@ -5,8 +5,8 @@ import 'package:social_media_services/responsive/responsive.dart';
 
 class CustomDrawerList extends StatelessWidget {
   final String title;
-  GestureTapCallback? onTap;
-  CustomDrawerList({Key? key, required this.title, this.onTap})
+ final GestureTapCallback? onTap;
+const  CustomDrawerList({Key? key, required this.title, this.onTap})
       : super(key: key);
 
   @override

@@ -49,6 +49,7 @@
     "p_first_name_h":"Enter First Name",
     "p_last_name":"Last Name",
     "p_last_name_h":"Enter Last Name",
+    "p_email_h":"Email",
     "p_civil":"Civil Card No",
     "p_civil_h":"Enter Card No",
     "p_dob":"Date of Birth",
@@ -334,5 +335,6 @@
 "how4":"How to become a serviceman",
 "how4s":"Becoming a serviceman is a rewarding journey that allows you to use your skills and expertise to help others and make a positive impact. Whether you are interested in providing home services, professional trades, or specialized expertise, here's a step-by-step guide on how to become a serviceman: Identify Your Skills and Passion: Determine your area of expertise and passion. Reflect on your skills, knowledge, and the services you can confidently offer to customers. It could be anything from plumbing, electrical work, carpentry, tutoring, personal training, beauty services, or any other service that aligns with your abilities and interests. Sign upinto the system - You can create an account in TUW simply and easily by using your registered phone number. Once you are part of TUW you can convert your account to a service man. Secure Payment - There will be a subscription charges for expose your skills. you can choose the area of you are experienced and register in it. Verification - There will be a verification process which will ensure your genuinity and which will help us a string trusted community",
 "how5":"Is it possible to delete my account",
-"how5s":"Yes, absolutely! We understand that circumstances change, and you may wish to delete your account for various reasons. Deleting your account is a straightforward process, and we are here to assist you with it. Here's a guide on how to delete your account: Login to Your Account: First, log in to your account using your credentials Find the Delete Account Option: Look for the 'Delete Account' or 'Close Account' option within the settings. Confirmation: After reviewing the details, the platform will likely ask you to confirm your decision to delete the account. This is to ensure that you don't accidentally delete your account."
+"how5s":"Yes, absolutely! We understand that circumstances change, and you may wish to delete your account for various reasons. Deleting your account is a straightforward process, and we are here to assist you with it. Here's a guide on how to delete your account: Login to Your Account: First, log in to your account using your credentials Find the Delete Account Option: Look for the 'Delete Account' or 'Close Account' option within the settings. Confirmation: After reviewing the details, the platform will likely ask you to confirm your decision to delete the account. This is to ensure that you don't accidentally delete your account.",
+"waiting_for_admin_apporval":"Success, waiting for admin approval"
 }

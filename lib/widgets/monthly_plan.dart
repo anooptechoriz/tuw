@@ -7,8 +7,8 @@ class MonthlyPlan extends StatelessWidget {
   final String plan;
   final String amount;
   final bool isSelected;
-  int? len;
-  MonthlyPlan({
+ final int? len;
+ const MonthlyPlan({
     Key? key,
     required this.size,
     required this.plan,

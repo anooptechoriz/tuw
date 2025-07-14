@@ -24,8 +24,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:social_media_services/widgets/top_logo.dart';
 
 class WishListPage extends StatefulWidget {
-  int? id;
-  WishListPage({super.key, this.id});
+ final int? id;
+ const WishListPage({super.key, this.id});
 
   @override
   State<WishListPage> createState() => _WishListPageState();

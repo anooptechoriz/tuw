@@ -19,19 +19,19 @@ import 'package:social_media_services/screens/Address%20page/address_add.dart';
 import 'package:social_media_services/screens/Address%20page/address_update.dart';
 
 class AddressLocatorScreen extends StatefulWidget {
-  bool isUpdate;
-  UserAddress? userAddress;
+ final bool isUpdate;
+ final UserAddress? userAddress;
   final String? lat;
   final String? lot;
-  XFile? imageFile;
-  String? defaultReg;
-  String? defRegion;
-  String? selectedvalue;
-  int? countryid;
-  int? defaultregid;
-  String? stateidup;
-  int? stateid;
-  AddressLocatorScreen(
+ final XFile? imageFile;
+ final String? defaultReg;
+ final String? defRegion;
+ final String? selectedvalue;
+ final int? countryid;
+ final int? defaultregid;
+ final String? stateidup;
+ final int? stateid;
+ const AddressLocatorScreen(
       {Key? key,
       this.isUpdate = false,
       this.userAddress,

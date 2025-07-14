@@ -35,8 +35,10 @@ class Userdetails {
   String? phone;
   int? countryId;
   String? state;
+  int? stateId;
   String? statename;
   String? region;
+  int? regionId;
   String? city;
   String? profilePic;
   String? deviceId;
@@ -70,8 +72,10 @@ class Userdetails {
       this.phone,
       this.countryId,
       this.state,
+      this.stateId,
       this.statename,
       this.region,
+      this.regionId,
       this.city,
       this.profilePic,
       this.deviceId,

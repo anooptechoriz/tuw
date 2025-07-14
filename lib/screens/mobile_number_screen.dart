@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 import 'package:social_media_services/API/endpoint.dart';
 import 'package:social_media_services/API/get_otp.dart';
 import 'package:social_media_services/animations/animtions.dart';
@@ -37,16 +38,17 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
   bool isPickerSelected = false;
   Timer? _debounce;
   bool loading = false;
+  String? appSignature;
 
   @override
   void initState() {
     super.initState();
     PhoneNumberControllers.phoneNumCon.text = '';
     countryCode = "968";
-    lang = Hive.box('LocalLan').get(
-      'lang',
-    );
-
+    lang = Hive.box('LocalLan').get('lang');
+    SmsAutoFill().getAppSignature.then((signature) {
+      appSignature = signature;
+    });
     r.clear();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final provider = Provider.of<DataProvider>(context, listen: false);
@@ -57,20 +59,25 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
   }
 
   @override
+  void dispose() {
+    SmsAutoFill().unregisterListener();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     // print(size.height);
     // print(size.width);
     final h = MediaQuery.of(context).size.height;
-    final w = MediaQuery.of(context).size.width;
+    // final w = MediaQuery.of(context).size.width;
     final str = AppLocalizations.of(context)!;
     final provider = Provider.of<DataProvider>(context, listen: false);
 
     return GestureDetector(
       onTap: () {
-        setState(() {
-          isPickerSelected = false;
-        });
+        isPickerSelected = false;
+        setState(() {});
       },
       child: Scaffold(
         // resizeToAvoidBottomInset: false,
@@ -219,47 +226,49 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
                     delay: .1,
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(40, 40, 40, 30),
-                      child: Text(str.m_sub1,
-                          textAlign: TextAlign.center,
-                          style: getRegularStyle(
-                              color: ColorManager.grayLight, fontSize: 15)),
+                      child: Text(
+                        str.m_sub1,
+                        textAlign: TextAlign.center,
+                        style: getRegularStyle(
+                            color: ColorManager.grayLight, fontSize: 15),
+                      ),
                     ),
                   ),
                   FadeSlideCustomAnimation(
                     isRight: lang == 'ar' ? true : false,
                     delay: .1,
                     child: Container(
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              blurRadius: 4.5,
-                              color: Colors.grey.shade400,
-                              offset: const Offset(6, 6),
-                            ),
-                          ],
-                        ),
-                        width: 220,
-                        height: 50,
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(elevation: 0),
-                            onPressed: onContinue,
-                            child: loading
-                                ? const CircularProgressIndicator(
-                                    color: ColorManager.primary3,
-                                    backgroundColor: ColorManager.whiteColor,
-                                  )
-                                : Text(
-                                    str.m_continue,
-                                    style: getRegularStyle(
-                                        color: ColorManager.whiteText,
-                                        fontSize: 18),
-                                  ))),
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 4.5,
+                            color: Colors.grey.shade400,
+                            offset: const Offset(6, 6),
+                          ),
+                        ],
+                      ),
+                      width: 220,
+                      height: 50,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(elevation: 0),
+                        onPressed: onContinue,
+                        child: loading
+                            ? const CircularProgressIndicator(
+                                color: ColorManager.primary3,
+                                backgroundColor: ColorManager.whiteColor,
+                              )
+                            : Text(
+                                str.m_continue,
+                                style: getRegularStyle(
+                                    color: ColorManager.whiteText,
+                                    fontSize: 18),
+                              ),
+                      ),
+                    ),
                   ),
                   // const TroubleSign(),
                   // const Spacer(),
-                  SizedBox(
-                    height: size.height < 600 ? h * .13 : h * .23,
-                  ),
+                  SizedBox(height: size.height < 600 ? h * .13 : h * .23),
                   // const TermsAndCondition()
                 ],
               ),
@@ -481,7 +490,15 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
       setState(() {
         loading = true;
       });
-      await getOtp(context, countryCode, phoneNo, false);
+      appSignature = await SmsAutoFill().getAppSignature;
+      await SmsAutoFill().listenForCode();
+      await getOtp(
+        context: context,
+        countryCode: countryCode,
+        phoneNo: phoneNo,
+        resend: false,
+        appSignature: appSignature,
+      );
       print(OtpProvider.getOtp?.oTP.toString());
       setState(() {
         loading = false;
@@ -522,7 +539,7 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
 
   s(filter) {
     final provider = Provider.of<DataProvider>(context, listen: false);
-    final otpProvider = Provider.of<OTPProvider>(context, listen: false);
+    // final otpProvider = Provider.of<OTPProvider>(context, listen: false);
     provider.countriesModel?.countries?.forEach((element) {
       final m = element.countryName?.contains(filter);
 

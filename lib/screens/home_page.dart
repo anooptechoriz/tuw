@@ -1,6 +1,4 @@
-import 'dart:developer';
 import 'dart:io';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,14 +8,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:social_media_services/components/assets_manager.dart';
 import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/responsive/responsive_width.dart';
+import 'package:social_media_services/constants/constant.dart';
 import 'package:social_media_services/screens/messagePage.dart';
-
 import 'package:social_media_services/screens/serviceHome.dart';
 import 'package:social_media_services/widgets/custom_drawer.dart';
-
 import '../API/get_chat_list.dart';
 import '../providers/data_provider.dart';
 
@@ -54,6 +51,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+
     _firebaseMessagingInit();
     _selectedIndex = widget.selectedIndex;
     lang = Hive.box('LocalLan').get(
@@ -78,9 +76,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final w = MediaQuery.of(context).size.width;
-    final mobWth = ResponsiveWidth.isMobile(context);
-    final smobWth = ResponsiveWidth.issMobile(context);
+    // final w = MediaQuery.of(context).size.width;
+    // final mobWth = ResponsiveWidth.isMobile(context);
+    // final smobWth = ResponsiveWidth.issMobile(context);
     final provider = Provider.of<DataProvider>(context, listen: true);
     return WillPopScope(
       onWillPop: handleBackButton,
@@ -193,7 +191,7 @@ class _HomePageState extends State<HomePage> {
                 child: Builder(
                   builder: (context) => InkWell(
                     onTap: () {
-                      String? apiToken = Hive.box("token").get('api_token');
+                      // String? apiToken = Hive.box("token").get('api_token');
                       Scaffold.of(context).openEndDrawer();
                     },
                     child: const Padding(
@@ -216,9 +214,16 @@ class _HomePageState extends State<HomePage> {
   //--------------------------------------------Push Notifications------------------------------------------------//
 
   _firebaseMessagingInit() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     getFirebaseMessages();
+    String? fcm = prefs.getString('fcm');
     String? token = await FirebaseMessaging.instance.getToken();
-    debugPrint('FCM token --->> $token');
+    if (fcm != token) {
+      await prefs.setString('fcm', token ?? '');
+    }
+    fcmToken = prefs.getString('fcm') ?? '';
+    debugPrint('FCM token --->> $fcmToken');
+
     FirebaseMessaging.onMessage.listen(_handleMessage);
     FirebaseMessaging.onMessageOpenedApp.listen(
       (RemoteMessage message) => _handleMessageData(message.data),

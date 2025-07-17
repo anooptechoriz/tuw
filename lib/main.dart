@@ -15,7 +15,12 @@ import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  try {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    print("Firebase initialized successfully");
+  } catch (e) {
+    print("Firebase initialization failed: $e");
+  }
   // await FirebaseApi().initNotifications();
 
   await Hive.initFlutter();

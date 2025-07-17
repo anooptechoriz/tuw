@@ -248,17 +248,17 @@ class _HomePageState extends State<HomePage> {
         FlutterLocalNotificationsPlugin();
     AndroidInitializationSettings initializationSettingsAndroid =
         const AndroidInitializationSettings('@mipmap/ic_launcher');
-    final DarwinInitializationSettings initializationSettingsDarwin =
-        DarwinInitializationSettings(
+    final IOSInitializationSettings initializationSettingsIOS =
+        IOSInitializationSettings(
             onDidReceiveLocalNotification: (id, title, body, payload) =>
                 _handleMessageData(message.data));
     final InitializationSettings initializationSettings =
         InitializationSettings(
             android: initializationSettingsAndroid,
-            iOS: initializationSettingsDarwin);
+            iOS: initializationSettingsIOS);
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
-      onDidReceiveNotificationResponse: (details) =>
+      onSelectNotification: (payload) async =>
           _handleMessageData(message.data),
     );
 

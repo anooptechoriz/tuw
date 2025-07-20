@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:social_media_services/components/routes_manager.dart';
-import 'package:social_media_services/components/styles_manager.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:social_media_services/responsive/responsive_width.dart';
+import 'package:tuw_services/components/routes_manager.dart';
+import 'package:tuw_services/components/styles_manager.dart';
+import '../l10n/app_localizations.dart';
+import 'package:tuw_services/responsive/responsive_width.dart';
 
 class TermsAndCondition extends StatelessWidget {
   const TermsAndCondition({

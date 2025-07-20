@@ -5,14 +5,14 @@
 // import 'package:flutter/material.dart';
 // import 'package:network_info_plus/network_info_plus.dart';
 // import 'package:provider/provider.dart';
-// import 'package:social_media_services/API/becomeServiceMan/payment_success.dart';
-// import 'package:social_media_services/API/viewProfile.dart';
-// import 'package:social_media_services/components/routes_manager.dart';
-// import 'package:social_media_services/providers/data_provider.dart';
-// import 'package:social_media_services/screens/Become%20a%20servie%20man/payment_integaration/apis/payfort_api.dart';
-// import 'package:social_media_services/screens/Become%20a%20servie%20man/payment_integaration/constants/fort_constants.dart';
-// import 'package:social_media_services/screens/Become%20a%20servie%20man/payment_integaration/models/sdk_token_response.dart';
-// import 'package:social_media_services/screens/Become%20a%20servie%20man/payment_integaration/providers/default_change_notifier.dart';
+// import 'package:tuw_services/API/becomeServiceMan/payment_success.dart';
+// import 'package:tuw_services/API/viewProfile.dart';
+// import 'package:tuw_services/components/routes_manager.dart';
+// import 'package:tuw_services/providers/data_provider.dart';
+// import 'package:tuw_services/screens/Become%20a%20servie%20man/payment_integaration/apis/payfort_api.dart';
+// import 'package:tuw_services/screens/Become%20a%20servie%20man/payment_integaration/constants/fort_constants.dart';
+// import 'package:tuw_services/screens/Become%20a%20servie%20man/payment_integaration/models/sdk_token_response.dart';
+// import 'package:tuw_services/screens/Become%20a%20servie%20man/payment_integaration/providers/default_change_notifier.dart';
 
 // import 'package:uuid/uuid.dart';
 

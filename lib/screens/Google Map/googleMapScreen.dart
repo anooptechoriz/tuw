@@ -7,14 +7,14 @@ import 'package:geocoding/geocoding.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:social_media_services/API/updateLocation.dart';
-import 'package:social_media_services/API/viewProfile.dart';
-import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/components/styles_manager.dart';
-import 'package:social_media_services/controllers/controllers.dart';
-import 'package:social_media_services/providers/data_provider.dart';
-import 'package:social_media_services/screens/Address%20page/address_page.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tuw_services/API/updateLocation.dart';
+import 'package:tuw_services/API/viewProfile.dart';
+import 'package:tuw_services/components/color_manager.dart';
+import 'package:tuw_services/components/styles_manager.dart';
+import 'package:tuw_services/controllers/controllers.dart';
+import 'package:tuw_services/providers/data_provider.dart';
+import 'package:tuw_services/screens/Address%20page/address_page.dart';
+import '../../l10n/app_localizations.dart';
 
 class GoogleMapScreen extends StatefulWidget {
   final String? lat;

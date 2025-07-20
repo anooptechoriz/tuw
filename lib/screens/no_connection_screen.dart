@@ -2,12 +2,12 @@
 // import 'package:lottie/lottie.dart';
 // import 'package:multi_state_button/multi_state_button.dart';
 // import 'package:provider/provider.dart';
-// import 'package:social_media_services/components/assets_manager.dart';
-// import 'package:social_media_services/components/color_manager.dart';
-// import 'package:social_media_services/components/routes_manager.dart';
-// import 'package:social_media_services/components/styles_manager.dart';
-// import 'package:social_media_services/providers/data_provider.dart';
-// import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+// import 'package:tuw_services/components/assets_manager.dart';
+// import 'package:tuw_services/components/color_manager.dart';
+// import 'package:tuw_services/components/routes_manager.dart';
+// import 'package:tuw_services/components/styles_manager.dart';
+// import 'package:tuw_services/providers/data_provider.dart';
+// import '../l10n/app_localizations.dart';
 
 // class NoConnectionScreen extends StatelessWidget {
 //   static const String _tryAgain = "Try Again";

@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
-import 'package:social_media_services/API/becomeServiceMan/customerParent.dart';
-import 'package:social_media_services/API/get_active_services.dart';
-import 'package:social_media_services/API/get_language.dart';
-import 'package:social_media_services/API/get_serviceManProfileDetails.dart';
-import 'package:social_media_services/API/home/get_home.dart';
-import 'package:social_media_services/API/home/get_subService.dart';
-import 'package:social_media_services/API/viewProfile.dart';
-import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/components/styles_manager.dart';
-import 'package:social_media_services/model/active_services.dart';
+import 'package:tuw_services/API/becomeServiceMan/customerParent.dart';
+import 'package:tuw_services/API/get_active_services.dart';
+import 'package:tuw_services/API/get_language.dart';
+import 'package:tuw_services/API/get_serviceManProfileDetails.dart';
+import 'package:tuw_services/API/home/get_home.dart';
+import 'package:tuw_services/API/home/get_subService.dart';
+import 'package:tuw_services/API/viewProfile.dart';
+import 'package:tuw_services/components/color_manager.dart';
+import 'package:tuw_services/components/styles_manager.dart';
+import 'package:tuw_services/model/active_services.dart';
 
-import 'package:social_media_services/providers/data_provider.dart';
-import 'package:social_media_services/providers/servicer_provider.dart';
-import 'package:social_media_services/screens/home_page.dart';
-import 'package:social_media_services/utils/getLocalLanguage.dart';
-import 'package:social_media_services/widgets/backbutton.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:social_media_services/widgets/language_button.dart';
+import 'package:tuw_services/providers/data_provider.dart';
+import 'package:tuw_services/providers/servicer_provider.dart';
+import 'package:tuw_services/screens/home_page.dart';
+import 'package:tuw_services/utils/getLocalLanguage.dart';
+import 'package:tuw_services/widgets/backbutton.dart';
+import '../l10n/app_localizations.dart';
+import 'package:tuw_services/widgets/language_button.dart';
 
 import '../API/get_chat_list.dart';
 

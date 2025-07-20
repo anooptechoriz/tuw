@@ -6,10 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/components/styles_manager.dart';
-import 'package:social_media_services/controllers/controllers.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tuw_services/components/color_manager.dart';
+import 'package:tuw_services/components/styles_manager.dart';
+import 'package:tuw_services/controllers/controllers.dart';
+import '../../l10n/app_localizations.dart';
 
 class ShareLocation extends StatefulWidget {
  final LatLng? currentLocator;

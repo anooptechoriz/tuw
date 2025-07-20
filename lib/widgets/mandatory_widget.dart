@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/widgets/title_widget.dart';
+import 'package:tuw_services/components/color_manager.dart';
+import 'package:tuw_services/widgets/title_widget.dart';
 
 class MandatoryHeader extends StatelessWidget {
   final String heading;

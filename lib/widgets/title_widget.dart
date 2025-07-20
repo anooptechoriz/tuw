@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:social_media_services/components/styles_manager.dart';
-import 'package:social_media_services/responsive/responsive.dart';
+import 'package:tuw_services/components/styles_manager.dart';
+import 'package:tuw_services/responsive/responsive.dart';
 
 class TitleWidget extends StatelessWidget {
   final String name;

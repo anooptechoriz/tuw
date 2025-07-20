@@ -3,9 +3,9 @@
 
 // import 'package:flutter/material.dart';
 // import 'package:provider/provider.dart';
-// import 'package:social_media_services/screens/Become%20a%20servie%20man/payment_integaration/providers/payment_provider.dart';
-// import 'package:social_media_services/screens/Become%20a%20servie%20man/payment_integaration/views/widgets.dart';
-// import 'package:social_media_services/utils/animatedSnackBar.dart';
+// import 'package:tuw_services/screens/Become%20a%20servie%20man/payment_integaration/providers/payment_provider.dart';
+// import 'package:tuw_services/screens/Become%20a%20servie%20man/payment_integaration/views/widgets.dart';
+// import 'package:tuw_services/utils/animatedSnackBar.dart';
 
 // class PaymentScreen extends StatefulWidget {
 //   final double amount;

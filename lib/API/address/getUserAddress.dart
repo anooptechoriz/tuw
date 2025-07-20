@@ -7,10 +7,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:social_media_services/API/endpoint.dart';
-import 'package:social_media_services/model/other%20User/show_user_address.dart';
-import 'package:social_media_services/model/user_address_show.dart';
-import 'package:social_media_services/providers/data_provider.dart';
+import 'package:tuw_services/API/endpoint.dart';
+import 'package:tuw_services/model/other%20User/show_user_address.dart';
+import 'package:tuw_services/model/user_address_show.dart';
+import 'package:tuw_services/providers/data_provider.dart';
 
 getUserAddress(BuildContext context) async {
   print('getting user address');

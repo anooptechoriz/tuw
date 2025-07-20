@@ -1,10 +1,10 @@
 // import 'package:flutter/material.dart';
 // import 'package:intl/intl.dart';
 // import 'package:provider/provider.dart';
-// import 'package:social_media_services/providers/data_provider.dart';
-// import 'package:social_media_services/screens/widget/chat_model.dart';
-// import 'package:social_media_services/widgets/chat/chat_bubble.dart';
-// import 'package:social_media_services/widgets/chat/chat_date_widget.dart';
+// import 'package:tuw_services/providers/data_provider.dart';
+// import 'package:tuw_services/screens/widget/chat_model.dart';
+// import 'package:tuw_services/widgets/chat/chat_bubble.dart';
+// import 'package:tuw_services/widgets/chat/chat_date_widget.dart';
 
 // class ChatBubbleWidget extends StatelessWidget {
 //   final int index;

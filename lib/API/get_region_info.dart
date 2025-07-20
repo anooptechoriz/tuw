@@ -4,10 +4,10 @@ import 'package:hive/hive.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import 'package:social_media_services/API/endpoint.dart';
-import 'package:social_media_services/model/region_info_model.dart';
-import 'package:social_media_services/model/state_info_model.dart';
-import 'package:social_media_services/providers/data_provider.dart';
+import 'package:tuw_services/API/endpoint.dart';
+import 'package:tuw_services/model/region_info_model.dart';
+import 'package:tuw_services/model/state_info_model.dart';
+import 'package:tuw_services/providers/data_provider.dart';
 import 'package:http/http.dart' as http;
 
 getRegionData(BuildContext context, id) async {

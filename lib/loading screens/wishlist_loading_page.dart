@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart'; 
 import 'package:hive/hive.dart';
- import 'package:social_media_services/API/get_favorites.dart'; 
-import 'package:social_media_services/screens/wishlist/wishlist.dart';
+ import 'package:tuw_services/API/get_favorites.dart'; 
+import 'package:tuw_services/screens/wishlist/wishlist.dart';
 
 class WishList extends StatefulWidget {
   const WishList({super.key});

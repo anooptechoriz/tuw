@@ -2,9 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:social_media_services/API/address/getUserAddress.dart';
-import 'package:social_media_services/API/other%20User/other_user_profie.dart';
-import 'package:social_media_services/screens/Address%20page/address_card.dart'; 
+import 'package:tuw_services/API/address/getUserAddress.dart';
+import 'package:tuw_services/API/other%20User/other_user_profie.dart';
+import 'package:tuw_services/screens/Address%20page/address_card.dart'; 
 
 class UserAddressCardLoading extends StatefulWidget {
  final String id;

@@ -5,9 +5,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/components/styles_manager.dart';
-import 'package:social_media_services/controllers/controllers.dart';
+import 'package:tuw_services/components/color_manager.dart';
+import 'package:tuw_services/components/styles_manager.dart';
+import 'package:tuw_services/controllers/controllers.dart';
  
 class ViewLocationScreen extends StatefulWidget {
  final String latitude;

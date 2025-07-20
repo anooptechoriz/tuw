@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/responsive/responsive.dart';
+import 'package:tuw_services/components/color_manager.dart';
+import 'package:tuw_services/responsive/responsive.dart';
 
 class LoadingListPage extends StatefulWidget {
   const LoadingListPage({super.key});

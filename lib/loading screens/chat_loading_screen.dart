@@ -5,16 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
  import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
-import 'package:social_media_services/API/get_chat_list.dart';
-import 'package:social_media_services/API/get_serviceManProfileDetails.dart';
-import 'package:social_media_services/API/other%20User/other_user_address_list.dart';
-import 'package:social_media_services/API/update_read_status.dart';
-import 'package:social_media_services/API/view_chat_messages.dart';
-import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/providers/data_provider.dart';
-// import 'package:social_media_services/responsive/responsive.dart';
-import 'package:social_media_services/screens/chat_screen.dart';
-//  import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tuw_services/API/get_chat_list.dart';
+import 'package:tuw_services/API/get_serviceManProfileDetails.dart';
+import 'package:tuw_services/API/other%20User/other_user_address_list.dart';
+import 'package:tuw_services/API/update_read_status.dart';
+import 'package:tuw_services/API/view_chat_messages.dart';
+import 'package:tuw_services/components/color_manager.dart';
+import 'package:tuw_services/providers/data_provider.dart';
+// import 'package:tuw_services/responsive/responsive.dart';
+import 'package:tuw_services/screens/chat_screen.dart';
+//  import '../l10n/app_localizations.dart';
 // import 'package:video_player/video_player.dart';
 
 class ChatLoadingScreen extends StatefulWidget {

@@ -2,9 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:social_media_services/API/get_serviceManProfileDetails.dart';
-import 'package:social_media_services/model/serviceManLIst.dart';
-import 'package:social_media_services/screens/serviceman/serviceman_list_details.dart';
+import 'package:tuw_services/API/get_serviceManProfileDetails.dart';
+import 'package:tuw_services/model/serviceManLIst.dart';
+import 'package:tuw_services/screens/serviceman/serviceman_list_details.dart';
 
 class ProfileLoading extends StatefulWidget {
 final  Serviceman? serviceman;

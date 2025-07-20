@@ -4,7 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:social_media_services/providers/data_provider.dart';
+import 'package:tuw_services/providers/data_provider.dart';
 
 import '../../../components/color_manager.dart';
 import '../../../model/get_child_service.dart';

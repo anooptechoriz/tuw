@@ -38,7 +38,7 @@ class ChatTextMessageBubble extends StatelessWidget {
               fontSize: 14,
             ),
             overflow: TextOverflow.ellipsis,
-            maxLines: 999999999999999999,
+            maxLines: null, // Allow unlimited lines
           ),
           Padding(
                           padding: const EdgeInsets.fromLTRB(0, 2, 0, 0),

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
-import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/config/fcm.dart';
-import 'package:social_media_services/providers/data_provider.dart';
-import 'package:social_media_services/screens/how.dart';
-import 'package:social_media_services/utils/get_location.dart';
-import 'package:social_media_services/widgets/language_button.dart';
+import 'package:tuw_services/components/color_manager.dart';
+import 'package:tuw_services/config/fcm.dart';
+import 'package:tuw_services/providers/data_provider.dart';
+import 'package:tuw_services/screens/how.dart';
+import 'package:tuw_services/utils/get_location.dart';
+import 'package:tuw_services/widgets/language_button.dart';
 
 class IntroductionScreen extends StatefulWidget {
   const IntroductionScreen({Key? key}) : super(key: key);

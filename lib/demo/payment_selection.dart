@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:social_media_services/API/viewProfile.dart';
-import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/components/routes_manager.dart';
-import 'package:social_media_services/demo/payment_failed.dart';
+import 'package:tuw_services/API/viewProfile.dart';
+import 'package:tuw_services/components/color_manager.dart';
+import 'package:tuw_services/components/routes_manager.dart';
+import 'package:tuw_services/demo/payment_failed.dart';
 
 class PaymentSelection extends StatefulWidget {
   const PaymentSelection({super.key});

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:social_media_services/components/color_manager.dart';
+import 'package:tuw_services/components/color_manager.dart';
 
 class IntroductionLogo extends StatelessWidget {
   const IntroductionLogo({

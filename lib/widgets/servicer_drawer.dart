@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
-import 'package:social_media_services/components/assets_manager.dart';
-import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/components/styles_manager.dart';
-import 'package:social_media_services/providers/data_provider.dart';
-import 'package:social_media_services/responsive/responsive.dart';
-import 'package:social_media_services/widgets/Ser_button.dart';
-import 'package:social_media_services/widgets/ser_drawer_list.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tuw_services/components/assets_manager.dart';
+import 'package:tuw_services/components/color_manager.dart';
+import 'package:tuw_services/components/styles_manager.dart';
+import 'package:tuw_services/providers/data_provider.dart';
+import 'package:tuw_services/responsive/responsive.dart';
+import 'package:tuw_services/widgets/Ser_button.dart';
+import 'package:tuw_services/widgets/ser_drawer_list.dart';
+import '../l10n/app_localizations.dart';
 
 class SerDrawer extends StatefulWidget {
  final int? id;

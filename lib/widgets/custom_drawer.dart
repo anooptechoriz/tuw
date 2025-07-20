@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
-import 'package:social_media_services/API/logout.dart';
-import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/components/routes_manager.dart';
-import 'package:social_media_services/providers/data_provider.dart';
-import 'package:social_media_services/screens/Address%20page/address_page.dart';
-import 'package:social_media_services/screens/Become%20a%20servie%20man/profile_service_man.dart';
-import 'package:social_media_services/screens/profile_page.dart';
-import 'package:social_media_services/screens/select_language.dart';
-import 'package:social_media_services/utils/delete_diologue.dart';
-import 'package:social_media_services/utils/initPlatformState.dart';
-import 'package:social_media_services/widgets/customized_drawer_list.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tuw_services/API/logout.dart';
+import 'package:tuw_services/components/color_manager.dart';
+import 'package:tuw_services/components/routes_manager.dart';
+import 'package:tuw_services/providers/data_provider.dart';
+import 'package:tuw_services/screens/Address%20page/address_page.dart';
+import 'package:tuw_services/screens/Become%20a%20servie%20man/profile_service_man.dart';
+import 'package:tuw_services/screens/profile_page.dart';
+import 'package:tuw_services/screens/select_language.dart';
+import 'package:tuw_services/utils/delete_diologue.dart';
+import 'package:tuw_services/utils/initPlatformState.dart';
+import 'package:tuw_services/widgets/customized_drawer_list.dart';
+import '../l10n/app_localizations.dart';
 
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({

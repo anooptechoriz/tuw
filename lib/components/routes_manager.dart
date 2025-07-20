@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:social_media_services/demo/payment_failed.dart';
-import 'package:social_media_services/screens/Address%20page/address_page.dart';
-import 'package:social_media_services/screens/OTP_screen.dart';
-import 'package:social_media_services/screens/Terms&Conditions.dart';
-import 'package:social_media_services/screens/Become%20a%20servie%20man/choose_service_page.dart';
-import 'package:social_media_services/screens/home_page.dart';
-import 'package:social_media_services/screens/introduction_screen.dart';
-import 'package:social_media_services/screens/mobile_number_screen.dart';
- import 'package:social_media_services/screens/privacy_policy.dart';
-import 'package:social_media_services/screens/profile_page.dart';
-import 'package:social_media_services/screens/Become%20a%20servie%20man/profile_service_man.dart';
-import 'package:social_media_services/screens/serviceman/servicer.dart';
-import 'package:social_media_services/screens/splash_screen.dart';
-import 'package:social_media_services/loading%20screens/wishlist_loading_page.dart';
+import 'package:tuw_services/demo/payment_failed.dart';
+import 'package:tuw_services/screens/Address%20page/address_page.dart';
+import 'package:tuw_services/screens/OTP_screen.dart';
+import 'package:tuw_services/screens/Terms&Conditions.dart';
+import 'package:tuw_services/screens/Become%20a%20servie%20man/choose_service_page.dart';
+import 'package:tuw_services/screens/home_page.dart';
+import 'package:tuw_services/screens/introduction_screen.dart';
+import 'package:tuw_services/screens/mobile_number_screen.dart';
+ import 'package:tuw_services/screens/privacy_policy.dart';
+import 'package:tuw_services/screens/profile_page.dart';
+import 'package:tuw_services/screens/Become%20a%20servie%20man/profile_service_man.dart';
+import 'package:tuw_services/screens/serviceman/servicer.dart';
+import 'package:tuw_services/screens/splash_screen.dart';
+import 'package:tuw_services/loading%20screens/wishlist_loading_page.dart';
 
 class Routes {
   static const String splashScreen = '/';

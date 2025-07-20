@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:social_media_services/components/color_manager.dart';
+import 'package:tuw_services/components/color_manager.dart';
 
 class LoadingVoice extends StatelessWidget {
   const LoadingVoice({super.key});

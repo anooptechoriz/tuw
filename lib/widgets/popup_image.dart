@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:social_media_services/API/endpoint.dart';
-import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/utils/initPlatformState.dart';
+import 'package:tuw_services/API/endpoint.dart';
+import 'package:tuw_services/components/color_manager.dart';
+import 'package:tuw_services/utils/initPlatformState.dart';
 
 class PopupImage extends StatefulWidget {
   final String? image;

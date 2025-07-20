@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:social_media_services/API/delete_gallery_image.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:social_media_services/API/viewProfile.dart';
-import 'package:social_media_services/screens/serviceman%20settings%20profile/serviceman_profile_view.dart';
+import 'package:tuw_services/API/delete_gallery_image.dart';
+import '../l10n/app_localizations.dart';
+import 'package:tuw_services/API/viewProfile.dart';
+import 'package:tuw_services/screens/serviceman%20settings%20profile/serviceman_profile_view.dart';
 
 class DeleteImage extends StatefulWidget {
   final String imageId;

@@ -2,12 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
-import 'package:social_media_services/API/endpoint.dart';
-import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/components/styles_manager.dart';
-import 'package:social_media_services/model/chat_list.dart';
-import 'package:social_media_services/providers/data_provider.dart';
-import 'package:social_media_services/responsive/responsive.dart';
+import 'package:tuw_services/API/endpoint.dart';
+import 'package:tuw_services/components/color_manager.dart';
+import 'package:tuw_services/components/styles_manager.dart';
+import 'package:tuw_services/model/chat_list.dart';
+import 'package:tuw_services/providers/data_provider.dart';
+import 'package:tuw_services/responsive/responsive.dart';
  
 class ChatListTile extends StatefulWidget {
   final MessageData? profileData;

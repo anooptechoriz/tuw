@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
-import 'package:social_media_services/components/color_manager.dart';
+import 'package:tuw_services/components/color_manager.dart';
 
 final defaultPinTheme = PinTheme(
   width: 55,

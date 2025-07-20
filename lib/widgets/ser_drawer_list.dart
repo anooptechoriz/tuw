@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:social_media_services/API/home/get_service_man.dart';
-import 'package:social_media_services/components/assets_manager.dart';
-import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/components/styles_manager.dart';
-import 'package:social_media_services/controllers/controllers.dart';
-import 'package:social_media_services/providers/data_provider.dart';
+import 'package:tuw_services/API/home/get_service_man.dart';
+import 'package:tuw_services/components/assets_manager.dart';
+import 'package:tuw_services/components/color_manager.dart';
+import 'package:tuw_services/components/styles_manager.dart';
+import 'package:tuw_services/controllers/controllers.dart';
+import 'package:tuw_services/providers/data_provider.dart';
 
 class SerDrawerList extends StatefulWidget {
   final String image;

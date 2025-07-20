@@ -2,12 +2,12 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:provider/provider.dart';
-import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/model/get_child_service.dart';
+import 'package:tuw_services/components/color_manager.dart';
+import 'package:tuw_services/model/get_child_service.dart';
 import '../../components/styles_manager.dart';
 import '../../providers/data_provider.dart';
 import '../../widgets/title_widget.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../l10n/app_localizations.dart';
 
 class ServiceDocPickerWidget extends StatelessWidget {
   final Document item;

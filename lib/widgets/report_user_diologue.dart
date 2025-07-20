@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:multi_state_button/multi_state_button.dart';
-import 'package:social_media_services/API/report_customer.dart';
-import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/components/styles_manager.dart';
-import 'package:social_media_services/controllers/controllers.dart';
-import 'package:social_media_services/utils/animatedSnackBar.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tuw_services/API/report_customer.dart';
+import 'package:tuw_services/components/color_manager.dart';
+import 'package:tuw_services/components/styles_manager.dart';
+import 'package:tuw_services/controllers/controllers.dart';
+import 'package:tuw_services/utils/animatedSnackBar.dart';
+import '../l10n/app_localizations.dart';
 
 class ReportUserDiologue extends StatefulWidget {
   const ReportUserDiologue({

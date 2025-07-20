@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/components/styles_manager.dart';
-import 'package:social_media_services/widgets/servicer_drawer.dart';
+import 'package:tuw_services/components/color_manager.dart';
+import 'package:tuw_services/components/styles_manager.dart';
+import 'package:tuw_services/widgets/servicer_drawer.dart';
 
 class SearchNearService extends StatefulWidget {
   const SearchNearService({super.key});

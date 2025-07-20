@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:provider/provider.dart';
-import 'package:social_media_services/API/endpoint.dart';
-import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/components/styles_manager.dart';
-import 'package:social_media_services/loading%20screens/address_card_loading.dart';
-import 'package:social_media_services/model/user_address_show.dart';
-import 'package:social_media_services/providers/data_provider.dart';
+import 'package:tuw_services/API/endpoint.dart';
+import 'package:tuw_services/components/color_manager.dart';
+import 'package:tuw_services/components/styles_manager.dart';
+import 'package:tuw_services/loading%20screens/address_card_loading.dart';
+import 'package:tuw_services/model/user_address_show.dart';
+import 'package:tuw_services/providers/data_provider.dart';
 
-import 'package:social_media_services/screens/Address%20page/address_update.dart';
-import 'package:social_media_services/utils/diologue.dart';
+import 'package:tuw_services/screens/Address%20page/address_update.dart';
+import 'package:tuw_services/utils/diologue.dart';
 
 class AddressBox extends StatefulWidget {
   UserAddress? userAddress;

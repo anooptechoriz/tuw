@@ -2,7 +2,7 @@
 // import 'package:amazon_payfort/amazon_payfort_platform_interface.dart';
 
 // import 'package:flutter/material.dart';
-// import 'package:social_media_services/screens/Become%20a%20servie%20man/payment_integaration/constants/app_colors.dart';
+// import 'package:tuw_services/screens/Become%20a%20servie%20man/payment_integaration/constants/app_colors.dart';
 
 // class Loading extends StatelessWidget {
 //   const Loading({super.key});

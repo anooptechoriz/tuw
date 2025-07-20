@@ -11,28 +11,28 @@
 // import 'package:hive/hive.dart';
 // // import 'package:pinput/pinput.dart';
 // import 'package:provider/provider.dart';
-// import 'package:social_media_services/API/address/getUserAddress.dart';
-// import 'package:social_media_services/API/endpoint.dart';
-// import 'package:social_media_services/API/get_chat_list.dart';
-// import 'package:social_media_services/API/get_serviceManProfileDetails.dart';
-// import 'package:social_media_services/API/home/get_home.dart';
-// import 'package:social_media_services/API/get_otp.dart';
-// import 'package:social_media_services/animations/animtions.dart';
-// import 'package:social_media_services/components/color_manager.dart';
-// import 'package:social_media_services/components/styles_manager.dart';
-// import 'package:social_media_services/constants/constant.dart';
-// import 'package:social_media_services/controllers/controllers.dart';
-// import 'package:social_media_services/model/otp/otp_verification.dart';
-// import 'package:social_media_services/providers/data_provider.dart';
-// import 'package:social_media_services/providers/otp_provider.dart';
-// import 'package:social_media_services/responsive/responsive.dart';
-// import 'package:social_media_services/screens/home_page.dart';
-// import 'package:social_media_services/utils/get_location.dart';
-// import 'package:social_media_services/utils/pinTheme.dart';
-// import 'package:social_media_services/screens/edit_profile_screen.dart';
-// import 'package:social_media_services/utils/snack_bar.dart';
-// import 'package:social_media_services/API/viewProfile.dart';
-// import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+// import 'package:tuw_services/API/address/getUserAddress.dart';
+// import 'package:tuw_services/API/endpoint.dart';
+// import 'package:tuw_services/API/get_chat_list.dart';
+// import 'package:tuw_services/API/get_serviceManProfileDetails.dart';
+// import 'package:tuw_services/API/home/get_home.dart';
+// import 'package:tuw_services/API/get_otp.dart';
+// import 'package:tuw_services/animations/animtions.dart';
+// import 'package:tuw_services/components/color_manager.dart';
+// import 'package:tuw_services/components/styles_manager.dart';
+// import 'package:tuw_services/constants/constant.dart';
+// import 'package:tuw_services/controllers/controllers.dart';
+// import 'package:tuw_services/model/otp/otp_verification.dart';
+// import 'package:tuw_services/providers/data_provider.dart';
+// import 'package:tuw_services/providers/otp_provider.dart';
+// import 'package:tuw_services/responsive/responsive.dart';
+// import 'package:tuw_services/screens/home_page.dart';
+// import 'package:tuw_services/utils/get_location.dart';
+// import 'package:tuw_services/utils/pinTheme.dart';
+// import 'package:tuw_services/screens/edit_profile_screen.dart';
+// import 'package:tuw_services/utils/snack_bar.dart';
+// import 'package:tuw_services/API/viewProfile.dart';
+// import '../l10n/app_localizations.dart';
 // import 'package:http/http.dart' as http;
 
 // class OTPscreen extends StatefulWidget {
@@ -383,28 +383,28 @@ import 'package:hive/hive.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
-import 'package:social_media_services/API/address/getUserAddress.dart';
-import 'package:social_media_services/API/endpoint.dart';
-import 'package:social_media_services/API/get_chat_list.dart';
-import 'package:social_media_services/API/get_serviceManProfileDetails.dart';
-import 'package:social_media_services/API/home/get_home.dart';
-import 'package:social_media_services/API/get_otp.dart';
-import 'package:social_media_services/animations/animtions.dart';
-import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/components/styles_manager.dart';
-import 'package:social_media_services/constants/constant.dart';
-import 'package:social_media_services/controllers/controllers.dart';
-import 'package:social_media_services/model/otp/otp_verification.dart';
-import 'package:social_media_services/providers/data_provider.dart';
-import 'package:social_media_services/providers/otp_provider.dart';
-import 'package:social_media_services/responsive/responsive.dart';
-import 'package:social_media_services/screens/home_page.dart';
-import 'package:social_media_services/utils/get_location.dart';
-import 'package:social_media_services/utils/pinTheme.dart';
-import 'package:social_media_services/screens/edit_profile_screen.dart';
-import 'package:social_media_services/utils/snack_bar.dart';
-import 'package:social_media_services/API/viewProfile.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tuw_services/API/address/getUserAddress.dart';
+import 'package:tuw_services/API/endpoint.dart';
+import 'package:tuw_services/API/get_chat_list.dart';
+import 'package:tuw_services/API/get_serviceManProfileDetails.dart';
+import 'package:tuw_services/API/home/get_home.dart';
+import 'package:tuw_services/API/get_otp.dart';
+import 'package:tuw_services/animations/animtions.dart';
+import 'package:tuw_services/components/color_manager.dart';
+import 'package:tuw_services/components/styles_manager.dart';
+import 'package:tuw_services/constants/constant.dart';
+import 'package:tuw_services/controllers/controllers.dart';
+import 'package:tuw_services/model/otp/otp_verification.dart';
+import 'package:tuw_services/providers/data_provider.dart';
+import 'package:tuw_services/providers/otp_provider.dart';
+import 'package:tuw_services/responsive/responsive.dart';
+import 'package:tuw_services/screens/home_page.dart';
+import 'package:tuw_services/utils/get_location.dart';
+import 'package:tuw_services/utils/pinTheme.dart';
+import 'package:tuw_services/screens/edit_profile_screen.dart';
+import 'package:tuw_services/utils/snack_bar.dart';
+import 'package:tuw_services/API/viewProfile.dart';
+import '../l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
 import 'package:smart_auth/smart_auth.dart';
 
@@ -429,6 +429,7 @@ class _OTPscreenState extends State<OTPscreen> with CodeAutoFill {
     PhoneNumberControllers.otpCon.text = '';
     lang = Hive.box('LocalLan').get('lang');
     print("FCMT : $fcmToken");
+
     listenForCode();
     // _initSmsAutoFill();
 
@@ -436,6 +437,7 @@ class _OTPscreenState extends State<OTPscreen> with CodeAutoFill {
       setState(() {
         appSignature = signature;
       });
+      debugPrint("App Signature for SMS: $signature");
     });
      
   }
@@ -448,10 +450,12 @@ class _OTPscreenState extends State<OTPscreen> with CodeAutoFill {
 
   @override
   void codeUpdated() {
+    debugPrint("OTP Code received: $code");
     setState(() {
       otpCode = code;
       if (otpCode != null) {
         PhoneNumberControllers.otpCon.text = otpCode ?? '';
+        debugPrint("OTP Auto-filled successfully");
       }
     });
   }
@@ -526,10 +530,10 @@ class _OTPscreenState extends State<OTPscreen> with CodeAutoFill {
                     onCompleted: (pin) {
                       verifyNow();
                     },
-                    // androidSmsAutofillMethod:
-                    //     AndroidSmsAutofillMethod.smsRetrieverApi,
-                    // listenForMultipleSmsOnAndroid: true,
-                     closeKeyboardWhenCompleted: true,
+                    androidSmsAutofillMethod:
+                        AndroidSmsAutofillMethod.smsRetrieverApi,
+                    listenForMultipleSmsOnAndroid: true,
+                    closeKeyboardWhenCompleted: true,
                     hapticFeedbackType: HapticFeedbackType.lightImpact,
                   ),
                 ),

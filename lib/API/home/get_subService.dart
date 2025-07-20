@@ -7,12 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:social_media_services/API/endpoint.dart';
-import 'package:social_media_services/API/home/get_service_man.dart';
-import 'package:social_media_services/components/routes_manager.dart';
-import 'package:social_media_services/model/sub_services_model.dart';
-import 'package:social_media_services/providers/data_provider.dart';
-import 'package:social_media_services/screens/sub_service.dart';
+import 'package:tuw_services/API/endpoint.dart';
+import 'package:tuw_services/API/home/get_service_man.dart';
+import 'package:tuw_services/components/routes_manager.dart';
+import 'package:tuw_services/model/sub_services_model.dart';
+import 'package:tuw_services/providers/data_provider.dart';
+import 'package:tuw_services/screens/sub_service.dart';
 
 getSubService(BuildContext context, id, bool changeLan, homeService) async {
   final provider = Provider.of<DataProvider>(context, listen: false);

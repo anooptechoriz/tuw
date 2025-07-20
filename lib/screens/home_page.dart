@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:tuw_services/API/firebase_api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -9,12 +10,13 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:social_media_services/components/assets_manager.dart';
-import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/constants/constant.dart';
-import 'package:social_media_services/screens/messagePage.dart';
-import 'package:social_media_services/screens/serviceHome.dart';
-import 'package:social_media_services/widgets/custom_drawer.dart';
+import 'package:tuw_services/components/assets_manager.dart';
+import 'package:tuw_services/components/color_manager.dart';
+import 'package:tuw_services/components/routes_manager.dart';
+import 'package:tuw_services/constants/constant.dart';
+import 'package:tuw_services/screens/messagePage.dart';
+import 'package:tuw_services/screens/serviceHome.dart';
+import 'package:tuw_services/widgets/custom_drawer.dart';
 import '../API/get_chat_list.dart';
 import '../providers/data_provider.dart';
 
@@ -75,6 +77,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // Production-ready build method
+
     final size = MediaQuery.of(context).size;
     // final w = MediaQuery.of(context).size.width;
     // final mobWth = ResponsiveWidth.isMobile(context);
@@ -175,9 +179,9 @@ class _HomePageState extends State<HomePage> {
                 ],
                 selectedIndex: _selectedIndex,
                 onTabChange: (index) {
-                  // getChatList(
-                  //   context,
-                  // );
+                  getChatList(
+                    context,
+                  );
                   setState(() {
                     _selectedIndex = index;
                   });
@@ -191,8 +195,13 @@ class _HomePageState extends State<HomePage> {
                 child: Builder(
                   builder: (context) => InkWell(
                     onTap: () {
-                      // String? apiToken = Hive.box("token").get('api_token');
-                      Scaffold.of(context).openEndDrawer();
+                      String? apiToken = Hive.box("token").get('api_token');
+                      if (apiToken != null) {
+                        Scaffold.of(context).openEndDrawer();
+                      } else {
+                        // User not logged in, redirect to login
+                        Navigator.pushNamed(context, Routes.phoneNumber);
+                      }
                     },
                     child: const Padding(
                       padding: EdgeInsets.all(10),
@@ -214,16 +223,34 @@ class _HomePageState extends State<HomePage> {
   //--------------------------------------------Push Notifications------------------------------------------------//
 
   _firebaseMessagingInit() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    getFirebaseMessages();
-    String? fcm = prefs.getString('fcm');
-    String? token = await FirebaseMessaging.instance.getToken();
-    if (fcm != token) {
-      await prefs.setString('fcm', token ?? '');
-    }
-    fcmToken = prefs.getString('fcm') ?? '';
-    debugPrint('FCM token --->> $fcmToken');
+    // Get the stored FCM token
+    String? storedToken = await FirebaseApi.getStoredFCMToken();
 
+    if (storedToken?.isEmpty ?? true) {
+      // If no stored token, get fresh token
+      String? token = await FirebaseMessaging.instance.getToken();
+      if (token != null) {
+        fcmToken = token;
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('fcm', token);
+        debugPrint('FCM token (fresh) --->> $fcmToken');
+      }
+    } else {
+      fcmToken = storedToken!;
+      debugPrint('FCM token (stored) --->> $fcmToken');
+    }
+
+    // Debug both tokens
+    print("=== TOKEN STATUS DEBUG ===");
+    print("FCM Token: ${fcmToken.isEmpty ? 'EMPTY' : '${fcmToken.substring(0, 20)}...'}");
+    print("FCM Token Length: ${fcmToken.length}");
+
+    final apiToken = Hive.box("token").get('api_token');
+    print("API Token: ${apiToken == null ? 'NULL' : 'EXISTS'}");
+    print("========================");
+
+    // Initialize message handlers
+    getFirebaseMessages();
     FirebaseMessaging.onMessage.listen(_handleMessage);
     FirebaseMessaging.onMessageOpenedApp.listen(
       (RemoteMessage message) => _handleMessageData(message.data),
@@ -248,17 +275,15 @@ class _HomePageState extends State<HomePage> {
         FlutterLocalNotificationsPlugin();
     AndroidInitializationSettings initializationSettingsAndroid =
         const AndroidInitializationSettings('@mipmap/ic_launcher');
-    final IOSInitializationSettings initializationSettingsIOS =
-        IOSInitializationSettings(
-            onDidReceiveLocalNotification: (id, title, body, payload) =>
-                _handleMessageData(message.data));
+    final DarwinInitializationSettings initializationSettingsIOS =
+        DarwinInitializationSettings();
     final InitializationSettings initializationSettings =
         InitializationSettings(
             android: initializationSettingsAndroid,
             iOS: initializationSettingsIOS);
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
-      onSelectNotification: (payload) async =>
+      onDidReceiveNotificationResponse: (details) =>
           _handleMessageData(message.data),
     );
 
@@ -271,11 +296,15 @@ class _HomePageState extends State<HomePage> {
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
-    RemoteNotification notification = message.notification!;
+    RemoteNotification? notification = message.notification;
+    if (notification == null) {
+      debugPrint("Notification is null, cannot display local notification");
+      return;
+    }
 
     AndroidNotificationDetails? androidNotificationDetails;
-    if (Platform.isAndroid) {
-      AndroidNotification android = message.notification!.android!;
+    if (Platform.isAndroid && notification.android != null) {
+      AndroidNotification android = notification.android!;
       androidNotificationDetails = AndroidNotificationDetails(
         channel.id,
         channel.name,
@@ -294,5 +323,16 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _handleMessageData(Map<String, dynamic> data) async {}
+  void _handleMessageData(Map<String, dynamic> data) async {
+    // Handle notification tap/click actions here
+    // Example: Navigate to specific screen based on data
+    print("Notification tapped with data: $data");
+
+    // Add your custom logic here:
+    // if (data['type'] == 'order') {
+    //   Navigator.pushNamed(context, '/orders');
+    // } else if (data['type'] == 'message') {
+    //   Navigator.pushNamed(context, '/messages');
+    // }
+  }
 }

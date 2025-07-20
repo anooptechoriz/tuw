@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:social_media_services/constants/constant.dart';
+import 'package:tuw_services/constants/constant.dart';
 // import 'package:flutter/material.dart';
 
 class FCM {
@@ -39,7 +39,7 @@ class FCM {
     } else {
       debugPrint('User declined or has not accepted permission');
     }
-    // debugPrint('User granted permission: ${settings.authorizationStatus} fcm');
+    debugPrint('User granted permission: ${settings.authorizationStatus} fcm');
   }
 
   static init() async {

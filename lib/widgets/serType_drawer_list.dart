@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:social_media_services/API/endpoint.dart';
-import 'package:social_media_services/components/assets_manager.dart';
-import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/components/styles_manager.dart';
+import 'package:tuw_services/API/endpoint.dart';
+import 'package:tuw_services/components/assets_manager.dart';
+import 'package:tuw_services/components/color_manager.dart';
+import 'package:tuw_services/components/styles_manager.dart';
 
 class SerTypeDrawerList extends StatefulWidget {
   final String image;

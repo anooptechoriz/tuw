@@ -7,13 +7,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:social_media_services/API/endpoint.dart';
-import 'package:social_media_services/model/getCoupenModel.dart';
+import 'package:tuw_services/API/endpoint.dart';
+import 'package:tuw_services/model/getCoupenModel.dart';
 
-import 'package:social_media_services/providers/data_provider.dart';
-import 'package:social_media_services/utils/animatedSnackBar.dart';
-import 'package:social_media_services/utils/snack_bar.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tuw_services/providers/data_provider.dart';
+import 'package:tuw_services/utils/animatedSnackBar.dart';
+import 'package:tuw_services/utils/snack_bar.dart';
+import '../../l10n/app_localizations.dart';
 
 Future<bool> getCoupenCodeList(BuildContext context) async {
   final provider = Provider.of<DataProvider>(context, listen: false);

@@ -1,10 +1,10 @@
 // import 'package:cached_network_image/cached_network_image.dart';
 // import 'package:flutter/material.dart';
-// import 'package:social_media_services/components/assets_manager.dart';
-// import 'package:social_media_services/components/color_manager.dart';
-// import 'package:social_media_services/components/styles_manager.dart';
-// import 'package:social_media_services/custom/links.dart';
-// import 'package:social_media_services/widgets/statusListTile.dart';
+// import 'package:tuw_services/components/assets_manager.dart';
+// import 'package:tuw_services/components/color_manager.dart';
+// import 'package:tuw_services/components/styles_manager.dart';
+// import 'package:tuw_services/custom/links.dart';
+// import 'package:tuw_services/widgets/statusListTile.dart';
 
 // class WorkerDetailedAdmin extends StatefulWidget {
 //   const WorkerDetailedAdmin({super.key});

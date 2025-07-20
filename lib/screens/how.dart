@@ -2,14 +2,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:social_media_services/API/home/get_home.dart';
-import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/components/routes_manager.dart';
-import 'package:social_media_services/components/styles_manager.dart';
-import 'package:social_media_services/screens/home_page.dart';
-import 'package:social_media_services/utils/getLocalLanguage.dart';
-import 'package:social_media_services/widgets/backbutton.dart';
+import '../l10n/app_localizations.dart';
+import 'package:tuw_services/API/home/get_home.dart';
+import 'package:tuw_services/components/color_manager.dart';
+import 'package:tuw_services/components/routes_manager.dart';
+import 'package:tuw_services/components/styles_manager.dart';
+import 'package:tuw_services/screens/home_page.dart';
+import 'package:tuw_services/utils/getLocalLanguage.dart';
+import 'package:tuw_services/widgets/backbutton.dart';
 
 class HowToWorkPage extends StatefulWidget {
   const HowToWorkPage({Key? key}) : super(key: key);

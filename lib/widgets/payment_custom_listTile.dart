@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/components/styles_manager.dart';
+import 'package:tuw_services/components/color_manager.dart';
+import 'package:tuw_services/components/styles_manager.dart';
 
 class PaymentListTile extends StatelessWidget {
   final String text1;

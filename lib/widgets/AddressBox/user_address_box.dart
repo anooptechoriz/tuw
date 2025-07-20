@@ -3,10 +3,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:social_media_services/API/endpoint.dart';
-import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/components/styles_manager.dart';
-import 'package:social_media_services/model/other%20User/show_user_address.dart';
+import 'package:tuw_services/API/endpoint.dart';
+import 'package:tuw_services/components/color_manager.dart';
+import 'package:tuw_services/components/styles_manager.dart';
+import 'package:tuw_services/model/other%20User/show_user_address.dart';
 
 class UserAddressBox extends StatefulWidget {
   UserAddress? userAddress;

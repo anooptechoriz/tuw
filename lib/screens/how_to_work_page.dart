@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/components/routes_manager.dart';
-import 'package:social_media_services/components/styles_manager.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:social_media_services/utils/getLocalLanguage.dart';
+import 'package:tuw_services/components/color_manager.dart';
+import 'package:tuw_services/components/routes_manager.dart';
+import 'package:tuw_services/components/styles_manager.dart';
+import '../l10n/app_localizations.dart';
+import 'package:tuw_services/utils/getLocalLanguage.dart';
 
 class HowToWorkPage1 extends StatefulWidget {
   const HowToWorkPage1({super.key});

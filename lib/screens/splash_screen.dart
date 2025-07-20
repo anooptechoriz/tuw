@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/utils/initPlatformState.dart';
-import 'package:social_media_services/widgets/introduction_logo.dart';
+import 'package:tuw_services/components/color_manager.dart';
+import 'package:tuw_services/utils/initPlatformState.dart';
+import 'package:tuw_services/widgets/introduction_logo.dart';
 
 class Splash extends StatefulWidget {
   const Splash({Key? key}) : super(key: key);

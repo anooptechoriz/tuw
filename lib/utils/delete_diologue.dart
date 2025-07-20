@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:lottie/lottie.dart';
-import 'package:social_media_services/API/address/deleteUserAddress.dart';
-import 'package:social_media_services/API/logout.dart';
-import 'package:social_media_services/API/viewProfile.dart';
-import 'package:social_media_services/components/routes_manager.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:social_media_services/utils/initPlatformState.dart';
+import 'package:tuw_services/API/address/deleteUserAddress.dart';
+import 'package:tuw_services/API/logout.dart';
+import 'package:tuw_services/API/viewProfile.dart';
+import 'package:tuw_services/components/routes_manager.dart';
+import '../l10n/app_localizations.dart';
+import 'package:tuw_services/utils/initPlatformState.dart';
 
 class DeleteDialogueBox extends StatefulWidget {
   const DeleteDialogueBox({

@@ -6,12 +6,12 @@ import 'package:geolocator/geolocator.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:social_media_services/API/endpoint.dart';
-import 'package:social_media_services/components/routes_manager.dart';
-import 'package:social_media_services/model/serviceManLIst.dart';
-import 'package:social_media_services/providers/data_provider.dart';
-import 'package:social_media_services/providers/servicer_provider.dart';
-import 'package:social_media_services/screens/serviceman/servicer.dart';
+import 'package:tuw_services/API/endpoint.dart';
+import 'package:tuw_services/components/routes_manager.dart';
+import 'package:tuw_services/model/serviceManLIst.dart';
+import 'package:tuw_services/providers/data_provider.dart';
+import 'package:tuw_services/providers/servicer_provider.dart';
+import 'package:tuw_services/screens/serviceman/servicer.dart';
 
 Future<Position> determinePosition() async {
   bool serviceEnabled;

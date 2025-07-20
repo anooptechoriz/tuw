@@ -4,27 +4,38 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
-import 'package:platform_device_id/platform_device_id.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:social_media_services/API/address/getUserAddress.dart';
-import 'package:social_media_services/API/get_chat_list.dart';
-import 'package:social_media_services/API/get_countries.dart';
-import 'package:social_media_services/API/get_serviceManProfileDetails.dart';
-import 'package:social_media_services/API/get_language.dart';
-import 'package:social_media_services/API/home/get_home.dart';
-import 'package:social_media_services/components/routes_manager.dart';
-import 'package:social_media_services/providers/data_provider.dart';
-import 'package:social_media_services/API/viewProfile.dart';
-import 'package:social_media_services/utils/getLocalLanguage.dart';
+import 'package:tuw_services/API/address/getUserAddress.dart';
+import 'package:tuw_services/API/get_chat_list.dart';
+import 'package:tuw_services/API/get_countries.dart';
+import 'package:tuw_services/API/get_serviceManProfileDetails.dart';
+import 'package:tuw_services/API/get_language.dart';
+import 'package:tuw_services/API/home/get_home.dart';
+import 'package:tuw_services/components/routes_manager.dart';
+import 'package:tuw_services/providers/data_provider.dart';
+import 'package:tuw_services/API/viewProfile.dart';
+import 'package:tuw_services/utils/getLocalLanguage.dart';
 
 Future<void> initPlatformState(BuildContext context) async {
   final provider = Provider.of<DataProvider>(context, listen: false);
   String? deviceId;
 
   try {
-    deviceId = await PlatformDeviceId.getDeviceId;
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      deviceId = androidInfo.id;
+    } else if (Platform.isIOS) {
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      deviceId = iosInfo.identifierForVendor;
+    } else {
+      deviceId = 'Unknown platform';
+    }
     provider.deviceId = deviceId;
   } on PlatformException {
     deviceId = 'Failed to get deviceId.';

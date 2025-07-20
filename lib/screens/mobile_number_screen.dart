@@ -8,20 +8,20 @@ import 'package:flutter_svg/svg.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:sms_autofill/sms_autofill.dart';
-import 'package:social_media_services/API/endpoint.dart';
-import 'package:social_media_services/API/get_otp.dart';
-import 'package:social_media_services/animations/animtions.dart';
-import 'package:social_media_services/components/color_manager.dart';
-import 'package:social_media_services/components/styles_manager.dart';
-import 'package:social_media_services/controllers/controllers.dart';
-import 'package:social_media_services/main.dart';
-import 'package:social_media_services/model/get_countries.dart';
-import 'package:social_media_services/providers/data_provider.dart';
-import 'package:social_media_services/providers/otp_provider.dart';
-import 'package:social_media_services/widgets/backbutton.dart';
+import 'package:tuw_services/API/endpoint.dart';
+import 'package:tuw_services/API/get_otp.dart';
+import 'package:tuw_services/animations/animtions.dart';
+import 'package:tuw_services/components/color_manager.dart';
+import 'package:tuw_services/components/styles_manager.dart';
+import 'package:tuw_services/controllers/controllers.dart';
+import 'package:tuw_services/main.dart';
+import 'package:tuw_services/model/get_countries.dart';
+import 'package:tuw_services/providers/data_provider.dart';
+import 'package:tuw_services/providers/otp_provider.dart';
+import 'package:tuw_services/widgets/backbutton.dart';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:social_media_services/widgets/top_logo.dart';
+import '../l10n/app_localizations.dart';
+import 'package:tuw_services/widgets/top_logo.dart';
 
 class PhoneNumberScreen extends StatefulWidget {
   const PhoneNumberScreen({Key? key}) : super(key: key);

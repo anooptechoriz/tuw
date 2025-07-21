@@ -721,6 +721,7 @@ class _UserAddressUpdateState extends State<UserAddressUpdate> {
                                           12, 0, 12, 0),
                                       searchController: AddressEditControllers
                                           .searchController,
+                                      searchInnerWidgetHeight: 50,
                                       searchInnerWidget: Padding(
                                         padding: const EdgeInsets.only(
                                           top: 8,

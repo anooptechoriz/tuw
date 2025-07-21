@@ -662,15 +662,12 @@ class _ServicerPageState extends State<ServicerPage> {
                                                                       color: ColorManager
                                                                           .black,
                                                                     ),
-                                                                    hint:
-                                                                        Expanded(
-                                                                      child: Text(
+                                                                    hint: Text(
                                                                           str
                                                                               .ae_country_h,
                                                                           style: getRegularStyle(
                                                                               color: const Color.fromARGB(255, 173, 173, 173),
                                                                               fontSize: 15)),
-                                                                    ),
                                                                     items: r3
                                                                         .map((item) =>
                                                                             DropdownMenuItem<
@@ -729,6 +726,7 @@ class _ServicerPageState extends State<ServicerPage> {
                                                                     searchController:
                                                                         AddressEditControllers
                                                                             .searchController,
+                                                                    searchInnerWidgetHeight: 50,
                                                                     searchInnerWidget:
                                                                         Padding(
                                                                       padding:
@@ -1373,7 +1371,7 @@ class _ServicerPageState extends State<ServicerPage> {
                                             ],
                                           ),
                                           const SizedBox(
-                                            height: 5,
+                                            height: 5
                                           ),
                                           SizedBox(
                                             width: size.width,

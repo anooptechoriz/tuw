@@ -63,15 +63,37 @@ build_ios_app() {
     fi
 }
 
+# Function to completely reset module cache
+reset_module_cache() {
+    echo "🧹 Performing complete module cache reset..."
+
+    # Remove existing module cache
+    rm -rf ~/Library/Developer/Xcode/DerivedData/ModuleCache.noindex
+
+    # Recreate base directory
+    mkdir -p ~/Library/Developer/Xcode/DerivedData/ModuleCache.noindex
+
+    # Create Session.modulevalidation
+    touch ~/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation
+
+    echo "✅ Module cache completely reset"
+}
+
 # Main execution
 echo "🚀 Starting iOS build process..."
+
+# Option to do complete reset if needed
+if [ "$1" = "--reset" ]; then
+    reset_module_cache
+fi
 
 # Common module cache directories that often cause issues
 COMMON_DIRS=(
     "1CL3H2PGYUAC7"
-    "1X9AJKXWMUIT5" 
+    "1X9AJKXWMUIT5"
     "2V5BH37492LF8"
     "2B4W9D1ZCSXVS"
+    "1WW8UJLQCG5QJ"
 )
 
 echo "📁 Pre-creating common module cache directories..."

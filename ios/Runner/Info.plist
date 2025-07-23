@@ -36,8 +36,14 @@
 	<true/>
 	<key>NSAllowsLocalNetworking</key>
 	<true/>
+	<key>NSCalendarsUsageDescription</key>
+	<string>This app needs access to calendar to schedule service appointments.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>For users to capture and send their photos to other users</string>
+	<key>NSContactsUsageDescription</key>
+	<string>This app needs access to contacts to help you connect with other users and service providers.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Use Face ID to authenticate and secure your account.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>We need access to your location to provide you with location-based services and improve your app experience</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
@@ -46,14 +52,8 @@
 	<string>Microphone use to record your voice and sent to other users by your own voice. We will not share this recorded voices to any other third party tools.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>For users to share there photo with other users or serviceman and to update users profile photo and address photo</string>
-	<key>NSContactsUsageDescription</key>
-	<string>This app needs access to contacts to help you connect with other users and service providers.</string>
-	<key>NSCalendarsUsageDescription</key>
-	<string>This app needs access to calendar to schedule service appointments.</string>
 	<key>NSRemindersUsageDescription</key>
 	<string>This app needs access to reminders to set service reminders.</string>
-	<key>NSFaceIDUsageDescription</key>
-	<string>Use Face ID to authenticate and secure your account.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>

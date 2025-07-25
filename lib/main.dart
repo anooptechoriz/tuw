@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
@@ -27,11 +28,43 @@ void main() async {
     print("Firebase initialization failed: $e");
   }
 
-  await Hive.initFlutter();
-  await Hive.openBox("LocalLan");
-  await Hive.openBox("token");
-  await Hive.openBox("service");
-  await Hive.openBox("regionid");
+  try {
+    await Hive.initFlutter();
+    await Hive.openBox("LocalLan");
+    await Hive.openBox("token");
+    await Hive.openBox("service");
+    await Hive.openBox("regionid");
+    print("Hive initialized successfully");
+  } catch (e) {
+    print("Hive initialization failed: $e");
+    // Try alternative initialization with a specific directory
+    try {
+      // Use app's internal storage directory
+      final Directory appDir = Directory('/data/data/com.tuwconnect.services/app_flutter');
+      if (!await appDir.exists()) {
+        await appDir.create(recursive: true);
+      }
+      Hive.init(appDir.path);
+      await Hive.openBox("LocalLan");
+      await Hive.openBox("token");
+      await Hive.openBox("service");
+      await Hive.openBox("regionid");
+      print("Hive initialized with manual path");
+    } catch (e2) {
+      print("Hive manual path initialization also failed: $e2");
+      // Last resort - try with temporary directory
+      try {
+        Hive.init('/tmp');
+        await Hive.openBox("LocalLan");
+        await Hive.openBox("token");
+        await Hive.openBox("service");
+        await Hive.openBox("regionid");
+        print("Hive initialized with temp directory");
+      } catch (e3) {
+        print("All Hive initialization methods failed: $e3");
+      }
+    }
+  }
   final GoogleMapsFlutterPlatform mapsImplementation =
       GoogleMapsFlutterPlatform.instance;
   if (mapsImplementation is GoogleMapsFlutterAndroid) {

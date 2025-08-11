@@ -19,6 +19,7 @@ import 'package:tuw_services/model/get_countries.dart';
 import 'package:tuw_services/providers/data_provider.dart';
 import 'package:tuw_services/providers/otp_provider.dart';
 import 'package:tuw_services/widgets/backbutton.dart';
+import 'package:tuw_services/utils/animatedSnackBar.dart';
 
 import '../l10n/app_localizations.dart';
 import 'package:tuw_services/widgets/top_logo.dart';
@@ -492,17 +493,32 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
       });
       appSignature = await SmsAutoFill().getAppSignature;
       await SmsAutoFill().listenForCode();
-      await getOtp(
-        context: context,
-        countryCode: countryCode,
-        phoneNo: phoneNo,
-        resend: false,
-        appSignature: appSignature,
-      );
-      print(OtpProvider.getOtp?.oTP.toString());
-      setState(() {
-        loading = false;
-      });
+      try {
+        print("Starting OTP request...");
+        print("Phone: $phoneNo, Country Code: $countryCode");
+        print("App Signature: $appSignature");
+        
+        await getOtp(
+          context: context,
+          countryCode: countryCode,
+          phoneNo: phoneNo,
+          resend: false,
+          appSignature: appSignature,
+        );
+        print("OTP Response: ${OtpProvider.getOtp?.oTP.toString()}");
+      } catch (e) {
+        print("Error in getOtp: $e");
+        // Show error to user
+        if (mounted) {
+          showAnimatedSnackBar(context, "Failed to send OTP. Please try again.");
+        }
+      } finally {
+        if (mounted) {
+          setState(() {
+            loading = false;
+          });
+        }
+      }
     }
   }
 
@@ -514,15 +530,50 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
   }
 
   getlocalLanguage() {
-    lang = Hive.box('LocalLan').get(
-      'lang',
-    );
-    if (!mounted) return;
-    MyApp.of(context).setLocale(
-      Locale.fromSubtags(
-        languageCode: lang,
-      ),
-    );
+    try {
+      // Ensure the Hive box is open before accessing it
+      if (!Hive.isBoxOpen('LocalLan')) {
+        print('LocalLan box is not open, using default language');
+        lang = 'en';
+        return;
+      }
+      
+      lang = Hive.box('LocalLan').get('lang', defaultValue: 'en');
+      
+      // Validate the language code to ensure it's a valid ISO 639-1 language code
+      // Only allow supported languages: 'en', 'hi', 'ar'
+      if (lang.isEmpty || !['en', 'hi', 'ar'].contains(lang)) {
+        lang = 'en'; // Default to English if invalid
+        // Update the stored value to prevent future issues
+        try {
+          Hive.box('LocalLan').put('lang', lang);
+        } catch (e) {
+          print('Error updating language in Hive: $e');
+        }
+      }
+      
+      if (!mounted) return;
+      
+      try {
+        MyApp.of(context).setLocale(
+          Locale.fromSubtags(
+            languageCode: lang,
+          ),
+        );
+      } catch (e) {
+        print('Error setting locale: $e');
+        // Fallback to English if locale creation fails
+        try {
+          MyApp.of(context).setLocale(const Locale('en'));
+        } catch (fallbackError) {
+          print('Fallback locale also failed: $fallbackError');
+        }
+      }
+    } catch (e) {
+      print('Error in getlocalLanguage: $e');
+      // Use default language if anything goes wrong
+      lang = 'en';
+    }
   }
 
 //  * Country code search function

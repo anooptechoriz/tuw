@@ -110,8 +110,12 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                             setState(() {
                               selected = lan?.language ?? '';
                             });
-                            Hive.box("LocalLan")
-                                .put('lang', lan?.shortcode ?? '');
+                            // Validate and set the language code
+                            String shortcode = lan?.shortcode ?? 'en';
+                            if (shortcode.isEmpty || !['en', 'hi', 'ar'].contains(shortcode)) {
+                              shortcode = 'en';
+                            }
+                            Hive.box("LocalLan").put('lang', shortcode);
                             String? id = provider
                                 .languageModel?.languages?[index].id
                                 .toString();

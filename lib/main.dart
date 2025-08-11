@@ -89,6 +89,43 @@ class _MyAppState extends State<MyApp> {
   String lang = '';
   Locale locale = const Locale('en', '');
 
+  @override
+  void initState() {
+    super.initState();
+    _initializeLocale();
+  }
+
+  void _initializeLocale() {
+    try {
+      // Ensure the Hive box is open before accessing it
+      if (!Hive.isBoxOpen('LocalLan')) {
+        print('LocalLan box is not open, using default locale');
+        return;
+      }
+      
+      // Get the stored language from Hive
+      String storedLang = Hive.box('LocalLan').get('lang', defaultValue: 'en');
+      
+      // Validate the language code
+      if (storedLang.isEmpty || !['en', 'hi', 'ar'].contains(storedLang)) {
+        storedLang = 'en';
+        // Update the stored value
+        try {
+          Hive.box('LocalLan').put('lang', storedLang);
+        } catch (e) {
+          print('Error updating language in Hive: $e');
+        }
+      }
+      
+      setState(() {
+        locale = Locale(storedLang);
+      });
+    } catch (e) {
+      print('Error initializing locale: $e');
+      // Keep the default locale
+    }
+  }
+
   void setLocale(Locale value) async {
     setState(() {
       locale = value;

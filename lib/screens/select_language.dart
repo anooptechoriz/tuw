@@ -136,8 +136,12 @@ class _SelectLanguageScreenState extends State<SelectLanguageScreen> {
                                 selected = lan?.language ?? '';
                               });
                               print(selected);
-                              await Hive.box("LocalLan")
-                                  .put('lang', lan?.shortcode ?? '');
+                              // Validate and set the language code
+                              String shortcode = lan?.shortcode ?? 'en';
+                              if (shortcode.isEmpty || !['en', 'hi', 'ar'].contains(shortcode)) {
+                                shortcode = 'en';
+                              }
+                              await Hive.box("LocalLan").put('lang', shortcode);
 
                               String? id = provider
                                   .languageModel?.languages?[index].id

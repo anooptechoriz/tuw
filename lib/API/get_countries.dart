@@ -14,7 +14,7 @@ getCountriesData(BuildContext context) async {
     final provider = Provider.of<DataProvider>(context, listen: false);
     var response = await http.get(Uri.parse("$countriesApi"),
         headers: {"device-id": provider.deviceId ?? ''});
-    // print(response.body);
+  log ('getCountriesData - ${response.body}');  
     if (response.statusCode != 200) {
       return;
     }
